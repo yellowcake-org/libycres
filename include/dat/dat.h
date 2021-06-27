@@ -1,0 +1,1 @@
+unsigned int ycres_dat_count();

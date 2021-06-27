@@ -1,1 +1,1 @@
-unsigned int ycres_dat_count();
+unsigned int yc_res_dat_count();

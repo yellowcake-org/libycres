@@ -1,4 +1,5 @@
 #include "formats/dat/dat.h"
+#include <stddef.h>
 
 void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned long* output) {
     if (NULL == reader || NULL == input || NULL == output)

@@ -3,7 +3,7 @@ project(libycres VERSION 0.1.0)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu89 -Wall -Wextra")
 
 add_library(ycres 
-    sources/dat/dat.c
+    sources/formats/dat/dat.c
 )
 
 target_include_directories(ycres PUBLIC 

@@ -36,9 +36,10 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
         if (NULL == directories[i].name)
             return; // TODO: Handle errors.
         
-        directories[i].name[length] = 0;
         reader(input, offset, length, (unsigned char*)directories[i].name);
         offset += length;
+        
+        directories[i].name[length] = '\0';
     }
 }
 

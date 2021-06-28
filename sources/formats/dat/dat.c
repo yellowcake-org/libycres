@@ -43,6 +43,9 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
 }
 
 void yc_res_dat_directory_free(yc_res_dat_directory_t *directory) {
+    if (NULL == directory)
+        return;
+    
     free(directory->name);
     directory->name = NULL;
 }

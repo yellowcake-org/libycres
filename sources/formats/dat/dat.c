@@ -1,52 +1,91 @@
 #include "formats/dat/dat.h"
+#include "dat.h"
 
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
 
-void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned long* count) {
+void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned int* count) {
     if (NULL == reader || NULL == input || NULL == count)
         return; // TODO: Handle error.
     
-    const bytes = 4;
-    unsigned char slice[bytes];
-    
-    reader(input, 0, bytes, &slice[0]);
-    *count = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
+    yc_res_dat_private_load_uint(reader, input, 0, count);
 }
 
 void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
-                            unsigned long count, yc_res_dat_directory_t* directories) {
+                            unsigned int count, yc_res_dat_directory_t* directories) {
     assert(count != 0);
     
     if (NULL == reader || NULL == input || NULL == directories)
         return; // TODO: Handle error.
     
-    unsigned long i;
-    unsigned long offset = 4 * 4;
+    unsigned int i;
+    unsigned int offset = 4 * 4;
     
     for (i = 0; i < count; ++i) {
-        unsigned char length = 0;
+        unsigned int read;
+        yc_res_dat_private_load_string(reader, input, offset, &directories[i].name, &read);
+        offset += read;
+    }
+    
+    for (i = 0; i < count; ++i) {
+        yc_res_dat_private_load_uint(reader, input, offset, &directories[i].count);
+        offset += 16; // 4 for int + skip next 3 * 4 bytes
         
-        reader(input, offset, 1, &length);
-        offset++;
+        directories[i].files = malloc(directories[i].count * sizeof(typeof(*directories[i].files)));
         
-        directories[i].name = malloc(length + 1);
-        
-        if (NULL == directories[i].name)
+        if (NULL == directories[i].files)
             return; // TODO: Handle errors.
         
-        reader(input, offset, length, (unsigned char*)directories[i].name);
-        offset += length;
-        
-        directories[i].name[length] = '\0';
+        unsigned int j;
+        for (j = 0; j < directories[i].count; ++j) {
+            unsigned int read;
+            yc_res_dat_private_load_string(reader, input, offset, &directories[i].files[j].name, &read);
+            offset += read;
+            offset += 4; // skip attributes
+            
+            yc_res_dat_private_load_uint(reader, input, offset, &directories[i].files[j].start);
+            offset += 4;
+            
+            unsigned int plain_size, packed_size;
+            yc_res_dat_private_load_uint(reader, input, offset, &plain_size);
+            offset += 4;
+            
+            yc_res_dat_private_load_uint(reader, input, offset, &packed_size);
+            offset += 4;
+            
+            directories[i].files[j].size = packed_size > 0 ? packed_size : plain_size;
+            directories[i].files[j].original_size = packed_size > 0 ? plain_size : 0;
+        }
     }
 }
 
-void yc_res_dat_directory_free(yc_res_dat_directory_t *directory) {
+void yc_res_dat_directory_free(yc_res_dat_directory_t* directory) {
     if (NULL == directory)
         return;
     
-    free(directory->name);
-    directory->name = NULL;
+    if (NULL != directory->name) {
+        free(directory->name);
+        directory->name = NULL;
+    }
+    
+    if (NULL != directory->files) {
+        unsigned int i;
+        for (i = 0; i < directory->count; ++i) {
+            yc_res_dat_file_free(&directory->files[i]);
+        }
+        
+        free(directory->files);
+        directory->files = NULL;
+    }
+}
+
+void yc_res_dat_file_free(yc_res_dat_file_t* file) {
+    if (NULL == file)
+        return;
+    
+    if (NULL != file->name){
+        free(file->name);
+        file->name = NULL;
+    }
 }

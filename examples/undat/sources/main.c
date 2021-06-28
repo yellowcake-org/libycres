@@ -7,12 +7,28 @@ void reader(const void* input, unsigned long offset, unsigned long length, unsig
 
 // TODO: Handle errors.
 int main(__unused int argc, char *argv[]) {
-    unsigned long dirs_count = 0;
-    
     FILE* handle = fopen(argv[1], "rb");
+    
+    unsigned long dirs_count = 0;
     yc_res_dat_count(&reader, handle, &dirs_count);
     
-    printf("Dirs count: %zu.\n", dirs_count);    
+    printf("Dirs count: %zu.\n", dirs_count);
+    
+    yc_res_dat_directory_t *dirs = malloc(dirs_count * sizeof(typeof(*dirs)));
+    yc_res_dat_directories(&reader, handle, dirs_count, dirs);
+    
+    unsigned long i;
+    for (i = 0; i < dirs_count; ++i) {
+        printf("%s\n", dirs[i].name);
+        yc_res_dat_free_directory(&dirs[i]);
+    }
+    
+    free(dirs);
+    dirs = NULL;
+    
+    fclose(handle);
+    handle = NULL;
+    
     return 0;
 }
 
@@ -21,5 +37,5 @@ void reader(const void* input, unsigned long offset, unsigned long length, unsig
     FILE* handle = (FILE*)input;
     
     fseeko(handle, offset, SEEK_SET);
-    fread(output, sizeof(unsigned char), length, handle);
+    fread(output, sizeof(typeof(*output)), length, handle);
 }

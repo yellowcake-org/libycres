@@ -26,10 +26,10 @@ void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsig
 void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
                             unsigned int count, yc_res_dat_directory_t* directories);
 
-/// Frees inner fields' memory.
-void yc_res_dat_directory_free(yc_res_dat_directory_t *directory);
+/// Frees inner memory.
+void yc_res_dat_directory_free(yc_res_dat_directory_t* directory);
 
-/// Frees inner fields' memory.
-void yc_res_dat_file_free(yc_res_dat_file_t *file);
+/// Frees inner memory.
+void yc_res_dat_file_free(yc_res_dat_file_t* file);
 
 #endif /* DAT_H */

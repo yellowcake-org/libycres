@@ -5,6 +5,18 @@
 
 typedef struct {
     char* name;
+    
+    unsigned long start; /// Position in archive.
+    unsigned long size; /// Byte length in archive.
+    
+    unsigned long original_size; /// Needs decompression when > 0.
+} yc_res_dat_file_t;
+
+typedef struct {
+    char* name;
+    
+    unsigned long count;
+    yc_res_dat_file_t *files;
 } yc_res_dat_directory_t;
 
 /// Writes to output number of directories stored within source.
@@ -16,5 +28,8 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
 
 /// Frees inner fields' memory.
 void yc_res_dat_directory_free(yc_res_dat_directory_t *directory);
+
+/// Frees inner fields' memory.
+void yc_res_dat_file_free(yc_res_dat_file_t *file);
 
 #endif /* DAT_H */

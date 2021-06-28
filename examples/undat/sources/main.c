@@ -19,7 +19,7 @@ int main(__unused int argc, char *argv[]) {
     
     unsigned long i;
     for (i = 0; i < dirs_count; ++i) {
-        printf("%s\n", dirs[i].name);
+        printf("%s, %lu\n", dirs[i].name, dirs[i].count);
         yc_res_dat_directory_free(&dirs[i]);
     }
     

@@ -47,6 +47,28 @@ void yc_res_dat_directory_free(yc_res_dat_directory_t *directory) {
     if (NULL == directory)
         return;
     
-    free(directory->name);
-    directory->name = NULL;
+    if (NULL != directory->name) {
+        free(directory->name);
+        directory->name = NULL;
+    }
+    
+    if (NULL != directory->files) {
+        unsigned long i;
+        for (i = 0; i < directory->count; ++i) {
+            yc_res_dat_file_free(&directory->files[i]);
+        }
+        
+        free(directory->files);
+        directory->files = NULL;
+    }
+}
+
+void yc_res_dat_file_free(yc_res_dat_file_t *file) {
+    if (NULL == file)
+        return;
+    
+    if (NULL != file->name){
+        free(file->name);
+        file->name = NULL;
+    }
 }

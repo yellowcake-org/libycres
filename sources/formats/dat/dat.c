@@ -100,15 +100,13 @@ void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void
     
     reader(input, offset, 1, &length);
     offset++;
-    *read = 1;
     
+    *read = length + 1;
     *value = malloc(length + 1);
     
     if (NULL == *value)
         return; // TODO: Handle errors.
     
     reader(input, offset, length, (unsigned char*)*value);
-    *read += length;
-    
     (*value)[length] = '\0';
 }

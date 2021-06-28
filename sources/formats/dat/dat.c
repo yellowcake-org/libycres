@@ -4,26 +4,26 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned long* count) {
+void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned int* count) {
     if (NULL == reader || NULL == input || NULL == count)
         return; // TODO: Handle error.
     
-    const bytes = 4;
-    unsigned char slice[bytes];
+    const length = sizeof(typeof(*count));
+    unsigned char slice[length];
     
-    reader(input, 0, bytes, &slice[0]);
+    reader(input, 0, length, &slice[0]);
     *count = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
 }
 
 void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
-                            unsigned long count, yc_res_dat_directory_t* directories) {
+                            unsigned int count, yc_res_dat_directory_t* directories) {
     assert(count != 0);
     
     if (NULL == reader || NULL == input || NULL == directories)
         return; // TODO: Handle error.
     
-    unsigned long i;
-    unsigned long offset = 4 * 4;
+    unsigned int i;
+    unsigned int offset = 4 * 4;
     
     for (i = 0; i < count; ++i) {
         unsigned char length = 0;
@@ -41,6 +41,41 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
         
         directories[i].name[length] = '\0';
     }
+    
+    for (i = 0; i < count; ++i) {
+        const length = sizeof(typeof(directories[i].count));
+        unsigned char slice[length];
+        
+        reader(input, offset, length, &slice[0]);
+        offset += length;
+        offset += 3 * 4; // skip unused flags
+        
+        directories[i].count = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
+        directories[i].files = malloc(directories[i].count * sizeof(typeof(*directories[i].files)));
+        
+        if (NULL == directories[i].files)
+            return; // TODO: Handle errors.
+        
+        unsigned int j;
+        for (j = 0; j < directories[i].count; ++j) {
+            unsigned char length = 0;
+            
+            reader(input, offset, 1, &length);
+            offset++;
+            
+            directories[i].files[j].name = malloc(length + 1);
+            
+            if (NULL == directories[i].files[j].name)
+                return; // TODO: Handle errors.
+            
+            reader(input, offset, length, (unsigned char*)directories[i].files[j].name);
+            offset += length;
+            
+            directories[i].files[j].name[length] = '\0';
+            
+            offset += 16;
+        }
+    }
 }
 
 void yc_res_dat_directory_free(yc_res_dat_directory_t *directory) {
@@ -53,7 +88,7 @@ void yc_res_dat_directory_free(yc_res_dat_directory_t *directory) {
     }
     
     if (NULL != directory->files) {
-        unsigned long i;
+        unsigned int i;
         for (i = 0; i < directory->count; ++i) {
             yc_res_dat_file_free(&directory->files[i]);
         }

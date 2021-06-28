@@ -4,15 +4,17 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+void yc_res_dat_private_load_uint(yc_res_platform_reader_t* reader, const void* input,
+                                  unsigned int offset, unsigned int* count);
+
+void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void* input,
+                                    unsigned int offset, char** value, unsigned int* read);
+
 void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned int* count) {
     if (NULL == reader || NULL == input || NULL == count)
         return; // TODO: Handle error.
     
-    const length = sizeof(typeof(*count));
-    unsigned char slice[length];
-    
-    reader(input, 0, length, &slice[0]);
-    *count = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
+    yc_res_dat_private_load_uint(reader, input, 0, count);
 }
 
 void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
@@ -26,31 +28,15 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
     unsigned int offset = 4 * 4;
     
     for (i = 0; i < count; ++i) {
-        unsigned char length = 0;
-        
-        reader(input, offset, 1, &length);
-        offset++;
-        
-        directories[i].name = malloc(length + 1);
-        
-        if (NULL == directories[i].name)
-            return; // TODO: Handle errors.
-        
-        reader(input, offset, length, (unsigned char*)directories[i].name);
-        offset += length;
-        
-        directories[i].name[length] = '\0';
+        unsigned int read;
+        yc_res_dat_private_load_string(reader, input, offset, &directories[i].name, &read);
+        offset += read;
     }
     
     for (i = 0; i < count; ++i) {
-        const length = sizeof(typeof(directories[i].count));
-        unsigned char slice[length];
+        yc_res_dat_private_load_uint(reader, input, offset, &directories[i].count);
+        offset += 16; // 4 for int + skip next 3 * 4 bytes
         
-        reader(input, offset, length, &slice[0]);
-        offset += length;
-        offset += 3 * 4; // skip unused flags
-        
-        directories[i].count = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
         directories[i].files = malloc(directories[i].count * sizeof(typeof(*directories[i].files)));
         
         if (NULL == directories[i].files)
@@ -58,20 +44,9 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
         
         unsigned int j;
         for (j = 0; j < directories[i].count; ++j) {
-            unsigned char length = 0;
-            
-            reader(input, offset, 1, &length);
-            offset++;
-            
-            directories[i].files[j].name = malloc(length + 1);
-            
-            if (NULL == directories[i].files[j].name)
-                return; // TODO: Handle errors.
-            
-            reader(input, offset, length, (unsigned char*)directories[i].files[j].name);
-            offset += length;
-            
-            directories[i].files[j].name[length] = '\0';
+            unsigned int read;
+            yc_res_dat_private_load_string(reader, input, offset, &directories[i].files[j].name, &read);
+            offset += read;
             
             offset += 16;
         }
@@ -106,4 +81,34 @@ void yc_res_dat_file_free(yc_res_dat_file_t *file) {
         free(file->name);
         file->name = NULL;
     }
+}
+
+// MARK: - Private
+
+void yc_res_dat_private_load_uint(yc_res_platform_reader_t* reader, const void* input,
+                                  unsigned int offset, unsigned int* value) {
+    const length = 4;
+    unsigned char slice[length];
+    
+    reader(input, offset, length, &slice[0]);
+    *value = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
+}
+
+void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void* input,
+                                    unsigned int offset, char** value, unsigned int* read) {
+    unsigned char length = 0;
+    
+    reader(input, offset, 1, &length);
+    offset++;
+    *read = 1;
+    
+    *value = malloc(length + 1);
+    
+    if (NULL == *value)
+        return; // TODO: Handle errors.
+    
+    reader(input, offset, length, (unsigned char*)*value);
+    *read += length;
+    
+    (*value)[length] = '\0';
 }

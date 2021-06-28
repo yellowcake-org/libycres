@@ -20,7 +20,7 @@ int main(__unused int argc, char *argv[]) {
     unsigned long i;
     for (i = 0; i < dirs_count; ++i) {
         printf("%s\n", dirs[i].name);
-        yc_res_dat_free_directory(&dirs[i]);
+        yc_res_dat_directory_free(&dirs[i]);
     }
     
     free(dirs);

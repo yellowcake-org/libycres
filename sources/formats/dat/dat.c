@@ -39,7 +39,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
         if (NULL == list[i].files)
             return; // TODO: Handle errors.
         
-        unsigned int j;
+        unsigned long j;
         for (j = 0; j < list[i].files_count; ++j) {
             unsigned long read;
             yc_res_dat_private_load_string(reader, input, offset, &list[i].files[j].name, &read);
@@ -75,7 +75,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
     }
     
     if (NULL != directory->files && 0 < directory->files_count) {
-        unsigned int i;
+        unsigned long i;
         for (i = 0; i < directory->files_count; ++i) {
             yc_res_dat_free_file(&directory->files[i]);
         }
@@ -85,7 +85,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
     }
     
     if (NULL != directory->directories && 0 < directory->directories_count) {
-        unsigned int i;
+        unsigned long i;
         for (i = 0; i < directory->directories_count; ++i) {
             yc_res_dat_free_tree(&directory->directories[i]);
         }

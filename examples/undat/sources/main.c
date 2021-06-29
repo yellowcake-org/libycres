@@ -6,7 +6,8 @@
 void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output);
 
 void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
-    unsigned long l;
+    unsigned long i, j, l;
+    
     for (l = 0; l < level; ++l) {
         if (1 == level - l) {
             printf("\\---");
@@ -17,7 +18,6 @@ void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
     
     printf("%s\n", node->name);
     
-    unsigned int j;
     for (j = 0; j < node->files_count; ++j) {
         for (l = 0; l < level; ++l) {
             printf("    ");
@@ -27,7 +27,6 @@ void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
         printf("%s\n", node->files[j].name);
     }
 
-    unsigned long i;
     for (i = 0; i < node->directories_count; ++i) {
         print_directory(&node->directories[i], level + 1);
     }

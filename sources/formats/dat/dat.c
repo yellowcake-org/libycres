@@ -60,6 +60,9 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
             list[i].files[j].original_size = packed_size > 0 ? plain_size : 0;
         }
     }
+    
+    free(list);
+    list = NULL;
 }
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {

@@ -3,7 +3,7 @@
 
 #include <libycres.h>
 
-void file_read(const void* input, unsigned long offset, unsigned long length, unsigned char* output);
+void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output);
 
 void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
     unsigned long l;
@@ -33,7 +33,6 @@ void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
     }
 }
 
-// TODO: Handle errors.
 int main(__unused int argc, char *argv[]) {
     FILE* handle = fopen(argv[1], "rb");
         
@@ -53,8 +52,7 @@ int main(__unused int argc, char *argv[]) {
     return 0;
 }
 
-// TODO: Handle errors.
-void file_read(const void* input, unsigned long offset, unsigned long length, unsigned char* output) {
+void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output) {
     FILE* handle = (FILE*)input;
     
     fseeko(handle, offset, SEEK_SET);

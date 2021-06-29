@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 project(libycres VERSION 0.1.0)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu89 -Wall -Wextra")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c89 -pedantic -W -Wall -Wstrict-prototypes -Wunreachable-code  -Wwrite-strings -Wpointer-arith -Wbad-function-cast -Wcast-align -Wcast-qual")
 
 add_library(ycres 
     sources/formats/dat/dat.c

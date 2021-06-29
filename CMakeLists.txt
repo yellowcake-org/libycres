@@ -11,6 +11,10 @@ target_include_directories(ycres PUBLIC
     include
 )
 
+target_include_directories(ycres PRIVATE
+    private
+)
+
 add_executable(undat 
     examples/undat/sources/main.c
 )

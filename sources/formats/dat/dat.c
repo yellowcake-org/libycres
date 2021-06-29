@@ -132,7 +132,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
         return; //TODO: Handle errors.
     
     unsigned long appended = 0;
-    yc_res_dat_private_append_marked_dirs(root, flat, &appended);
+    yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
     
     assert(appended == count);
     

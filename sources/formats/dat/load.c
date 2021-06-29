@@ -1,6 +1,4 @@
-#include <libycres.h>
 #include <private.h>
-
 #include <stdlib.h>
 
 void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, const void* input,
@@ -36,17 +34,4 @@ void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void
     
     reader(input, offset, length, (unsigned char*)*value);
     (*value)[length] = '\0';
-}
-
-void yc_res_dat_private_append_marked_dirs(yc_res_dat_directory_t* node, yc_res_dat_directory_t** flat,
-                                           unsigned long* appended) {
-    if (node->has_content_block == 1) {
-        flat[*appended] = node;
-        (*appended)++;
-    }
-    
-    unsigned long i;
-    for (i = 0; i< node->directories_count; ++i) {
-        yc_res_dat_private_append_marked_dirs(&node->directories[i], flat, appended);
-    }
 }

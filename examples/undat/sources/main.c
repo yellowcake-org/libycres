@@ -3,31 +3,48 @@
 
 #include <libycres.h>
 
-void file_read(const void* input, unsigned long offset, unsigned long length, unsigned char* output);
+void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output);
 
-// TODO: Handle errors.
-int main(__unused int argc, char *argv[]) {
-    FILE* handle = fopen(argv[1], "rb");
-    
-    unsigned long dirs_count = 0;
-    yc_res_dat_count(&file_read, handle, &dirs_count);
-    
-    yc_res_dat_directory_t *dirs = malloc(dirs_count * sizeof(typeof(*dirs)));
-    yc_res_dat_directories(&file_read, handle, dirs_count, dirs);
-    
-    unsigned long i;
-    for (i = 0; i < dirs_count; ++i) {
-        unsigned int j;
-        for (j = 0; j < dirs[i].count; ++j) {
-            printf("%s\\", dirs[i].name);
-            printf("%s\n", dirs[i].files[j].name);
+void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
+    unsigned long l;
+    for (l = 0; l < level; ++l) {
+        if (1 == level - l) {
+            printf("\\---");
+        } else {
+            printf("    ");
         }
-        
-        yc_res_dat_free_directory(&dirs[i]);
     }
     
-    free(dirs);
-    dirs = NULL;
+    printf("%s\n", node->name);
+    
+    unsigned int j;
+    for (j = 0; j < node->files_count; ++j) {
+        for (l = 0; l < level; ++l) {
+            printf("    ");
+        }
+        
+        printf("\\---");
+        printf("%s\n", node->files[j].name);
+    }
+
+    unsigned long i;
+    for (i = 0; i < node->directories_count; ++i) {
+        print_directory(&node->directories[i], level + 1);
+    }
+}
+
+int main(__unused int argc, char *argv[]) {
+    FILE* handle = fopen(argv[1], "rb");
+        
+    yc_res_dat_directory_t *root;
+    yc_res_dat_tree(&file_read, handle, &root);
+    
+    print_directory(root, 0);
+    
+    yc_res_dat_free_tree(root);
+    
+    free(root);
+    root = NULL;
     
     fclose(handle);
     handle = NULL;
@@ -35,10 +52,9 @@ int main(__unused int argc, char *argv[]) {
     return 0;
 }
 
-// TODO: Handle errors.
-void file_read(const void* input, unsigned long offset, unsigned long length, unsigned char* output) {
+void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output) {
     FILE* handle = (FILE*)input;
     
     fseeko(handle, offset, SEEK_SET);
-    fread(output, sizeof(typeof(*output)), length, handle);
+    fread(output, sizeof(*output), length, handle);
 }

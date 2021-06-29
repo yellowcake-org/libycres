@@ -3,33 +3,32 @@
 
 #include "../../../include/platform/platform.h"
 
-typedef struct {
-    char* name;
-    
-    unsigned long start; /// Position in archive.
-    unsigned long size; /// Byte length in archive.
-    
-    unsigned long original_size; /// Needs decompression when > 0.
-} yc_res_dat_file_t;
+typedef struct yc_res_dat_file yc_res_dat_file_t;
+typedef struct yc_res_dat_directory yc_res_dat_directory_t;
 
-typedef struct {
+struct yc_res_dat_file {
     char* name;
     
-    unsigned long count;
+    unsigned long start;
+    unsigned long size;
+    
+    unsigned long original_size;
+};
+
+struct yc_res_dat_directory {
+    char* name;
+    unsigned char has_content_block;
+    
+    unsigned long files_count;
     yc_res_dat_file_t *files;
-} yc_res_dat_directory_t;
+    
+    unsigned long directories_count;
+    yc_res_dat_directory_t *directories;
+};
 
-/// Writes to output number of directories stored within source.
-void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned long* count);
+void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t** root);
 
-/// Allocates memory for inner fields within provided dirs list and fills them up.
-void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
-                            unsigned long count, yc_res_dat_directory_t* directories);
-
-/// Frees inner memory.
-void yc_res_dat_free_directory(yc_res_dat_directory_t* directory);
-
-/// Frees inner memory.
+void yc_res_dat_free_tree(yc_res_dat_directory_t* root);
 void yc_res_dat_free_file(yc_res_dat_file_t* file);
 
 #endif /* DAT_H */

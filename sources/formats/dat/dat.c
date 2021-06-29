@@ -29,8 +29,11 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
     }
     
     for (i = 0; i < count; ++i) {
-        yc_res_dat_private_load_count(reader, input, offset, &directories[i].count, NULL);
-        offset += 16; // 4 for int + skip next 3 * 4 bytes
+        unsigned long read;
+        
+        yc_res_dat_private_load_count(reader, input, offset, &directories[i].count, &read);
+        offset += read;
+        offset += 3 * 4; // skip attributes
         
         directories[i].files = malloc(directories[i].count * sizeof(typeof(*directories[i].files)));
         
@@ -44,15 +47,15 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
             offset += read;
             offset += 4; // skip attributes
             
-            yc_res_dat_private_load_count(reader, input, offset, &directories[i].files[j].start, NULL);
-            offset += 4;
+            yc_res_dat_private_load_count(reader, input, offset, &directories[i].files[j].start, &read);
+            offset += read;
             
             unsigned long plain_size, packed_size;
-            yc_res_dat_private_load_count(reader, input, offset, &plain_size, NULL);
-            offset += 4;
+            yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
+            offset += read;
             
-            yc_res_dat_private_load_count(reader, input, offset, &packed_size, NULL);
-            offset += 4;
+            yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
+            offset += read;
             
             directories[i].files[j].size = packed_size > 0 ? packed_size : plain_size;
             directories[i].files[j].original_size = packed_size > 0 ? plain_size : 0;
@@ -60,7 +63,7 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
     }
 }
 
-void yc_res_dat_directory_free(yc_res_dat_directory_t* directory) {
+void yc_res_dat_free_directory(yc_res_dat_directory_t* directory) {
     if (NULL == directory)
         return;
     
@@ -72,7 +75,7 @@ void yc_res_dat_directory_free(yc_res_dat_directory_t* directory) {
     if (NULL != directory->files) {
         unsigned int i;
         for (i = 0; i < directory->count; ++i) {
-            yc_res_dat_file_free(&directory->files[i]);
+            yc_res_dat_free_file(&directory->files[i]);
         }
         
         free(directory->files);
@@ -80,7 +83,7 @@ void yc_res_dat_directory_free(yc_res_dat_directory_t* directory) {
     }
 }
 
-void yc_res_dat_file_free(yc_res_dat_file_t* file) {
+void yc_res_dat_free_file(yc_res_dat_file_t* file) {
     if (NULL == file)
         return;
     

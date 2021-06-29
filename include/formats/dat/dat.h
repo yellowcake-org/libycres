@@ -27,9 +27,9 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
                             unsigned long count, yc_res_dat_directory_t* directories);
 
 /// Frees inner memory.
-void yc_res_dat_directory_free(yc_res_dat_directory_t* directory);
+void yc_res_dat_free_directory(yc_res_dat_directory_t* directory);
 
 /// Frees inner memory.
-void yc_res_dat_file_free(yc_res_dat_file_t* file);
+void yc_res_dat_free_file(yc_res_dat_file_t* file);
 
 #endif /* DAT_H */

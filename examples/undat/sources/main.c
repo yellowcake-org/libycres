@@ -23,7 +23,7 @@ int main(__unused int argc, char *argv[]) {
             printf("%s\n", dirs[i].files[j].name);
         }
         
-        yc_res_dat_directory_free(&dirs[i]);
+        yc_res_dat_free_directory(&dirs[i]);
     }
     
     free(dirs);

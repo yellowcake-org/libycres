@@ -96,8 +96,10 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                                                            sizeof(*current->directories));
                         }
                         
-                        if (NULL == current->directories)
+                        if (NULL == current->directories) {
+                            free(path);
                             return;
+                        }
                         
                         new = &current->directories[current->directories_count - 1];
                         new->name = malloc(token_length + 1);

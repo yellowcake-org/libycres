@@ -5,31 +5,31 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned int* count) {
+void yc_res_dat_count(yc_res_platform_reader_t* reader, const void* input, unsigned long* count) {
     if (NULL == reader || NULL == input || NULL == count)
         return; // TODO: Handle error.
     
-    yc_res_dat_private_load_uint(reader, input, 0, count);
+    yc_res_dat_private_load_count(reader, input, 0, count, NULL);
 }
 
 void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
-                            unsigned int count, yc_res_dat_directory_t* directories) {
+                            unsigned long count, yc_res_dat_directory_t* directories) {
     assert(count != 0);
     
     if (NULL == reader || NULL == input || NULL == directories)
         return; // TODO: Handle error.
     
-    unsigned int i;
-    unsigned int offset = 4 * 4;
+    unsigned long i;
+    unsigned long offset = 4 * 4;
     
     for (i = 0; i < count; ++i) {
-        unsigned int read;
+        unsigned long read;
         yc_res_dat_private_load_string(reader, input, offset, &directories[i].name, &read);
         offset += read;
     }
     
     for (i = 0; i < count; ++i) {
-        yc_res_dat_private_load_uint(reader, input, offset, &directories[i].count);
+        yc_res_dat_private_load_count(reader, input, offset, &directories[i].count, NULL);
         offset += 16; // 4 for int + skip next 3 * 4 bytes
         
         directories[i].files = malloc(directories[i].count * sizeof(typeof(*directories[i].files)));
@@ -39,19 +39,19 @@ void yc_res_dat_directories(yc_res_platform_reader_t* reader, const void* input,
         
         unsigned int j;
         for (j = 0; j < directories[i].count; ++j) {
-            unsigned int read;
+            unsigned long read;
             yc_res_dat_private_load_string(reader, input, offset, &directories[i].files[j].name, &read);
             offset += read;
             offset += 4; // skip attributes
             
-            yc_res_dat_private_load_uint(reader, input, offset, &directories[i].files[j].start);
+            yc_res_dat_private_load_count(reader, input, offset, &directories[i].files[j].start, NULL);
             offset += 4;
             
-            unsigned int plain_size, packed_size;
-            yc_res_dat_private_load_uint(reader, input, offset, &plain_size);
+            unsigned long plain_size, packed_size;
+            yc_res_dat_private_load_count(reader, input, offset, &plain_size, NULL);
             offset += 4;
             
-            yc_res_dat_private_load_uint(reader, input, offset, &packed_size);
+            yc_res_dat_private_load_count(reader, input, offset, &packed_size, NULL);
             offset += 4;
             
             directories[i].files[j].size = packed_size > 0 ? packed_size : plain_size;

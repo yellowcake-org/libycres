@@ -9,13 +9,13 @@ void reader(const void* input, unsigned long offset, unsigned long length, unsig
 int main(__unused int argc, char *argv[]) {
     FILE* handle = fopen(argv[1], "rb");
     
-    unsigned int dirs_count = 0;
+    unsigned long dirs_count = 0;
     yc_res_dat_count(&reader, handle, &dirs_count);
     
     yc_res_dat_directory_t *dirs = malloc(dirs_count * sizeof(typeof(*dirs)));
     yc_res_dat_directories(&reader, handle, dirs_count, dirs);
     
-    unsigned int i;
+    unsigned long i;
     for (i = 0; i < dirs_count; ++i) {
         unsigned int j;
         for (j = 0; j < dirs[i].count; ++j) {

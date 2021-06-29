@@ -8,26 +8,25 @@ void file_read(const void* input, unsigned long offset, unsigned long length, un
 // TODO: Handle errors.
 int main(__unused int argc, char *argv[]) {
     FILE* handle = fopen(argv[1], "rb");
-    
-    unsigned long dirs_count = 0;
-    yc_res_dat_count(&file_read, handle, &dirs_count);
-    
-    yc_res_dat_directory_t *dirs = malloc(dirs_count * sizeof(typeof(*dirs)));
-    yc_res_dat_directories(&file_read, handle, dirs_count, dirs);
-    
-    unsigned long i;
-    for (i = 0; i < dirs_count; ++i) {
-        unsigned int j;
-        for (j = 0; j < dirs[i].count; ++j) {
-            printf("%s\\", dirs[i].name);
-            printf("%s\n", dirs[i].files[j].name);
-        }
         
-        yc_res_dat_free_directory(&dirs[i]);
-    }
+    yc_res_dat_directory_t *root;
+    yc_res_dat_tree(&file_read, handle, &root);
     
-    free(dirs);
-    dirs = NULL;
+//    unsigned long i;
+//    for (i = 0; i < dirs_count; ++i) {
+//        unsigned int j;
+//        for (j = 0; j < dirs[i].count; ++j) {
+//            printf("%s\\", dirs[i].name);
+//            printf("%s\n", dirs[i].files[j].name);
+//        }
+//
+//        yc_res_dat_free_directory(&dirs[i]);
+//    }
+    
+    yc_res_dat_free_tree(root);
+    
+    free(root);
+    root = NULL;
     
     fclose(handle);
     handle = NULL;

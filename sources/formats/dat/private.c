@@ -3,23 +3,32 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-void yc_res_dat_private_load_uint(yc_res_platform_reader_t* reader, const void* input,
-                                  unsigned int offset, unsigned int* value) {
+void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, const void* input,
+                                   unsigned long offset, unsigned long* value, unsigned long* read) {
     const length = 4;
     unsigned char slice[length];
     
     reader(input, offset, length, &slice[0]);
-    *value = (slice[0] << 24) + (slice[1] << 16) + (slice[2] << 8) + slice[3];
+    
+    if (NULL != read) {
+        *read = length;
+    }
+    
+    *value = (slice[3] << 0) + (slice[2] << 8) + (slice[1] << 16) + (slice[0] << 24);
 }
 
 void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void* input,
-                                    unsigned int offset, char** value, unsigned int* read) {
+                                    unsigned long offset, char** value, unsigned long* read) {
     unsigned char length = 0;
     
     reader(input, offset, 1, &length);
     offset++;
     
-    *read = length + 1;
+    
+    if (NULL != read) {
+        *read = length + 1;
+    }
+    
     *value = malloc(length + 1);
     
     if (NULL == *value)

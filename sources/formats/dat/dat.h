@@ -3,10 +3,10 @@
 
 #include "platform/platform.h"
 
-void yc_res_dat_private_load_uint(yc_res_platform_reader_t* reader, const void* input,
-                                  unsigned int offset, unsigned int* count);
+void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, const void* input,
+                                   unsigned long offset, unsigned long* value, unsigned long* read);
 
 void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, const void* input,
-                                    unsigned int offset, char** value, unsigned int* read);
+                                    unsigned long offset, char** value, unsigned long* read);
 
 #endif /* DAT_PRIVATE_H */

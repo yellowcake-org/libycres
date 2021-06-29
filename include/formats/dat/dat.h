@@ -17,6 +17,7 @@ struct yc_res_dat_file {
 
 struct yc_res_dat_directory {
     char* name;
+    unsigned char has_content_block;
     
     unsigned long files_count;
     yc_res_dat_file_t *files;

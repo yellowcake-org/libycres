@@ -76,8 +76,6 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
             path[1] = '\\';
         }
         
-        printf("Path: %s\n", path);
-        
         unsigned long token_start = 0;
         unsigned long token_end;
         
@@ -92,22 +90,23 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
                     
                     unsigned int di;
                     for (di = 0; di < current->directories_count; ++di) {
-                        char *current_name = current->directories[di].name;
-                        unsigned int len = min(token_length, strlen(current_name));
+                        unsigned int cmp_count = min(token_length, strlen(current->directories[di].name));
                         
-                        if (0 == memcmp(&path[token_start + 1], current_name, len)) {
+                        if (0 == memcmp(&path[token_start + 1], current->directories[di].name, cmp_count)) {
                             existed = &current->directories[di];
                         }
                     }
                     
                     if (NULL == existed) {
                         // TODO: handle errors.
-                        current->directories =
-                        current->directories_count > 0 ?
-                        realloc(current->directories, sizeof(*current->directories)) :
-                        malloc(sizeof(*current->directories));
-                        
-                        current->directories_count++;
+                        if (0 == current->directories_count || NULL == current->directories) {
+                            current->directories_count = 1;
+                            current->directories = malloc(sizeof(*current->directories));
+                        } else {
+                            current->directories_count++;
+                            current->directories = realloc(current->directories, sizeof(*current->directories) *
+                                                           current->directories_count);
+                        }
                         
                         yc_res_dat_directory_t* new = &current->directories[current->directories_count - 1];
                         new->name = malloc(token_length + 1);
@@ -118,13 +117,12 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
                         }
                         
                         memcpy(new->name, &path[token_start + 1], token_length);
-                        new->name[token_length] = '\0';
+                        (new->name)[token_length] = '\0';
                         
                         new->files_count = 0;
                         new->directories_count = 0;
                         
                         current = new;
-                        printf("new name == %s\n", new->name);
                     } else {
                         current = existed;
                     }
@@ -142,37 +140,37 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
         path = NULL;
     }
     
-//    for (i = 0; i < count; ++i) {
-//        yc_res_dat_private_load_count(reader, input, offset, &list[i].files_count, &read);
-//        offset += read;
-//        offset += 3 * 4; // skip attributes
-//
-//        list[i].files = malloc(list[i].files_count * sizeof(*list[i].files));
-//
-//        if (NULL == list[i].files)
-//            return; // TODO: Handle errors.
-//
-//        unsigned long j;
-//        for (j = 0; j < list[i].files_count; ++j) {
-//            yc_res_dat_private_load_string(reader, input, offset, &list[i].files[j].name, &read);
-//            offset += read;
-//            offset += 4; // skip attributes
-//
-//            yc_res_dat_private_load_count(reader, input, offset, &list[i].files[j].start, &read);
-//            offset += read;
-//
-//            unsigned long plain_size, packed_size;
-//
-//            yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
-//            offset += read;
-//
-//            yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
-//            offset += read;
-//
-//            list[i].files[j].size = packed_size > 0 ? packed_size : plain_size;
-//            list[i].files[j].original_size = packed_size > 0 ? plain_size : 0;
-//        }
-//    }
+    for (i = 0; i < count; ++i) {
+        yc_res_dat_private_load_count(reader, input, offset, &list[i].files_count, &read);
+        offset += read;
+        offset += 3 * 4; // skip attributes
+
+        list[i].files = malloc(list[i].files_count * sizeof(*list[i].files));
+
+        if (NULL == list[i].files)
+            return; // TODO: Handle errors.
+
+        unsigned long j;
+        for (j = 0; j < list[i].files_count; ++j) {
+            yc_res_dat_private_load_string(reader, input, offset, &list[i].files[j].name, &read);
+            offset += read;
+            offset += 4; // skip attributes
+
+            yc_res_dat_private_load_count(reader, input, offset, &list[i].files[j].start, &read);
+            offset += read;
+
+            unsigned long plain_size, packed_size;
+
+            yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
+            offset += read;
+
+            yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
+            offset += read;
+
+            list[i].files[j].size = packed_size > 0 ? packed_size : plain_size;
+            list[i].files[j].original_size = packed_size > 0 ? plain_size : 0;
+        }
+    }
     
     free(list);
     list = NULL;

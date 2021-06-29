@@ -134,6 +134,8 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, const void* input, yc_res
     unsigned long appended = 0;
     yc_res_dat_private_append_marked_dirs(root, flat, &appended);
     
+    assert(appended == count);
+    
     for (i = 0; i < count; ++i) {
         yc_res_dat_directory_t* current = flat[i];
         

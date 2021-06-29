@@ -1,5 +1,5 @@
-#include "formats/dat/dat.h"
-#include "dat.h"
+#include <libycres.h>
+#include <private.h>
 
 #include <assert.h>
 #include <stddef.h>

@@ -1,7 +1,7 @@
 #ifndef DAT_PRIVATE_H
 #define DAT_PRIVATE_H
 
-#include "platform/platform.h"
+#include "../../../include/platform/platform.h"
 
 void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, const void* input,
                                    unsigned long offset, unsigned long* value, unsigned long* read);

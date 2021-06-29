@@ -1,4 +1,4 @@
-#include "dat.h"
+#include <private.h>
 
 #include <stddef.h>
 #include <stdlib.h>

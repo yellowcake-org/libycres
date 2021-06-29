@@ -1,7 +1,7 @@
 #ifndef DAT_H
 #define DAT_H
 
-#include "../../platform/platform.h"
+#include "../../../include/platform/platform.h"
 
 typedef struct {
     char* name;

@@ -1,6 +1,4 @@
 #include <private.h>
-
-#include <stddef.h>
 #include <stdlib.h>
 
 void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, const void* input,

@@ -18,6 +18,7 @@ target_include_directories(ycres PRIVATE
 
 add_executable(undat 
     examples/undat/sources/main.c
+    examples/undat/sources/iterate/iterate.c
 )
 
 target_include_directories(undat PRIVATE 

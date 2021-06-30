@@ -1,6 +1,6 @@
-#ifndef PRIVATE_H
-#define PRIVATE_H
+#ifndef LIBYCRES_PRIVATE_H
+#define LIBYCRES_PRIVATE_H
 
 #include "formats/formats.h"
 
-#endif /* PRIVATE_H */
+#endif /* LIBYCRES_PRIVATE_H */

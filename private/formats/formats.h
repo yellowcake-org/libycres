@@ -1,6 +1,6 @@
-#ifndef FORMATS_PRIVATE_H
-#define FORMATS_PRIVATE_H
+#ifndef LIBYCRES_PRIVATE_FORMATS_H
+#define LIBYCRES_PRIVATE_FORMATS_H
 
 #include "dat/dat.h"
 
-#endif /* FORMATS_PRIVATE_H */
+#endif /* LIBYCRES_PRIVATE_FORMATS_H */

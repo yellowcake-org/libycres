@@ -3,16 +3,16 @@
 
 #include <libycres.h>
 
-void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output);
-void print_directory(yc_res_dat_directory_t* node, unsigned long level);
+void undat_platform_file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output);
+void undat_print_tree(yc_res_dat_directory_t* node, unsigned long level);
 
 int main(__unused int argc, char *argv[]) {
     FILE* handle = fopen(argv[1], "rb");
         
     yc_res_dat_directory_t *root;
-    yc_res_dat_tree(&file_read, handle, &root);
+    yc_res_dat_tree(&undat_platform_file_read, handle, &root);
     
-    print_directory(root, 0);
+    undat_print_tree(root, 0);
     
     yc_res_dat_free_tree(root);
     
@@ -25,14 +25,14 @@ int main(__unused int argc, char *argv[]) {
     return 0;
 }
 
-void file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output) {
+void undat_platform_file_read(void* input, unsigned long offset, unsigned long length, unsigned char* output) {
     FILE* handle = (FILE*)input;
     
     fseeko(handle, offset, SEEK_SET);
     fread(output, sizeof(*output), length, handle);
 }
 
-void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
+void undat_print_tree(yc_res_dat_directory_t* node, unsigned long level) {
     unsigned long l, f, d;
     
     for (l = 0; l < level; ++l) {
@@ -55,6 +55,6 @@ void print_directory(yc_res_dat_directory_t* node, unsigned long level) {
     }
 
     for (d = 0; d < node->directories_count; ++d) {
-        print_directory(&node->directories[d], level + 1);
+        undat_print_tree(&node->directories[d], level + 1);
     }
 }

@@ -6,16 +6,14 @@
 #include <assert.h>
 
 void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t** output) {
-    unsigned long i, j;
+    unsigned long i;
 
     unsigned long read;
     unsigned long offset = 0;
     
     unsigned long count = 0;
+
     yc_res_dat_directory_t* root = NULL;
-    
-    unsigned long appended = 0;
-    yc_res_dat_directory_t** flat = NULL;
     
     if (NULL == reader || NULL == input || NULL == output)
         return;
@@ -135,54 +133,59 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         path = NULL;
     }
     
-    flat = malloc(sizeof(*flat) * count);
-    
-    if (NULL == flat)
-        return;
-    
-    yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
-    
-    assert(appended == count);
-    
-    for (i = 0; i < count; ++i) {
-        yc_res_dat_directory_t* current = flat[i];
+    {
+        unsigned long j;
+        unsigned long appended = 0;
         
-        assert(current->has_content_block == 1);
-
-        yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read);
-        offset += read;
-        offset += 3 * 4;
-
-        current->files = malloc(current->files_count * sizeof(*current->files));
-
-        if (NULL == current->files) {
-            free(flat);
+        yc_res_dat_directory_t** flat = malloc(sizeof(*flat) * count);
+        
+        if (NULL == flat)
             return;
+        
+        yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
+        
+        assert(appended == count);
+        
+        for (i = 0; i < count; ++i) {
+            yc_res_dat_directory_t* current = flat[i];
+            
+            assert(current->has_content_block == 1);
+
+            yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read);
+            offset += read;
+            offset += 3 * 4;
+
+            current->files = malloc(current->files_count * sizeof(*current->files));
+
+            if (NULL == current->files) {
+                free(flat);
+                return;
+            }
+            
+            for (j = 0; j < current->files_count; ++j) {
+                unsigned long plain_size, packed_size;
+                
+                yc_res_dat_private_load_string(reader, input, offset, &current->files[j].name, &read);
+                offset += read;
+                offset += 4;
+
+                yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read);
+                offset += read;
+
+                yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
+                offset += read;
+
+                yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
+                offset += read;
+
+                current->files[j].size = packed_size > 0 ? packed_size : plain_size;
+                current->files[j].original_size = packed_size > 0 ? plain_size : 0;
+            }
         }
         
-        for (j = 0; j < current->files_count; ++j) {
-            unsigned long plain_size, packed_size;
-            
-            yc_res_dat_private_load_string(reader, input, offset, &current->files[j].name, &read);
-            offset += read;
-            offset += 4;
-
-            yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read);
-            offset += read;
-
-            yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
-            offset += read;
-
-            yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
-            offset += read;
-
-            current->files[j].size = packed_size > 0 ? packed_size : plain_size;
-            current->files[j].original_size = packed_size > 0 ? plain_size : 0;
-        }
+        free(flat);
+        flat = NULL;
     }
-    
-    free(flat);
-    flat = NULL;
 }
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {

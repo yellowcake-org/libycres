@@ -23,3 +23,8 @@ void undat_print_node(yc_res_dat_directory_t* node, unsigned long level) {
         printf("%s\n", node->files[f].name);
     }
 }
+
+void undat_print_arg_errors(struct arg_end* end, char* name) {
+    arg_print_errors(stdout, end, name);
+    printf("Try '%s --help' for more information.\n", name);
+}

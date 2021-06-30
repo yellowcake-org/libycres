@@ -37,6 +37,8 @@ int main(__unused int argc, char *argv[]) {
         
         printf("Utility for working with Fallout™ resource archives.\n\n");
         arg_print_glossary(stdout, argtable, "  %-25s %s\n");
+        
+        result = 0;
     } else {
         if (nerrors > 0) {
             undat_print_arg_errors(end, progname);

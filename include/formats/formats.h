@@ -1,6 +1,6 @@
-#ifndef FORMATS_H
-#define FORMATS_H
+#ifndef LIBYCRES_FORMATS_H
+#define LIBYCRES_FORMATS_H
 
 #include "dat/dat.h"
 
-#endif /* FORMATS_H */
+#endif /* LIBYCRES_FORMATS_H */

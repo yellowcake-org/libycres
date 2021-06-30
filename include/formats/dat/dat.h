@@ -1,5 +1,5 @@
-#ifndef DAT_H
-#define DAT_H
+#ifndef LIBYCRES_DAT_H
+#define LIBYCRES_DAT_H
 
 #include "../../../include/platform/platform.h"
 
@@ -31,4 +31,4 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 void yc_res_dat_free_tree(yc_res_dat_directory_t* root);
 void yc_res_dat_free_file(yc_res_dat_file_t* file);
 
-#endif /* DAT_H */
+#endif /* LIBYCRES_DAT_H */

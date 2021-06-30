@@ -76,7 +76,12 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                     
                     unsigned int di;
                     for (di = 0; di < current->directories_count; ++di) {
-                        if (0 == memcmp(&path[token_start + 1], current->directories[di].name, token_length)) {
+                        char *name = current->directories[di].name;
+                        
+                        unsigned long name_length = strlen(name);
+                        unsigned long cmp_length = token_length < name_length ? token_length : name_length;
+                        
+                        if (0 == memcmp(&path[token_start + 1], name, cmp_length)) {
                             existed = &current->directories[di];
                         }
                     }

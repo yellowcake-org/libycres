@@ -1,0 +1,3 @@
+[submodule "dependencies/argtable"]
+	path = dependencies/argtable
+	url = git@github.com:argtable/argtable3.git

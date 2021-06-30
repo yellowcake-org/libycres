@@ -2,6 +2,7 @@
 #define UNDAT_H
 
 #include <libycres.h>
+#include <argtable3.h>
 
 #include "print/print.h"
 #include "iterate/iterate.h"

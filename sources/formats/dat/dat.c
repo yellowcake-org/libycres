@@ -18,6 +18,7 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         return YC_RES_DAT_STATUS_INPUT;
     
     root->name = malloc(sizeof(*root->name) * 2);
+    root->name_length = 1;
 
     if (NULL == root->name) {
         return YC_RES_DAT_STATUS_MALLOC;
@@ -25,10 +26,12 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
     
     root->name[0] = '.';
     root->name[1] = '\0';
-    root->name_length = 1;
     
     root->files_count = 0;
     root->directories_count = 0;
+    
+    root->files = NULL;
+    root->directories = NULL;
     
     switch (yc_res_dat_private_load_count(reader, input, 0, &count, &read)) {
         case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
@@ -118,7 +121,7 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                         }
                         
                         if (NULL == current->directories) {
-                            current->directories_count--;
+                            current->directories_count = 0;
                             free(path);
                             
                             return YC_RES_DAT_STATUS_MALLOC;
@@ -129,6 +132,9 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                         
                         new->files_count = 0;
                         new->directories_count = 0;
+                        
+                        new->files = NULL;
+                        new->directories = NULL;
                         
                         new->name = malloc(token_length + 1);
                         new->name_length = token_length;
@@ -220,6 +226,10 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                 offset += 4;
                 
                 if (0 == current->files[j].name_length) {
+                    if (NULL != current->files[j].name) {
+                        free(current->files[j].name);
+                    }
+                    
                     free(flat);
                     return YC_RES_DAT_STATUS_FORMAT;
                 }
@@ -264,12 +274,12 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
     if (NULL == directory)
         return;
     
-    if (NULL != directory->name && 0 < directory->name_length) {
+    if (NULL != directory->name) {
         free(directory->name);
         directory->name = NULL;
     }
     
-    if (NULL != directory->files && 0 < directory->files_count) {
+    if (NULL != directory->files) {
         unsigned long i;
         for (i = 0; i < directory->files_count; ++i) {
             yc_res_dat_free_file(&directory->files[i]);
@@ -279,7 +289,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
         directory->files = NULL;
     }
     
-    if (NULL != directory->directories && 0 < directory->directories_count) {
+    if (NULL != directory->directories) {
         unsigned long i;
         for (i = 0; i < directory->directories_count; ++i) {
             yc_res_dat_free_tree(&directory->directories[i]);
@@ -294,7 +304,7 @@ void yc_res_dat_free_file(yc_res_dat_file_t* file) {
     if (NULL == file)
         return;
     
-    if (NULL != file->name && 0 < file->name_length){
+    if (NULL != file->name){
         free(file->name);
         file->name = NULL;
     }

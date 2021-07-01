@@ -7,7 +7,10 @@ yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, void* input,unsi
     const length = 4;
     unsigned char slice[4];
     
-    reader(input, offset, length, &slice[0]);
+    switch (reader(input, offset, length, &slice[0])) {
+        case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+        case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: return YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM;
+    }
     
     if (NULL != read)
         *read = length;
@@ -24,7 +27,10 @@ yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, void* input, un
     if (NULL != read)
         *read = 0;
     
-    reader(input, offset, 1, (unsigned char*)&length_buf);
+    switch (reader(input, offset, 1, (unsigned char*)&length_buf)) {
+        case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+        case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: return YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM;
+    }
     offset++;
     
     if (NULL != read)
@@ -38,7 +44,10 @@ yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, void* input, un
     if (NULL == *value)
         return YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC;
     
-    reader(input, offset, length_buf, (unsigned char*)*value);
+    switch (reader(input, offset, length_buf, (unsigned char*)*value)) {
+        case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+        case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: return YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM;
+    }
     (*value)[length_buf] = '\0';
     
     if (NULL != read)

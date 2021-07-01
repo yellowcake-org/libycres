@@ -75,10 +75,14 @@ int main(int argc, char *argv[]) {
                             fprintf(stderr, "Couldn't allocate memory when parsing file.\n");
                             break;
                         }
+                        case YC_RES_DAT_STATUS_READ: {
+                            fprintf(stderr, "File read error occured: %s.\n", strerror(errno));
+                            break;
+                        }
                         case YC_RES_DAT_STATUS_INPUT:
                         case YC_RES_DAT_STATUS_INTERNAL: {
-                            assert(0);
                             fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
+                            assert(0);
                             break;
                         }
                     }

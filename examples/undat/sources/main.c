@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
     int nerrors;
     int result = 1;
         
-    void *(argtable[5]);
-    char progname[] = "undat";
+    void* argtable[5];
+    char appname[] = "undat";
     
     input = arg_filen(NULL, "input", "<file>", 1, 1, "path to archive file");
     list = arg_litn(NULL, "list", 0, 1, "list contents");
@@ -33,16 +33,11 @@ int main(int argc, char *argv[]) {
     nerrors = arg_parse(argc, argv, argtable);
 
     if (help->count > 0) {
-        printf("Usage: %s", progname);
-        arg_print_syntaxv(stdout, argtable, "\n");
-        
-        printf("Utility for working with Fallout™ resource archives.\n\n");
-        arg_print_glossary(stdout, argtable, "  %-25s %s\n");
-        
+        undat_print_arg_help(argtable, appname);
         result = 0;
     } else {
         if (nerrors > 0) {
-            undat_print_arg_errors(end, progname);
+            undat_print_arg_errors(end, appname);
         } else {
             yc_res_dat_directory_t *root = malloc(sizeof(*root));
             
@@ -70,7 +65,7 @@ int main(int argc, char *argv[]) {
                                 undat_iterate_tree(root, 0, &undat_print_node);
                                 result = 0;
                             } else {
-                                undat_print_arg_errors(end, progname);
+                                undat_print_arg_errors(end, appname);
                             }
                         }
                         

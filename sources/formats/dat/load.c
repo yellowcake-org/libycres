@@ -16,28 +16,28 @@ void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, void* input
 
 void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, void* input, unsigned long offset,
                                     char** value, unsigned long *length, unsigned long* read) {
-    if (NULL == length)
-        return;
-        
-    *length = 0;
+    unsigned long length_buf = 0;
     
     if (NULL != read)
         *read = 0;
     
-    reader(input, offset, 1, (unsigned char*)length);
+    reader(input, offset, 1, (unsigned char*)&length_buf);
     offset++;
     
     if (NULL != read)
         (*read)++;
     
-    *value = malloc(*length + 1);
+    *value = malloc(length_buf + 1);
     
     if (NULL == *value)
         return;
     
-    reader(input, offset, *length, (unsigned char*)*value);
-    (*value)[*length] = '\0';
+    reader(input, offset, length_buf, (unsigned char*)*value);
+    (*value)[length_buf] = '\0';
     
     if (NULL != read)
-        *read += *length;
+        *read += length_buf;
+    
+    if (NULL != length)
+        *length = length_buf;
 }

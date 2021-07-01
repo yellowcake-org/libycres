@@ -51,9 +51,9 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         yc_res_dat_directory_t* current = root;
         unsigned long level = 0;
         
-        yc_res_dat_private_load_string(reader, input, offset, &path, &read);
+        yc_res_dat_private_load_string(reader, input, offset, &path, &path_size, &read);
         offset += read;
-        path_size += read;
+        path_size++;
         
         if (1 > path_size || path[0] != '.') {
             path = realloc(path, path_size + 2);
@@ -78,7 +78,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                     for (di = 0; di < current->directories_count; ++di) {
                         char *name = current->directories[di].name;
                         
-                        unsigned long name_length = strlen(name);
+                        unsigned long name_length = current->directories[di].name_length;
                         unsigned long cmp_length = token_length < name_length ? token_length : name_length;
                         
                         if (0 == memcmp(&path[token_start + 1], name, cmp_length)) {
@@ -105,7 +105,9 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                         }
                         
                         new = &current->directories[current->directories_count - 1];
+                        
                         new->name = malloc(token_length + 1);
+                        new->name_length = token_length;
 
                         if (NULL == new->name) {
                             free(path); free(root);
@@ -118,7 +120,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                         new->files_count = 0;
                         new->directories_count = 0;
                         
-                        new->has_content_block = 0;
+                        new->_marked = 0;
                         
                         current = new;
                     } else {
@@ -132,7 +134,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
             }
         }
         
-        current->has_content_block = 1;
+        current->_marked = 1;
         
         free(path);
         path = NULL;
@@ -148,13 +150,11 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
             return;
         
         yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
-        
         assert(appended == count);
         
         for (i = 0; i < count; ++i) {
             yc_res_dat_directory_t* current = flat[i];
-            
-            assert(current->has_content_block == 1);
+            assert(current->_marked == 1);
 
             yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read);
             offset += read;
@@ -170,7 +170,8 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
             for (j = 0; j < current->files_count; ++j) {
                 unsigned long plain_size, packed_size;
                 
-                yc_res_dat_private_load_string(reader, input, offset, &current->files[j].name, &read);
+                yc_res_dat_private_load_string(reader, input, offset,
+                                               &current->files[j].name, &current->files[j].name_length, &read);
                 offset += read;
                 offset += 4;
 

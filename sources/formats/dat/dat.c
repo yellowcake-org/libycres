@@ -108,10 +108,16 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                             current->directories_count = 1;
                             current->directories = malloc(sizeof(*current->directories));
                         } else {
+                            yc_res_dat_directory_t* grown_list = NULL;
+                            
                             current->directories_count++;
-                            current->directories = realloc(current->directories,
-                                                           current->directories_count *
-                                                           sizeof(*current->directories));
+                            grown_list = realloc(current->directories,
+                                                 current->directories_count * sizeof(*current->directories));
+                            
+                            if (NULL == grown_list)
+                                return;
+                            
+                            current->directories = grown_list;
                         }
                         
                         if (NULL == current->directories) {

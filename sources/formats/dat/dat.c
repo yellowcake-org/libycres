@@ -59,31 +59,31 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         path_size++;
         
         if (2 > path_size || (2 == path_size && (path[0] != '.')) || (2 < path_size && (path[0] != '.' && path[1] != '\\'))) {
-            char *new_path;
-            assert(path_size > 1);
-            
             if (path_size < 1)
-                path_size = 1;
+                return;
             
             path_size += 2;
-            new_path = malloc(path_size);
             
-            if (NULL == new_path) {
+            {
+                char *new_path = malloc(path_size);
+                
+                if (NULL == new_path) {
+                    free(path);
+                    return;
+                }
+                
+                memcpy(&new_path[2], path, path_size - 2);
+                
                 free(path);
-                return;
+                path = new_path;
             }
-            
-            memcpy(&new_path[2], path, path_size - 2);
-            
-            free(path);
-            path = new_path;
             
             path[0] = '.';
             path[1] = '\\';
             path[path_size - 1] = '\0';
         }
         
-        for (token_end = 0; token_end < path_size; ++token_end) {
+        for (token_end = 0; token_end < path_size - 1; ++token_end) {
             if (path[token_end + 1] == '\\' || path[token_end + 1] == '\0') {
                 if (0 < level) {
                     yc_res_dat_directory_t* existed = NULL;

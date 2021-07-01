@@ -44,45 +44,41 @@ int main(int argc, char *argv[]) {
         if (nerrors > 0) {
             undat_print_arg_errors(end, progname);
         } else {
-            FILE* file = fopen(input->filename[0], "rb");
+            yc_res_dat_directory_t *root = malloc(sizeof(*root));
             
-            assert(NULL != file);
-            if (NULL == file) {
-                fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
+            assert(NULL != root);
+            if (NULL == root) {
+                fprintf(stderr, "Couldn't allocate memory for content tree.\n");
             } else {
-                int close_erred = 0;
-
-                yc_res_dat_directory_t *root = malloc(sizeof(*root));
+                FILE* file = fopen(input->filename[0], "rb");
                 
-                assert(NULL != root);
-                if (NULL != root) {
+                assert(NULL != file);
+                if (NULL == file) {
+                    fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
+                } else {
                     yc_res_dat_tree(&undat_platform_file_reader, file, root);
-                } else {
-                    fprintf(stderr, "Couldn't allocate memory for content tree.\n");
+                    
+                    {
+                        int close_erred = fclose(file);
+                        file = NULL;
+                        
+                        if (close_erred) {
+                            fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
+                        } else {
+                            if (list->count > 0) {
+                                undat_iterate_tree(root, 0, &undat_print_node);
+                                result = 0;
+                            } else {
+                                undat_print_arg_errors(end, progname);
+                            }
+                        }
+                        
+                        yc_res_dat_free_tree(root);
+                        
+                        free(root);
+                        root = NULL;
+                    }
                 }
-                
-                close_erred = fclose(file);
-                file = NULL;
-                
-                if (close_erred)
-                    fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
-                
-                if (NULL == root) {
-                    arg_freetable(argtable, sizeof(argtable) / sizeof(argtable[0]));
-                    return result;
-                }
-                
-                if (list->count > 0) {
-                    undat_iterate_tree(root, 0, &undat_print_node);
-                    result = 0;
-                } else {
-                    undat_print_arg_errors(end, progname);
-                }
-                
-                yc_res_dat_free_tree(root);
-                
-                free(root);
-                root = NULL;
             }
         }
     }

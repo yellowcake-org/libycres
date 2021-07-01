@@ -5,7 +5,8 @@
 #include <memory.h>
 #include <assert.h>
 
-void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root) {
+yc_res_dat_tree_status_t
+yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root) {
     unsigned long i;
 
     unsigned long read;
@@ -14,7 +15,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
     unsigned long count = 0;
     
     if (NULL == reader || NULL == input || NULL == root)
-        return;
+        return YC_RES_DAT_STATUS_INPUT;
     
     yc_res_dat_private_load_count(reader, input, 0, &count, &read);
     offset += read;
@@ -23,7 +24,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
     root->name = malloc(sizeof(*root->name) * 2);
 
     if (NULL == root->name) {
-        return;
+        return YC_RES_DAT_STATUS_MALLOC;
     }
 
     root->name[0] = '.';
@@ -50,7 +51,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         if (2 > path_size || (2 == path_size && (path[0] != '.')) || (2 < path_size && (path[0] != '.' && path[1] != '\\'))) {
             if (path_size < 1) {
                 free(path);
-                return;
+                return YC_RES_DAT_STATUS_FORMAT;
             }
             
             path_size += 2;
@@ -60,7 +61,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                 
                 if (NULL == new_path) {
                     free(path);
-                    return;
+                    return YC_RES_DAT_STATUS_MALLOC;
                 }
                 
                 memcpy(&new_path[2], path, path_size - 2);
@@ -99,21 +100,14 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                             current->directories_count = 1;
                             current->directories = malloc(sizeof(*current->directories));
                         } else {
-                            yc_res_dat_directory_t* grown_list = NULL;
-                            
                             current->directories_count++;
-                            grown_list = realloc(current->directories,
-                                                 current->directories_count * sizeof(*current->directories));
-                            
-                            if (NULL == grown_list)
-                                return;
-                            
-                            current->directories = grown_list;
+                            current->directories = realloc(current->directories,
+                                                           current->directories_count * sizeof(*current->directories));;
                         }
                         
                         if (NULL == current->directories) {
                             free(path);
-                            return;
+                            return YC_RES_DAT_STATUS_MALLOC;
                         }
                         
                         new = &current->directories[current->directories_count - 1];
@@ -123,7 +117,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
                         if (NULL == new->name) {
                             free(path);
-                            return;
+                            return YC_RES_DAT_STATUS_MALLOC;
                         }
                         
                         memcpy(new->name, &path[token_start + 1], token_length);
@@ -159,14 +153,24 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         yc_res_dat_directory_t** flat = malloc(sizeof(*flat) * count);
         
         if (NULL == flat)
-            return;
+            return YC_RES_DAT_STATUS_MALLOC;
         
         yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
         assert(appended == count);
         
+        if (appended != count) {
+            free(flat);
+            return YC_RES_DAT_STATUS_INTERNAL;
+        }
+        
         for (i = 0; i < count; ++i) {
             yc_res_dat_directory_t* current = flat[i];
-            assert(current->_marked == 1);
+            assert(0 != current->_marked );
+            
+            if (0 == current->_marked) {
+                free(flat);
+                return YC_RES_DAT_STATUS_INTERNAL;
+            }
 
             yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read);
             offset += read;
@@ -176,7 +180,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
             if (NULL == current->files) {
                 free(flat);
-                return;
+                return YC_RES_DAT_STATUS_MALLOC;
             }
             
             for (j = 0; j < current->files_count; ++j) {
@@ -204,6 +208,8 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         free(flat);
         flat = NULL;
     }
+    
+    return YC_RES_DAT_STATUS_OK;
 }
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {

@@ -29,7 +29,16 @@ struct yc_res_dat_directory {
     unsigned char _marked;
 };
 
-void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root);
+typedef enum {
+    YC_RES_DAT_STATUS_OK = 0,
+    YC_RES_DAT_STATUS_INPUT,   /* Input parameters are incorrect */
+    YC_RES_DAT_STATUS_FORMAT,  /* File has incorrect format structure (corrupted) */
+    YC_RES_DAT_STATUS_MALLOC,  /* Couldn't allocate memory */
+    YC_RES_DAT_STATUS_INTERNAL /* Internal inconsistency, please, make a bug report */
+} yc_res_dat_tree_status_t;
+
+yc_res_dat_tree_status_t
+yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root);
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* root);
 void yc_res_dat_free_file(yc_res_dat_file_t* file);

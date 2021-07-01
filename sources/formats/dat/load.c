@@ -2,7 +2,8 @@
 #include <stdlib.h>
 
 yc_res_dat_private_load_status_t
-yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, void* input,unsigned long offset, unsigned long* value, unsigned long* read) {
+yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, void* input,unsigned long offset,
+                              unsigned long* value, unsigned long* read) {
     const length = 4;
     unsigned char slice[4];
     

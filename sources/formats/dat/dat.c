@@ -118,27 +118,30 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                         }
                         
                         if (NULL == current->directories) {
+                            current->directories_count--;
                             free(path);
+                            
                             return YC_RES_DAT_STATUS_MALLOC;
                         }
                         
                         new = &current->directories[current->directories_count - 1];
+                        new->_marked = 0;
+                        
+                        new->files_count = 0;
+                        new->directories_count = 0;
                         
                         new->name = malloc(token_length + 1);
                         new->name_length = token_length;
 
                         if (NULL == new->name) {
+                            new->name_length = 0;
                             free(path);
+                            
                             return YC_RES_DAT_STATUS_MALLOC;
                         }
                         
                         memcpy(new->name, &path[token_start + 1], token_length);
                         (new->name)[token_length] = '\0';
-                        
-                        new->files_count = 0;
-                        new->directories_count = 0;
-                        
-                        new->_marked = 0;
                         
                         current = new;
                     } else {
@@ -197,7 +200,9 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
             current->files = malloc(current->files_count * sizeof(*current->files));
 
             if (NULL == current->files) {
+                current->files_count = 0;
                 free(flat);
+                
                 return YC_RES_DAT_STATUS_MALLOC;
             }
             
@@ -259,7 +264,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
     if (NULL == directory)
         return;
     
-    if (NULL != directory->name) {
+    if (NULL != directory->name && 0 < directory->name_length) {
         free(directory->name);
         directory->name = NULL;
     }
@@ -289,7 +294,7 @@ void yc_res_dat_free_file(yc_res_dat_file_t* file) {
     if (NULL == file)
         return;
     
-    if (NULL != file->name){
+    if (NULL != file->name && 0 < file->name_length){
         free(file->name);
         file->name = NULL;
     }

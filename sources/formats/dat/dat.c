@@ -59,49 +59,29 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         path_size++;
         
         if (2 > path_size || (2 == path_size && (path[0] != '.')) || (2 < path_size && (path[0] != '.' && path[1] != '\\'))) {
-            char *path_tmp;
+            char *new_path;
+            
             assert(path_size > 1);
             
-            if (path_size < 1) {
+            if (path_size < 1)
                 path_size = 1;
-                
-                if (NULL == path) {
-                    path = malloc(path_size);
-                } else {
-                    char *path_tmp;
-                    path_tmp = realloc(path, path_size);
-                    
-                    if (NULL == path_tmp) {
-                        free(path);
-                        return;
-                    } else {
-                        path = path_tmp;
-                    }
-                }
-                
-                if (NULL == path)
-                    return;
-                
-                path[0] = '\0';
-            }
             
-            path_tmp = realloc(path, path_size + 2);
+            new_path = malloc(path_size + 2);
             
-            if (NULL == path_tmp) {
+            if (NULL == new_path) {
                 free(path);
                 return;
-            } else {
-                path = path_tmp;
             }
             
-            if (NULL == path)
-                return;
+            memcpy(&new_path[2], path, path_size);
+            free(path);
             
-            memmove(path + 2, path, path_size);
+            path = new_path;
             path_size += 2;
             
             path[0] = '.';
             path[1] = '\\';
+            path[path_size - 1] = '\0';
         }
         
         for (token_end = 0; token_end < path_size; ++token_end) {

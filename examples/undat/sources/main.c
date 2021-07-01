@@ -6,7 +6,7 @@
 #include <string.h>
 #include <errno.h>
 
-int main(__unused int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     struct arg_lit *help, *version, *list;
     struct arg_file *input;
     struct arg_end *end;
@@ -29,7 +29,7 @@ int main(__unused int argc, char *argv[]) {
     argtable[3] = version;
     argtable[4] = end;
     
-    nerrors = arg_parse(argc,argv,argtable);
+    nerrors = arg_parse(argc, argv, argtable);
 
     if (help->count > 0) {
         printf("Usage: %s", progname);

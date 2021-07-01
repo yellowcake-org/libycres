@@ -5,8 +5,6 @@
 #include <memory.h>
 #include <assert.h>
 
-#include <stdio.h>
-
 void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root) {
     unsigned long i;
 

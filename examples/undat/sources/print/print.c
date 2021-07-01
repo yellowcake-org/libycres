@@ -35,3 +35,7 @@ void undat_print_arg_help(void* argtable, const char* appname) {
     printf("Utility for working with Fallout™ resource archives.\n\n");
     arg_print_glossary(stdout, argtable, "  %-25s %s\n");
 }
+
+void undat_print_version(const char* appname) {
+    printf("%s v0.3.0\n", appname);
+}

@@ -37,6 +37,9 @@ int main(int argc, char *argv[]) {
     if (help->count > 0) {
         undat_print_arg_help(argtable, appname);
         result = 0;
+    } else if (version->count > 0) {
+        undat_print_version(appname);
+        result = 0;
     } else {
         if (nerrors > 0) {
             undat_print_arg_errors(end, appname);

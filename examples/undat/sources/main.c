@@ -50,11 +50,27 @@ int main(int argc, char *argv[]) {
             if (NULL == file) {
                 fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
             } else {
-                yc_res_dat_directory_t *root;
-                yc_res_dat_tree(&undat_platform_file_reader, file, &root);
+                int close_erred = 0;
+
+                yc_res_dat_directory_t *root = malloc(sizeof(*root));
                 
-                fclose(file);
+                assert(NULL != root);
+                if (NULL != root) {
+                    yc_res_dat_tree(&undat_platform_file_reader, file, root);
+                } else {
+                    fprintf(stderr, "Couldn't allocate memory for content tree.\n");
+                }
+                
+                close_erred = fclose(file);
                 file = NULL;
+                
+                if (close_erred)
+                    fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
+                
+                if (NULL == root) {
+                    arg_freetable(argtable, sizeof(argtable) / sizeof(argtable[0]));
+                    return result;
+                }
                 
                 if (list->count > 0) {
                     undat_iterate_tree(root, 0, &undat_print_node);

@@ -29,7 +29,7 @@ struct yc_res_dat_directory {
     unsigned char _marked;
 };
 
-void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t** root);
+void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root);
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* root);
 void yc_res_dat_free_file(yc_res_dat_file_t* file);

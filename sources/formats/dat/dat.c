@@ -7,36 +7,26 @@
 
 #include <stdio.h>
 
-void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t** output) {
+void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_directory_t* root) {
     unsigned long i;
 
     unsigned long read;
     unsigned long offset = 0;
     
     unsigned long count = 0;
-
-    yc_res_dat_directory_t* root = NULL;
     
-    assert(NULL != reader && NULL != input && NULL != output);
-    if (NULL == reader || NULL == input || NULL == output)
+    assert(NULL != reader && NULL != input && NULL != root);
+    if (NULL == reader || NULL == input || NULL == root)
         return;
     
     yc_res_dat_private_load_count(reader, input, 0, &count, &read);
     offset += read;
     offset += 3 * 4;
-    
-    *output = malloc(sizeof(**output));
-    root = *output;
-    
-    assert(NULL != output);
-    if (NULL == *output)
-        return;
-    
+        
     root->name = malloc(sizeof(*root->name) * 2);
 
     assert(NULL != root->name);
     if (NULL == root->name) {
-        free(root);
         return;
     }
 
@@ -138,7 +128,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
                         assert(NULL != new->name);
                         if (NULL == new->name) {
-                            free(path); free(root);
+                            free(path);
                             return;
                         }
                         

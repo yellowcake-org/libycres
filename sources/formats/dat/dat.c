@@ -17,7 +17,12 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
     if (NULL == reader || NULL == input || NULL == root)
         return YC_RES_DAT_STATUS_INPUT;
     
-    yc_res_dat_private_load_count(reader, input, 0, &count, &read);
+    switch (yc_res_dat_private_load_count(reader, input, 0, &count, &read)) {
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_STATUS_MALLOC;
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_STATUS_FORMAT;
+    }
+    
     offset += read;
     offset += 3 * 4;
         
@@ -41,10 +46,15 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         unsigned long token_start = 0;
         unsigned long token_end;
         
-        yc_res_dat_directory_t* current = root;
         unsigned long level = 0;
+        yc_res_dat_directory_t* current = root;
         
-        yc_res_dat_private_load_string(reader, input, offset, &path, &path_size, &read);
+        switch (yc_res_dat_private_load_string(reader, input, offset, &path, &path_size, &read)) {
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_STATUS_MALLOC;
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_STATUS_FORMAT;
+        }
+        
         offset += read;
         path_size++;
         
@@ -172,7 +182,12 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                 return YC_RES_DAT_STATUS_INTERNAL;
             }
 
-            yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read);
+            switch (yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read)) {
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+            }
+            
             offset += read;
             offset += 3 * 4;
 
@@ -186,18 +201,34 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
             for (j = 0; j < current->files_count; ++j) {
                 unsigned long plain_size, packed_size;
                 
-                yc_res_dat_private_load_string(reader, input, offset,
-                                               &current->files[j].name, &current->files[j].name_length, &read);
+                switch (yc_res_dat_private_load_string(reader, input, offset,
+                                                       &current->files[j].name, &current->files[j].name_length, &read)) {
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                }
                 offset += read;
                 offset += 4;
 
-                yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read);
+                switch (yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read)) {
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                }
                 offset += read;
 
-                yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read);
+                switch (yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read)) {
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                }
                 offset += read;
 
-                yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read);
+                switch (yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read)) {
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                }
                 offset += read;
 
                 current->files[j].size = packed_size > 0 ? packed_size : plain_size;

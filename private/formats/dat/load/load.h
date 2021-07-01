@@ -5,8 +5,8 @@
 
 typedef enum {
     YC_RES_DAT_PRIVATE_LOAD_STATUS_OK = 0,
-    YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED,
-    YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC
+    YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC,
+    YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED
 } yc_res_dat_private_load_status_t;
 
 yc_res_dat_private_load_status_t

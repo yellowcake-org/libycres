@@ -72,6 +72,7 @@ int main(int argc, char *argv[]) {
                                 }
                             }
                             
+                            yc_res_dat_free_tree(root);
                             break;
                         }
                         case YC_RES_DAT_STATUS_FORMAT: {
@@ -94,8 +95,6 @@ int main(int argc, char *argv[]) {
                         }
                     }
                 }
-                
-                yc_res_dat_free_tree(root);
                 
                 free(root);
                 root = NULL;

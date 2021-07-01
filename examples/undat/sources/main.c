@@ -50,24 +50,23 @@ int main(int argc, char *argv[]) {
             if (NULL == file) {
                 printf("Couldn't open file: %s.\n", strerror(errno));
             } else {
+                yc_res_dat_directory_t *root;
+                yc_res_dat_tree(&undat_platform_file_reader, file, &root);
+                
+                fclose(file);
+                file = NULL;
+                
                 if (list->count > 0) {
-                    yc_res_dat_directory_t *root;
-                    yc_res_dat_tree(&undat_platform_file_reader, file, &root);
-                    
                     undat_iterate_tree(root, 0, &undat_print_node);
-                    
-                    yc_res_dat_free_tree(root);
-                    
-                    free(root);
-                    root = NULL;
-                    
                     result = 0;
                 } else {
                     undat_print_arg_errors(end, progname);
                 }
                 
-                fclose(file);
-                file = NULL;
+                yc_res_dat_free_tree(root);
+                
+                free(root);
+                root = NULL;
             }
         }
     }

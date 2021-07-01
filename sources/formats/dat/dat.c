@@ -175,7 +175,7 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         
         for (i = 0; i < count; ++i) {
             yc_res_dat_directory_t* current = flat[i];
-            assert(0 != current->_marked );
+            assert(0 != current->_marked);
             
             if (0 == current->_marked) {
                 free(flat);

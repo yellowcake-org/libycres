@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <assert.h>
 
 int main(int argc, char *argv[]) {
     struct arg_lit *help, *version, *list;
@@ -48,21 +49,37 @@ int main(int argc, char *argv[]) {
                 if (NULL == file) {
                     fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
                 } else {
-                    yc_res_dat_tree(&undat_platform_file_reader, file, root);
-                    
-                    {
-                        int close_erred = fclose(file);
-                        file = NULL;
-                        
-                        if (0 != close_erred) {
-                            fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
-                        } else {
-                            if (list->count > 0) {
-                                undat_iterate_tree(root, 0, &undat_print_node);
-                                result = 0;
+                    switch (yc_res_dat_tree(&undat_platform_file_reader, file, root)) {
+                        case YC_RES_DAT_STATUS_OK: {
+                            int fresult = fclose(file);
+                            file = NULL;
+                            
+                            if (0 != fresult) {
+                                fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                             } else {
-                                undat_print_arg_errors(end, appname);
+                                if (list->count > 0) {
+                                    undat_iterate_tree(root, 0, &undat_print_node);
+                                    result = 0;
+                                } else {
+                                    undat_print_arg_errors(end, appname);
+                                }
                             }
+                            
+                            break;
+                        }
+                        case YC_RES_DAT_STATUS_FORMAT: {
+                            fprintf(stderr, "Provided file is corrupted or is not a Fallout™ .dat archive.\n");
+                            break;
+                        }
+                        case YC_RES_DAT_STATUS_MALLOC: {
+                            fprintf(stderr, "Couldn't allocate memory when parsing file.\n");
+                            break;
+                        }
+                        case YC_RES_DAT_STATUS_INPUT:
+                        case YC_RES_DAT_STATUS_INTERNAL: {
+                            assert(0);
+                            fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
+                            break;
                         }
                     }
                 }

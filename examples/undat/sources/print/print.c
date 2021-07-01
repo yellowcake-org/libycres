@@ -2,22 +2,21 @@
 #include <stdio.h>
 
 void undat_print_node(yc_res_dat_directory_t* node, unsigned long level) {
-    unsigned long l, f;
+    const edge_length = 4;
+    unsigned long f;
     
-    for (l = 0; l < level; ++l) {
-        if (1 == level - l) {
-            printf("\\---");
-        } else {
-            printf("    ");
-        }
+    if (level > 1) {
+        printf("%*s", edge_length * ((int)level - 1), "");
+    }
+    
+    if (level > 0) {
+        printf("\\---");
     }
     
     printf("%s\n", node->name);
     
     for (f = 0; f < node->files_count; ++f) {
-        for (l = 0; l < level; ++l) {
-            printf("    ");
-        }
+        printf("%*s", edge_length * (int)level, "");
 
         printf("\\---");
         printf("%s\n", node->files[f].name);

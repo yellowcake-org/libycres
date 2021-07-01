@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
                         file = NULL;
                         
                         assert(0 == close_erred);
-                        if (close_erred) {
+                        if (0 != close_erred) {
                             fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                         } else {
                             if (list->count > 0) {

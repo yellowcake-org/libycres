@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
             
             assert(NULL != file);
             if (NULL == file) {
-                printf("Couldn't open file: %s.\n", strerror(errno));
+                fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
             } else {
                 yc_res_dat_directory_t *root;
                 yc_res_dat_tree(&undat_platform_file_reader, file, &root);

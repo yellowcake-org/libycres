@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
                                 fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                             } else {
                                 if (list->count > 0) {
-                                    char* accum;
+                                    char* accum = NULL;
                                     undat_iterate_tree(root, (void**)&accum, 0, &undat_print_node_path);
                                     
                                     if (NULL != accum)

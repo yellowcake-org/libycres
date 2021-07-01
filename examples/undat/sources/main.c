@@ -9,26 +9,28 @@
 
 int main(int argc, char *argv[]) {
     struct arg_lit *help, *version, *list;
-    struct arg_file *input;
+    struct arg_file *input, *output;
     struct arg_end *end;
     
     int nerrors;
     int result = 1;
         
-    void* argtable[5];
+    void* argtable[6];
     char appname[] = "undat";
     
     input = arg_filen(NULL, "input", "<file>", 1, 1, "path to archive file");
-    list = arg_litn(NULL, "list", 0, 1, "list contents");
+    output = arg_filen(NULL, "extract", "<directory>", 0, 1, "extract to output directory");
+    list = arg_litn(NULL, "list", 0, 1, "list archive contents");
     help = arg_litn(NULL, "help", 0, 1, "display this help and exit");
     version = arg_litn(NULL, "version", 0, 1, "display version info and exit");
     end = arg_end(2);
     
     argtable[0] = input;
-    argtable[1] = list;
-    argtable[2] = help;
-    argtable[3] = version;
-    argtable[4] = end;
+    argtable[1] = output;
+    argtable[2] = list;
+    argtable[3] = help;
+    argtable[4] = version;
+    argtable[5] = end;
     
     nerrors = arg_parse(argc, argv, argtable);
 
@@ -60,6 +62,8 @@ int main(int argc, char *argv[]) {
                                 if (list->count > 0) {
                                     undat_iterate_tree(root, 0, &undat_print_node);
                                     result = 0;
+                                } else if (output->count > 0) {
+                                    /* */
                                 } else {
                                     undat_print_arg_errors(end, appname);
                                 }

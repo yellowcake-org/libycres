@@ -23,7 +23,15 @@ void undat_print_node(yc_res_dat_directory_t* node, unsigned long level) {
     }
 }
 
-void undat_print_arg_errors(struct arg_end* end, char* name) {
-    arg_print_errors(stdout, end, name);
-    printf("Try '%s --help' for more information.\n", name);
+void undat_print_arg_errors(struct arg_end* end, const char* appname) {
+    arg_print_errors(stdout, end, appname);
+    fprintf(stderr, "Try '%s --help' for more information.\n", appname);
+}
+
+void undat_print_arg_help(void* argtable, const char* appname) {
+    printf("Usage: %s", appname);
+    arg_print_syntaxv(stdout, argtable, "\n");
+    
+    printf("Utility for working with Fallout™ resource archives.\n\n");
+    arg_print_glossary(stdout, argtable, "  %-25s %s\n");
 }

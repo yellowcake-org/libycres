@@ -64,8 +64,11 @@ int main(int argc, char *argv[]) {
                             } else {
                                 if (list->count > 0) {
                                     char* accum;
-                                    /*undat_iterate_tree(root, (void**)&accum, 0, &undat_print_node);*/
                                     undat_iterate_tree(root, (void**)&accum, 0, &undat_print_node_path);
+                                    
+                                    if (NULL != accum)
+                                        free(accum);
+                                    
                                     result = 0;
                                 } else if (output->count > 0) {
                                     /* */

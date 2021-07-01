@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <assert.h>
 
 int main(int argc, char *argv[]) {
     struct arg_lit *help, *version, *list;
@@ -45,6 +46,7 @@ int main(int argc, char *argv[]) {
         } else {
             FILE* file = fopen(input->filename[0], "rb");
             
+            assert(NULL != file);
             if (NULL == file) {
                 printf("Couldn't open file: %s.\n", strerror(errno));
             } else {

@@ -17,6 +17,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
     yc_res_dat_directory_t* root = NULL;
     
+    assert(NULL != reader && NULL != input && NULL != output);
     if (NULL == reader || NULL == input || NULL == output)
         return;
     
@@ -27,11 +28,13 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
     *output = malloc(sizeof(**output));
     root = *output;
     
+    assert(NULL != output);
     if (NULL == *output)
         return;
     
     root->name = malloc(sizeof(*root->name) * 2);
 
+    assert(NULL != root->name);
     if (NULL == root->name) {
         free(root);
         return;
@@ -67,6 +70,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
             {
                 char *new_path = malloc(path_size);
                 
+                assert(NULL != new_path);
                 if (NULL == new_path) {
                     free(path);
                     return;
@@ -114,12 +118,14 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                             grown_list = realloc(current->directories,
                                                  current->directories_count * sizeof(*current->directories));
                             
+                            assert(NULL != grown_list);
                             if (NULL == grown_list)
                                 return;
                             
                             current->directories = grown_list;
                         }
                         
+                        assert(NULL != current->directories);
                         if (NULL == current->directories) {
                             free(path);
                             return;
@@ -130,6 +136,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
                         new->name = malloc(token_length + 1);
                         new->name_length = token_length;
 
+                        assert(NULL != new->name);
                         if (NULL == new->name) {
                             free(path); free(root);
                             return;
@@ -167,6 +174,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         
         yc_res_dat_directory_t** flat = malloc(sizeof(*flat) * count);
         
+        assert(NULL != flat);
         if (NULL == flat)
             return;
         
@@ -183,6 +191,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
             current->files = malloc(current->files_count * sizeof(*current->files));
 
+            assert(NULL != current->files);
             if (NULL == current->files) {
                 free(flat);
                 return;
@@ -216,9 +225,11 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 }
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
+    assert(NULL != directory);
     if (NULL == directory)
         return;
     
+    assert(NULL != directory->name);
     if (NULL != directory->name) {
         free(directory->name);
         directory->name = NULL;
@@ -246,9 +257,11 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
 }
 
 void yc_res_dat_free_file(yc_res_dat_file_t* file) {
+    assert(NULL != file);
     if (NULL == file)
         return;
     
+    assert(NULL != file->name);
     if (NULL != file->name){
         free(file->name);
         file->name = NULL;

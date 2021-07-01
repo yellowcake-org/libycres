@@ -48,8 +48,10 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
         path_size++;
         
         if (2 > path_size || (2 == path_size && (path[0] != '.')) || (2 < path_size && (path[0] != '.' && path[1] != '\\'))) {
-            if (path_size < 1)
+            if (path_size < 1) {
+                free(path);
                 return;
+            }
             
             path_size += 2;
             

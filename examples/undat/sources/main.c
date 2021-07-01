@@ -64,13 +64,13 @@ int main(int argc, char *argv[]) {
                                 undat_print_arg_errors(end, appname);
                             }
                         }
-                        
-                        yc_res_dat_free_tree(root);
-                        
-                        free(root);
-                        root = NULL;
                     }
                 }
+                
+                yc_res_dat_free_tree(root);
+                
+                free(root);
+                root = NULL;
             }
         }
     }

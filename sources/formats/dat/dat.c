@@ -39,6 +39,7 @@ void yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_d
 
     root->name[0] = '.';
     root->name[1] = '\0';
+    root->name_length = 1;
     
     root->files_count = 0;
     root->directories_count = 0;

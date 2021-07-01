@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
                         }
                         case YC_RES_DAT_STATUS_INPUT:
                         case YC_RES_DAT_STATUS_INTERNAL: {
-                            assert(0);
                             fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
+                            assert(0);
                             break;
                         }
                     }

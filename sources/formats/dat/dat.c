@@ -209,6 +209,11 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                 }
                 offset += read;
                 offset += 4;
+                
+                if (0 == current->files[j].name_length) {
+                    free(flat);
+                    return YC_RES_DAT_STATUS_FORMAT;
+                }
 
                 switch (yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read)) {
                     case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;

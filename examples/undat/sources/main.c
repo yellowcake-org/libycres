@@ -5,7 +5,6 @@
 
 #include <string.h>
 #include <errno.h>
-#include <assert.h>
 
 int main(int argc, char *argv[]) {
     struct arg_lit *help, *version, *list;
@@ -41,13 +40,11 @@ int main(int argc, char *argv[]) {
         } else {
             yc_res_dat_directory_t *root = malloc(sizeof(*root));
             
-            assert(NULL != root);
             if (NULL == root) {
                 fprintf(stderr, "Couldn't allocate memory for content tree.\n");
             } else {
                 FILE* file = fopen(input->filename[0], "rb");
                 
-                assert(NULL != file);
                 if (NULL == file) {
                     fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
                 } else {
@@ -57,7 +54,6 @@ int main(int argc, char *argv[]) {
                         int close_erred = fclose(file);
                         file = NULL;
                         
-                        assert(0 == close_erred);
                         if (0 != close_erred) {
                             fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                         } else {

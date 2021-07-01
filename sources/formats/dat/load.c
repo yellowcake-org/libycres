@@ -1,7 +1,5 @@
 #include <private.h>
-
 #include <stdlib.h>
-#include <assert.h>
 
 void yc_res_dat_private_load_count(yc_res_platform_reader_t* reader, void* input,
                                    unsigned long offset, unsigned long* value, unsigned long* read) {
@@ -31,7 +29,6 @@ void yc_res_dat_private_load_string(yc_res_platform_reader_t* reader, void* inpu
     
     *value = malloc(length_buf + 1);
     
-    assert(NULL != *value);
     if (NULL == *value)
         return;
     

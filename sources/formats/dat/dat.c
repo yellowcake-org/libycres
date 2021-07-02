@@ -270,6 +270,14 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
     return YC_RES_DAT_TREE_STATUS_OK;
 }
 
+yc_res_dat_extract_status_t
+yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platform_writer_t* writer, void* output,
+                   yc_res_dat_file_t* file) {
+    
+    
+    return YC_RES_DAT_EXTRACT_STATUS_OK;
+}
+
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
     if (NULL == directory)
         return;

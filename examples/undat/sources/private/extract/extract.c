@@ -7,6 +7,7 @@ undat_iterate_handler_result_t
 undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused unsigned long level) {
     undat_iterate_handler_result_t result;
     undat_private_extract_iterate_accum_t* accumulator = (undat_private_extract_iterate_accum_t*)accum;
+
     unsigned long f;
     char d = '/';
     
@@ -23,37 +24,40 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         memcpy(accumulator->current, node->name, node->name_length);
         memset(&accumulator->current[node->name_length], '\0', 1);
     } else {
-        unsigned long len = 0;
-        unsigned long initial_ds = level;
-        unsigned long free_ds, si, path_level;
-        unsigned long s_found = 0;
+        unsigned long length = 0;
+        unsigned long slash_index, si = 0;
         
-        free_ds = initial_ds;
+        unsigned long slash_count = level;
+        unsigned long remained_slash_count, path_level;
+        
+        remained_slash_count = slash_count;
         path_level = 0;
+        
         for (si = 0; accumulator->current[si] != '\0'; ++si) {
-            len++;
+            length++;
+            
             if (d == accumulator->current[si]) {
                 path_level++;
                 
-                if (free_ds > 0) {
-                    free_ds--;
-                    s_found = si;
+                if (remained_slash_count > 0) {
+                    remained_slash_count--;
+                    slash_index = si;
                 }
             }
         }
         
         {
-            long level_diff = level - path_level;
-            long ds_diff = initial_ds - free_ds;
+            long path_level_difference = level - path_level;
+            long extra_slashes_count = slash_count - remained_slash_count;
                             
-            if (ds_diff > level_diff && free_ds == 0) {
-                len -= len - s_found;
+            if (0 == remained_slash_count && extra_slashes_count > path_level_difference) {
+                length -= length - slash_index;
             }
         }
         
         {
             char *new_current = NULL;
-            unsigned long new_len = len + 1 + node->name_length;
+            unsigned long new_len = length + 1 + node->name_length;
             
             new_current = realloc(accumulator->current, sizeof(*accumulator->current) * (new_len + 1));
             
@@ -69,8 +73,8 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             
             accumulator->current = new_current;
             
-            memset(&accumulator->current[len], d, 1);
-            memcpy(&accumulator->current[len + 1], node->name, node->name_length);
+            memset(&accumulator->current[length], d, 1);
+            memcpy(&accumulator->current[length + 1], node->name, node->name_length);
             memset(&accumulator->current[new_len], '\0', 1);
         }
     }

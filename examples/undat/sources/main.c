@@ -55,10 +55,30 @@ int main(int argc, char *argv[]) {
                     fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
                 } else {
                     switch (yc_res_dat_tree(&undat_platform_file_reader, file, root)) {
+                        case YC_RES_DAT_TREE_STATUS_FORMAT: {
+                            fprintf(stderr, "Provided file is corrupted or is not a Fallout™ .dat archive.\n");
+                            break;
+                        }
+                        case YC_RES_DAT_TREE_STATUS_MALLOC: {
+                            fprintf(stderr, "Couldn't allocate memory when parsing file.\n");
+                            break;
+                        }
+                        case YC_RES_DAT_TREE_STATUS_READ: {
+                            fprintf(stderr, "File read error occured: %s.\n", strerror(errno));
+                            break;
+                        }
+                        case YC_RES_DAT_TREE_STATUS_INPUT:
+                        case YC_RES_DAT_TREE_STATUS_INTERNAL: {
+                            fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
+                            assert(0);
+                            break;
+                        }
                         case YC_RES_DAT_TREE_STATUS_OK: {
+                            /* TODO: Close file asap */
                             if (list->count > 0) {
                                 undat_print_tree(root);
                             } else if (output->count > 0) {
+                                /* TODO: Create output dir */                                
                                 switch (undat_extract_tree(root, file, output->filename)) {
                                     case UNDAT_EXTRACT_TREE_STATUS_OK: {
                                         result = 0;
@@ -82,33 +102,12 @@ int main(int argc, char *argv[]) {
                                 undat_print_arg_errors(end, appname);
                             }
                             
-                            {
-                                int fresult = fclose(file);
-                                file = NULL;
-                                
-                                if (0 != fresult) {
-                                    fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
-                                }
+                            if (0 != fclose(file)) {
+                                fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                             }
                             
-                            break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_FORMAT: {
-                            fprintf(stderr, "Provided file is corrupted or is not a Fallout™ .dat archive.\n");
-                            break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_MALLOC: {
-                            fprintf(stderr, "Couldn't allocate memory when parsing file.\n");
-                            break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_READ: {
-                            fprintf(stderr, "File read error occured: %s.\n", strerror(errno));
-                            break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_INPUT:
-                        case YC_RES_DAT_TREE_STATUS_INTERNAL: {
-                            fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
-                            assert(0);
+                            file = NULL;
+                            
                             break;
                         }
                     }

@@ -76,11 +76,11 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         }
     }
     
-    for (f = 0; f < node->files_count; ++f) {
-        unsigned long length = strlen(accumulator->output) + 1 + strlen(accumulator->current) + 1 + node->files[f].name_length;
-        char* filename = malloc(sizeof(*filename) * length + 1);
+    {
+        unsigned long length = strlen(accumulator->output) + 1 + strlen(accumulator->current);
+        char* dirname = malloc(sizeof(*dirname) * length + 1);
         
-        if (NULL == filename) {
+        if (NULL == dirname) {
             free(accumulator->current);
             
             result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
@@ -89,38 +89,68 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             return result;
         }
         
-        memcpy(filename, accumulator->output, strlen(accumulator->output));
-        memset(&filename[strlen(accumulator->output)], '/', 1);
-        memcpy(&filename[strlen(accumulator->output) + 1], accumulator->current, strlen(accumulator->current));
-        memset(&filename[strlen(accumulator->output) + 1 + strlen(accumulator->current)], '/', 1);
-        memcpy(&filename[strlen(accumulator->output) + 1 + strlen(accumulator->current) + 1],
-               node->files[f].name, node->files[f].name_length);
-        memset(&filename[length], '\0', 1);
-
-        printf("%s\n", filename);
+        memcpy(dirname, accumulator->output, strlen(accumulator->output));
+        memset(&dirname[strlen(accumulator->output)], '/', 1);
+        memcpy(&dirname[strlen(accumulator->output) + 1], accumulator->current, strlen(accumulator->current));
+        memset(&dirname[length], '\0', 1);
         
-        {
-            FILE* file = fopen(filename, "wb");
-            free(filename);
-            
-            if (NULL == file) {
-                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
+        switch (undat_filesystem_mkpath(dirname)) {
+            case UNDAT_FILESYSTEM_MKPATH_OK: break;
+            case UNDAT_FILESYSTEM_MKPATH_ERROR: {
+                free(dirname);
+                
+                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MKDIR;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
                 return result;
-            } else {
-                /* TODO: Handle errors */
-                yc_res_dat_extract(&undat_platform_file_reader, accumulator->input,
-                                   &undat_platform_file_writer, file, &node->files[f]);
+            }
+        }
+        
+        for (f = 0; f < node->files_count; ++f) {
+            unsigned long length = strlen(dirname) + 1 + node->files[f].name_length;
+            char* filename = malloc(sizeof(*filename) * length + 1);
+            
+            if (NULL == filename) {
+                free(dirname);
                 
-                if (0 != fclose(file)) {
-                    result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
+                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+                result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                
+                return result;
+            }
+            
+            memcpy(filename, dirname, strlen(dirname));
+            memset(&filename[strlen(dirname)], '/', 1);
+            memcpy(&filename[strlen(dirname) + 1], node->files[f].name, node->files[f].name_length);
+            memset(&filename[length], '\0', 1);
+
+            printf("%s\n", filename);
+            
+            {
+                FILE* file = fopen(filename, "wb");
+                free(filename);
+                
+                if (NULL == file) {
+                    result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
                     result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                     
                     return result;
+                } else {
+                    /* TODO: Handle errors */
+                    yc_res_dat_extract(&undat_platform_file_reader, accumulator->input,
+                                       &undat_platform_file_writer, file, &node->files[f]);
+                    
+                    if (0 != fclose(file)) {
+                        result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
+                        result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                        
+                        return result;
+                    }
                 }
             }
         }
+        
+        free(dirname);
     }
     
     result.error = NULL;

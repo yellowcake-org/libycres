@@ -33,6 +33,7 @@ undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, voi
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN: return UNDAT_EXTRACT_TREE_STATUS_OPEN;
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_WRITE: return UNDAT_EXTRACT_TREE_STATUS_WRITE;
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE: return UNDAT_EXTRACT_TREE_STATUS_CLOSE;
+                case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MKDIR: return UNDAT_EXTRACT_TREE_STATUS_MKDIR;
             }
         }
     }

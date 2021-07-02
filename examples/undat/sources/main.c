@@ -55,18 +55,15 @@ int main(int argc, char *argv[]) {
                     fprintf(stderr, "Couldn't open file: %s.\n", strerror(errno));
                 } else {
                     switch (yc_res_dat_tree(&undat_platform_file_reader, file, root)) {
-                        case YC_RES_DAT_TREE_STATUS_FORMAT: {
+                        case YC_RES_DAT_TREE_STATUS_FORMAT:
                             fprintf(stderr, "Provided file is corrupted or is not a Fallout™ .dat archive.\n");
                             break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_MALLOC: {
+                        case YC_RES_DAT_TREE_STATUS_MALLOC:
                             fprintf(stderr, "Couldn't allocate memory when parsing file.\n");
                             break;
-                        }
-                        case YC_RES_DAT_TREE_STATUS_READ: {
+                        case YC_RES_DAT_TREE_STATUS_READ:
                             fprintf(stderr, "File read error occured: %s.\n", strerror(errno));
                             break;
-                        }
                         case YC_RES_DAT_TREE_STATUS_INPUT:
                         case YC_RES_DAT_TREE_STATUS_INTERNAL: {
                             fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
@@ -78,25 +75,35 @@ int main(int argc, char *argv[]) {
                             if (list->count > 0) {
                                 undat_print_tree(root);
                             } else if (output->count > 0) {
-                                /* TODO: Create output dir */                                
-                                switch (undat_extract_tree(root, file, output->filename)) {
-                                    case UNDAT_EXTRACT_TREE_STATUS_OK: {
-                                        result = 0;
+                                switch (undat_filesystem_mkpath(*output->filename)) {
+                                    case UNDAT_FILESYSTEM_MKPATH_ERROR:
+                                        fprintf(stderr, "Couldn't create or access output directory.\n");
+                                        break;
+                                    case UNDAT_FILESYSTEM_MKPATH_OK: {
+                                        switch (undat_extract_tree(root, file, output->filename)) {
+                                            case UNDAT_EXTRACT_TREE_STATUS_OK: {
+                                                result = 0;
+                                                break;
+                                            }
+                                            case UNDAT_EXTRACT_TREE_STATUS_MALLOC:
+                                                fprintf(stderr, "Couldn't allocate memory.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_OPEN:
+                                                fprintf(stderr, "Couldn't open file.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_WRITE:
+                                                fprintf(stderr, "Couldn't write to file.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_CLOSE:
+                                                fprintf(stderr, "Couldn't close file correctly.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_MKDIR:
+                                                fprintf(stderr, "Couldn't create or access directory.\n");
+                                                break;
+                                        }
+                                        
                                         break;
                                     }
-                                    case UNDAT_EXTRACT_TREE_STATUS_MALLOC: {
-                                        fprintf(stderr, "Couldn't allocate memory.\n");
-                                        break;
-                                    }
-                                    case UNDAT_EXTRACT_TREE_STATUS_OPEN:
-                                        fprintf(stderr, "Couldn't open file.\n");
-                                        break;
-                                    case UNDAT_EXTRACT_TREE_STATUS_WRITE:
-                                        fprintf(stderr, "Couldn't write to file.\n");
-                                        break;
-                                    case UNDAT_EXTRACT_TREE_STATUS_CLOSE:
-                                        fprintf(stderr, "Couldn't close file correctly.\n");
-                                        break;
                                 }
                             } else {
                                 undat_print_arg_errors(end, appname);

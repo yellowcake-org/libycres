@@ -2,12 +2,13 @@ cmake_minimum_required(VERSION 3.9)
 
 add_subdirectory(dependencies/argtable)
 
-project(libycres VERSION 0.2.1)
+project(libycres VERSION 0.3.0)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c89 -ansi -pedantic -pedantic-errors -W -Wall -Wstrict-prototypes -Wunreachable-code -Wwrite-strings -Wpointer-arith -Wbad-function-cast -Wcast-align -Wcast-qual -Werror=pedantic")
 
 add_library(ycres 
     sources/formats/dat/dat.c
+    sources/formats/dat/lzss.c
     sources/formats/dat/load.c
     sources/formats/dat/flat.c
 )
@@ -23,8 +24,13 @@ target_include_directories(ycres PRIVATE
 add_executable(undat 
     examples/undat/sources/main.c
     examples/undat/sources/print/print.c
+    examples/undat/sources/extract/extract.c
     examples/undat/sources/iterate/iterate.c
     examples/undat/sources/platform/platform.c
+    examples/undat/sources/filesystem/filesystem.c
+    
+    examples/undat/sources/private/print/print.c
+    examples/undat/sources/private/extract/extract.c
 )
 
 add_dependencies(undat

@@ -13,3 +13,16 @@ undat_platform_file_reader(void* input, unsigned long offset, unsigned long leng
         
     return YC_RES_DAT_PLATFORM_READ_STATUS_OK;
 }
+
+yc_res_dat_platform_writer_status_t
+undat_platform_file_writer(unsigned char* bytes, unsigned long length, void* output) {
+    FILE* handle = (FILE*)output;
+    
+    if (0 != fseeko(handle, 0, SEEK_END))
+        return YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR;
+        
+    if (length > fwrite(bytes, sizeof(*bytes), length, output))
+        return YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR;
+        
+    return YC_RES_DAT_PLATFORM_WRITE_STATUS_OK;
+}

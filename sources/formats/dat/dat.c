@@ -15,26 +15,29 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
     unsigned long count = 0;
     
     if (NULL == reader || NULL == input || NULL == root)
-        return YC_RES_DAT_STATUS_INPUT;
+        return YC_RES_DAT_TREE_STATUS_INPUT;
     
     root->name = malloc(sizeof(*root->name) * 2);
+    root->name_length = 1;
 
     if (NULL == root->name) {
-        return YC_RES_DAT_STATUS_MALLOC;
+        return YC_RES_DAT_TREE_STATUS_MALLOC;
     }
     
     root->name[0] = '.';
     root->name[1] = '\0';
-    root->name_length = 1;
     
     root->files_count = 0;
     root->directories_count = 0;
     
+    root->files = NULL;
+    root->directories = NULL;
+    
     switch (yc_res_dat_private_load_count(reader, input, 0, &count, &read)) {
         case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-        case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_STATUS_MALLOC;
-        case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: return YC_RES_DAT_STATUS_READ;
-        case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_STATUS_FORMAT;
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_TREE_STATUS_MALLOC;
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: return YC_RES_DAT_TREE_STATUS_READ;
+        case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_TREE_STATUS_FORMAT;
     }
     
     offset += read;
@@ -52,9 +55,9 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         
         switch (yc_res_dat_private_load_string(reader, input, offset, &path, &path_size, &read)) {
             case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-            case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_STATUS_MALLOC;
-            case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: return YC_RES_DAT_STATUS_READ;
-            case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_STATUS_FORMAT;
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: return YC_RES_DAT_TREE_STATUS_MALLOC;
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: return YC_RES_DAT_TREE_STATUS_READ;
+            case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: return YC_RES_DAT_TREE_STATUS_FORMAT;
         }
         
         offset += read;
@@ -63,7 +66,7 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         if (2 > path_size || (2 == path_size && (path[0] != '.')) || (2 < path_size && (path[0] != '.' && path[1] != '\\'))) {
             if (path_size < 1) {
                 free(path);
-                return YC_RES_DAT_STATUS_FORMAT;
+                return YC_RES_DAT_TREE_STATUS_FORMAT;
             }
             
             path_size += 2;
@@ -73,7 +76,7 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                 
                 if (NULL == new_path) {
                     free(path);
-                    return YC_RES_DAT_STATUS_MALLOC;
+                    return YC_RES_DAT_TREE_STATUS_MALLOC;
                 }
                 
                 memcpy(&new_path[2], path, path_size - 2);
@@ -118,27 +121,33 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                         }
                         
                         if (NULL == current->directories) {
+                            current->directories_count = 0;
                             free(path);
-                            return YC_RES_DAT_STATUS_MALLOC;
+                            
+                            return YC_RES_DAT_TREE_STATUS_MALLOC;
                         }
                         
                         new = &current->directories[current->directories_count - 1];
+                        new->_marked = 0;
+                        
+                        new->files_count = 0;
+                        new->directories_count = 0;
+                        
+                        new->files = NULL;
+                        new->directories = NULL;
                         
                         new->name = malloc(token_length + 1);
                         new->name_length = token_length;
 
                         if (NULL == new->name) {
+                            new->name_length = 0;
                             free(path);
-                            return YC_RES_DAT_STATUS_MALLOC;
+                            
+                            return YC_RES_DAT_TREE_STATUS_MALLOC;
                         }
                         
                         memcpy(new->name, &path[token_start + 1], token_length);
                         (new->name)[token_length] = '\0';
-                        
-                        new->files_count = 0;
-                        new->directories_count = 0;
-                        
-                        new->_marked = 0;
                         
                         current = new;
                     } else {
@@ -165,14 +174,14 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         yc_res_dat_directory_t** flat = malloc(sizeof(*flat) * count);
         
         if (NULL == flat)
-            return YC_RES_DAT_STATUS_MALLOC;
+            return YC_RES_DAT_TREE_STATUS_MALLOC;
         
         yc_res_dat_private_flatten_marked_dirs(root, flat, &appended);
         assert(appended == count);
         
         if (appended != count) {
             free(flat);
-            return YC_RES_DAT_STATUS_INTERNAL;
+            return YC_RES_DAT_TREE_STATUS_INTERNAL;
         }
         
         for (i = 0; i < count; ++i) {
@@ -181,14 +190,14 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
             
             if (0 == current->_marked) {
                 free(flat);
-                return YC_RES_DAT_STATUS_INTERNAL;
+                return YC_RES_DAT_TREE_STATUS_INTERNAL;
             }
 
             switch (yc_res_dat_private_load_count(reader, input, offset, &current->files_count, &read)) {
                 case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-                case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
-                case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_STATUS_READ; }
-                case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_TREE_STATUS_MALLOC; }
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_TREE_STATUS_READ; }
+                case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_TREE_STATUS_FORMAT; }
             }
             
             offset += read;
@@ -197,8 +206,10 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
             current->files = malloc(current->files_count * sizeof(*current->files));
 
             if (NULL == current->files) {
+                current->files_count = 0;
                 free(flat);
-                return YC_RES_DAT_STATUS_MALLOC;
+                
+                return YC_RES_DAT_TREE_STATUS_MALLOC;
             }
             
             for (j = 0; j < current->files_count; ++j) {
@@ -207,39 +218,43 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
                 switch (yc_res_dat_private_load_string(reader, input, offset,
                                                        &current->files[j].name, &current->files[j].name_length, &read)) {
                     case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_STATUS_READ; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_TREE_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_TREE_STATUS_READ; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_TREE_STATUS_FORMAT; }
                 }
                 offset += read;
                 offset += 4;
                 
                 if (0 == current->files[j].name_length) {
+                    if (NULL != current->files[j].name) {
+                        free(current->files[j].name);
+                    }
+                    
                     free(flat);
-                    return YC_RES_DAT_STATUS_FORMAT;
+                    return YC_RES_DAT_TREE_STATUS_FORMAT;
                 }
 
                 switch (yc_res_dat_private_load_count(reader, input, offset, &current->files[j].start, &read)) {
                     case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_STATUS_READ; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_TREE_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_TREE_STATUS_READ; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_TREE_STATUS_FORMAT; }
                 }
                 offset += read;
 
                 switch (yc_res_dat_private_load_count(reader, input, offset, &plain_size, &read)) {
                     case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_STATUS_READ; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_TREE_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_TREE_STATUS_READ; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_TREE_STATUS_FORMAT; }
                 }
                 offset += read;
 
                 switch (yc_res_dat_private_load_count(reader, input, offset, &packed_size, &read)) {
                     case YC_RES_DAT_PRIVATE_LOAD_STATUS_OK: break;
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_STATUS_MALLOC; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_STATUS_READ; }
-                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_STATUS_FORMAT; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_MALLOC: { free(flat); return YC_RES_DAT_TREE_STATUS_MALLOC; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_PLATFORM: { free(flat); return YC_RES_DAT_TREE_STATUS_READ; }
+                    case YC_RES_DAT_PRIVATE_LOAD_STATUS_CORRUPTED: { free(flat); return YC_RES_DAT_TREE_STATUS_FORMAT; }
                 }
                 offset += read;
 
@@ -252,7 +267,58 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
         flat = NULL;
     }
     
-    return YC_RES_DAT_STATUS_OK;
+    return YC_RES_DAT_TREE_STATUS_OK;
+}
+
+yc_res_dat_extract_status_t
+yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platform_writer_t* writer, void* output,
+                   yc_res_dat_file_t* file) {
+    unsigned char* bytes;
+    
+    if (NULL == reader || NULL == input || NULL == writer || NULL == output || NULL == file)
+        return YC_RES_DAT_TREE_STATUS_INPUT;
+    
+    bytes = malloc(sizeof(*bytes) * file->size);
+    
+    if (NULL == bytes)
+        return YC_RES_DAT_EXTRACT_STATUS_MALLOC;
+    
+    switch (reader(input, file->start, file->size, bytes)) {
+        case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+        case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_READ;
+    }
+    
+    if (0 < file->original_size) {
+        unsigned char *decompressed = malloc(sizeof(*bytes) * file->original_size);
+        
+        if (NULL == decompressed) {
+            free(bytes);
+            return YC_RES_DAT_EXTRACT_STATUS_MALLOC;
+        }
+        
+        yc_res_dat_lzss_decompress(bytes, file->size, decompressed, file->original_size);
+        
+        switch (writer(decompressed, file->original_size, output)) {
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_OK: break;
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR: {
+                free(decompressed);
+                free(bytes);
+                
+                return YC_RES_DAT_EXTRACT_STATUS_WRITE;
+            }
+        }
+        
+        free(decompressed);
+    } else {
+        switch (writer(bytes, file->size, output)) {
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_OK: break;
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_WRITE;
+        }
+    }
+    
+    free(bytes);
+    
+    return YC_RES_DAT_EXTRACT_STATUS_OK;
 }
 
 void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
@@ -264,7 +330,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
         directory->name = NULL;
     }
     
-    if (NULL != directory->files && 0 < directory->files_count) {
+    if (NULL != directory->files) {
         unsigned long i;
         for (i = 0; i < directory->files_count; ++i) {
             yc_res_dat_free_file(&directory->files[i]);
@@ -274,7 +340,7 @@ void yc_res_dat_free_tree(yc_res_dat_directory_t* directory) {
         directory->files = NULL;
     }
     
-    if (NULL != directory->directories && 0 < directory->directories_count) {
+    if (NULL != directory->directories) {
         unsigned long i;
         for (i = 0; i < directory->directories_count; ++i) {
             yc_res_dat_free_tree(&directory->directories[i]);

@@ -1,26 +1,10 @@
 #include <undat.h>
+#include <private/print.h>
+
 #include <stdio.h>
 
-void undat_print_node(yc_res_dat_directory_t* node, unsigned long level) {
-    const edge_length = 4;
-    unsigned long f;
-    
-    if (level > 1) {
-        printf("%*s", edge_length * ((int)level - 1), "");
-    }
-    
-    if (level > 0) {
-        printf("\\---");
-    }
-    
-    printf("%s\n", node->name);
-    
-    for (f = 0; f < node->files_count; ++f) {
-        printf("%*s", edge_length * (int)level, "");
-
-        printf("\\---");
-        printf("%s\n", node->files[f].name);
-    }
+void undat_print_tree(yc_res_dat_directory_t* root) {
+    undat_iterate_tree(root, NULL, 0, &undat_print_node);
 }
 
 void undat_print_arg_errors(struct arg_end* end, const char* appname) {
@@ -34,4 +18,8 @@ void undat_print_arg_help(void* argtable, const char* appname) {
     
     printf("Utility for working with Fallout™ resource archives.\n\n");
     arg_print_glossary(stdout, argtable, "  %-25s %s\n");
+}
+
+void undat_print_version(const char* appname) {
+    printf("%s v0.3.0\n", appname);
 }

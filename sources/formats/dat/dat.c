@@ -273,29 +273,125 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
 yc_res_dat_extract_status_t
 yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platform_writer_t* writer, void* output,
                    yc_res_dat_file_t* file) {
+    unsigned char* bytes;
+    
     if (NULL == reader || NULL == input || NULL == writer || NULL == output || NULL == file)
         return YC_RES_DAT_TREE_STATUS_INPUT;
     
+    bytes = malloc(sizeof(*bytes) * file->size);
+    
+    if (NULL == bytes)
+        return YC_RES_DAT_EXTRACT_STATUS_MALLOC;
+    
+    switch (reader(input, file->start, file->size, bytes)) {
+        case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+        case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_READ;
+    }
+    
     if (0 < file->original_size) {
+        unsigned char *decompressed = malloc(sizeof(*bytes) * file->original_size);
         
-    } else {
-        unsigned char* bytes = malloc(sizeof(*bytes) * file->size);
-        
-        if (NULL == bytes)
+        if (NULL == decompressed) {
+            free(bytes);
             return YC_RES_DAT_EXTRACT_STATUS_MALLOC;
-        
-        switch (reader(input, file->start, file->size, bytes)) {
-            case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
-            case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_READ;
         }
         
+        {
+            unsigned short buffer_size = 4096;
+            unsigned short buffer_read, buffer_write = 0;
+            unsigned char buffer[4096];
+            
+            short next_bytes_count;
+            unsigned char flags = 0;
+            unsigned char match_length = 0;
+            
+            unsigned char* input = bytes;
+            unsigned char* output = decompressed;
+            
+            unsigned char* input_end = input + file->size;
+            unsigned char* output_end = output + file->original_size;
+
+            while (input < input_end) {
+                next_bytes_count = *(input++) << 8;
+                next_bytes_count |= *(input++);
+                
+                if (next_bytes_count == 0) break;
+
+                if (next_bytes_count < 0) {
+                    unsigned char* end = input - next_bytes_count;
+                    while (input < end && output < output_end) {
+                        unsigned char byte = *(input++);
+                        *(output++) = byte;
+                    }
+                } else {
+                    unsigned char* end = input + next_bytes_count;
+                    
+                    buffer_read = buffer_size - 18;
+                    memset(buffer, ' ', buffer_size);
+                    
+                    while (input < end) {
+                        unsigned int i;
+                        
+                        flags = *(input++);
+                        
+                        for (i = 0; i != 8 && input < end; ++i) {
+                            if ((flags & 1) != 0) {
+                                unsigned char byte = *(input++);
+                                *(output++) = byte;
+                                
+                                buffer[buffer_read] = byte;
+                                buffer_read++;
+                                
+                                if (buffer_read >= buffer_size) buffer_read = 0;
+                            } else {
+                                int j;
+                                
+                                buffer_write = *(input++);
+                                match_length = *(input++);
+                                
+                                buffer_write = buffer_write | ((0xF0 & match_length) << 4);
+                                match_length &= 0x0F;
+
+                                for (j = 0; j < match_length + 3; j++){
+                                    unsigned char byte = buffer[buffer_write];
+                                    
+                                    *(output++) = byte;
+                                    buffer[buffer_read] = byte;
+                                    
+                                    buffer_write++;
+                                    buffer_read++;
+                                    
+                                    if (buffer_read >= buffer_size) buffer_read = 0;
+                                    if (buffer_write >= buffer_size) buffer_write = 0;
+                                }
+                            }
+                            
+                            flags >>= 1;
+                        }
+                    }
+                }
+            }
+        }
+        
+        switch (writer(decompressed, file->original_size, output)) {
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_OK: break;
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR: {
+                free(decompressed);
+                free(bytes);
+                
+                return YC_RES_DAT_EXTRACT_STATUS_WRITE;
+            }
+        }
+        
+        free(decompressed);
+    } else {
         switch (writer(bytes, file->size, output)) {
             case YC_RES_DAT_PLATFORM_WRITE_STATUS_OK: break;
             case YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_WRITE;
         }
-        
-        free(bytes);
     }
+    
+    free(bytes);
     
     return YC_RES_DAT_EXTRACT_STATUS_OK;
 }

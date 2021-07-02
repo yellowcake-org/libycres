@@ -8,6 +8,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c89 -ansi -pedantic -pedantic-errors -W
 
 add_library(ycres 
     sources/formats/dat/dat.c
+    sources/formats/dat/lzss.c
     sources/formats/dat/load.c
     sources/formats/dat/flat.c
 )

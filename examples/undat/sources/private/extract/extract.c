@@ -52,15 +52,22 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         }
         
         {
+            char *new_current = NULL;
             unsigned long new_len = len + 1 + node->name_length;
-            accumulator->current = realloc(accumulator->current, sizeof(*accumulator->current) * (new_len + 1));
             
-            if (NULL == accumulator->current) {
+            new_current = realloc(accumulator->current, sizeof(*accumulator->current) * (new_len + 1));
+            
+            if (NULL == new_current) {
+                free(accumulator->current);
+                accumulator->current = NULL;
+                
                 result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
                 return result;
             }
+            
+            accumulator->current = new_current;
             
             memset(&accumulator->current[len], d, 1);
             memcpy(&accumulator->current[len + 1], node->name, node->name_length);

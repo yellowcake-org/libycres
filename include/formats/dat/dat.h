@@ -30,12 +30,12 @@ struct yc_res_dat_directory {
 };
 
 typedef enum {
-    YC_RES_DAT_STATUS_OK = 0,
-    YC_RES_DAT_STATUS_READ,    /* Platform reader couldn't provide data */
-    YC_RES_DAT_STATUS_INPUT,   /* Input parameters are incorrect */
-    YC_RES_DAT_STATUS_FORMAT,  /* File has incorrect format structure (corrupted) */
-    YC_RES_DAT_STATUS_MALLOC,  /* Couldn't allocate memory */
-    YC_RES_DAT_STATUS_INTERNAL /* Internal inconsistency, please, make a bug report */
+    YC_RES_DAT_TREE_STATUS_OK = 0,
+    YC_RES_DAT_TREE_STATUS_READ,    /* Platform reader couldn't provide data */
+    YC_RES_DAT_TREE_STATUS_INPUT,   /* Input parameters are incorrect */
+    YC_RES_DAT_TREE_STATUS_FORMAT,  /* File has incorrect format structure (corrupted) */
+    YC_RES_DAT_TREE_STATUS_MALLOC,  /* Couldn't allocate memory */
+    YC_RES_DAT_TREE_STATUS_INTERNAL /* Internal inconsistency, please, make a bug report */
 } yc_res_dat_tree_status_t;
 
 yc_res_dat_tree_status_t

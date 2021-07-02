@@ -26,6 +26,8 @@ add_executable(undat
     examples/undat/sources/extract/extract.c
     examples/undat/sources/iterate/iterate.c
     examples/undat/sources/platform/platform.c
+    
+    examples/undat/sources/private/extract/extract.c
 )
 
 add_dependencies(undat

@@ -4,7 +4,7 @@
 #include <undat.h>
 
 typedef enum {
-    UNDAT_ITERATE_HANDLER_STATUS_OK,
+    UNDAT_ITERATE_HANDLER_STATUS_OK = 0,
     UNDAT_ITERATE_HANDLER_STATUS_ERROR
 } undat_iterate_handler_status_t;
 

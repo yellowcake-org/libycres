@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <memory.h>
 
-undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, const char** path) {
+undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, void* file, const char** path) {
     undat_iterate_tree_result_t result;
     undat_private_extract_node_accum_t* accumulator = malloc(sizeof(*accumulator));
     
@@ -12,6 +12,7 @@ undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, con
         return UNDAT_EXTRACT_TREE_STATUS_MALLOC;
     }
     
+    accumulator->input = file;
     accumulator->output = *path;
     accumulator->current = NULL;
 
@@ -29,6 +30,9 @@ undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, con
             undat_private_extract_node_error_t error = result.inner.error;
             switch (error) {
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC: return UNDAT_EXTRACT_TREE_STATUS_MALLOC;
+                case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN: return UNDAT_EXTRACT_TREE_STATUS_OPEN;
+                case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_WRITE: return UNDAT_EXTRACT_TREE_STATUS_WRITE;
+                case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE: return UNDAT_EXTRACT_TREE_STATUS_CLOSE;
             }
         }
     }

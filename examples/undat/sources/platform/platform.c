@@ -15,7 +15,7 @@ undat_platform_file_reader(void* input, unsigned long offset, unsigned long leng
 }
 
 yc_res_dat_platform_writer_status_t
-undat_platform_file_write(unsigned char* bytes, unsigned long length, void* output) {
+undat_platform_file_writer(unsigned char* bytes, unsigned long length, void* output) {
     FILE* handle = (FILE*)output;
     
     if (0 != fseeko(handle, 0, SEEK_END))

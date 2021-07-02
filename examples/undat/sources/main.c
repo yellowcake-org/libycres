@@ -56,24 +56,38 @@ int main(int argc, char *argv[]) {
                 } else {
                     switch (yc_res_dat_tree(&undat_platform_file_reader, file, root)) {
                         case YC_RES_DAT_TREE_STATUS_OK: {
-                            int fresult = fclose(file);
-                            file = NULL;
-                            
-                            if (0 != fresult) {
-                                fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
-                            } else {
-                                if (list->count > 0) {
-                                    undat_print_tree(root);
-                                } else if (output->count > 0) {
-                                    switch (undat_extract_tree(root, output->filename)) {
-                                        case UNDAT_EXTRACT_TREE_STATUS_OK: result = 0; break;
-                                        case UNDAT_EXTRACT_TREE_STATUS_MALLOC: {
-                                            fprintf(stderr, "Couldn't allocate memory while extracting files.\n");
-                                            break;
-                                        }
+                            if (list->count > 0) {
+                                undat_print_tree(root);
+                            } else if (output->count > 0) {
+                                switch (undat_extract_tree(root, file, output->filename)) {
+                                    case UNDAT_EXTRACT_TREE_STATUS_OK: {
+                                        result = 0;
+                                        break;
                                     }
-                                } else {
-                                    undat_print_arg_errors(end, appname);
+                                    case UNDAT_EXTRACT_TREE_STATUS_MALLOC: {
+                                        fprintf(stderr, "Couldn't allocate memory.\n");
+                                        break;
+                                    }
+                                    case UNDAT_EXTRACT_TREE_STATUS_OPEN:
+                                        fprintf(stderr, "Couldn't open file.\n");
+                                        break;
+                                    case UNDAT_EXTRACT_TREE_STATUS_WRITE:
+                                        fprintf(stderr, "Couldn't write to file.\n");
+                                        break;
+                                    case UNDAT_EXTRACT_TREE_STATUS_CLOSE:
+                                        fprintf(stderr, "Couldn't close file correctly.\n");
+                                        break;
+                                }
+                            } else {
+                                undat_print_arg_errors(end, appname);
+                            }
+                            
+                            {
+                                int fresult = fclose(file);
+                                file = NULL;
+                                
+                                if (0 != fresult) {
+                                    fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                                 }
                             }
                             

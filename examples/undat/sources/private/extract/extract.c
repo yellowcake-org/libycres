@@ -62,9 +62,6 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             new_current = realloc(accumulator->current, sizeof(*accumulator->current) * (new_len + 1));
             
             if (NULL == new_current) {
-                free(accumulator->current);
-                accumulator->current = NULL;
-                
                 result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
@@ -80,13 +77,50 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
     }
     
     for (f = 0; f < node->files_count; ++f) {
-        printf("%s", accumulator->output);
+        unsigned long length = strlen(accumulator->output) + 1 + strlen(accumulator->current) + 1 + node->files[f].name_length;
+        char* filename = malloc(sizeof(*filename) * length + 1);
         
-        printf("/");
-        printf("%s", accumulator->current);
+        if (NULL == filename) {
+            free(accumulator->current);
+            
+            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+            result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+            
+            return result;
+        }
         
-        printf("/");
-        printf("%s\n", node->files[f].name);
+        memcpy(filename, accumulator->output, strlen(accumulator->output));
+        memset(&filename[strlen(accumulator->output)], '/', 1);
+        memcpy(&filename[strlen(accumulator->output) + 1], accumulator->current, strlen(accumulator->current));
+        memset(&filename[strlen(accumulator->output) + 1 + strlen(accumulator->current)], '/', 1);
+        memcpy(&filename[strlen(accumulator->output) + 1 + strlen(accumulator->current) + 1],
+               node->files[f].name, node->files[f].name_length);
+        memset(&filename[length], '\0', 1);
+
+        printf("%s\n", filename);
+        
+        {
+            FILE* file = fopen(filename, "wb");
+            free(filename);
+            
+            if (NULL == file) {
+                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
+                result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                
+                return result;
+            } else {
+                /* TODO: Handle errors */
+                yc_res_dat_extract(&undat_platform_file_reader, accumulator->input,
+                                   &undat_platform_file_writer, file, &node->files[f]);
+                
+                if (0 != fclose(file)) {
+                    result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
+                    result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                    
+                    return result;
+                }
+            }
+        }
     }
     
     result.error = NULL;

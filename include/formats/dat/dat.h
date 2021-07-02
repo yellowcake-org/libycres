@@ -46,7 +46,6 @@ typedef enum {
     YC_RES_DAT_EXTRACT_STATUS_READ,    /* Platform reader couldn't provide data */
     YC_RES_DAT_EXTRACT_STATUS_WRITE,   /* Platform writer couldn't save data */
     YC_RES_DAT_EXTRACT_STATUS_INPUT,   /* Input parameters are incorrect */
-    YC_RES_DAT_EXTRACT_STATUS_FORMAT,  /* File has incorrect format structure (corrupted) */
     YC_RES_DAT_EXTRACT_STATUS_MALLOC   /* Couldn't allocate memory */
 } yc_res_dat_extract_status_t;
 

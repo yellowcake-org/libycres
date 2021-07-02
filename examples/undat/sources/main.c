@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
                             break;
                         }
                         case YC_RES_DAT_TREE_STATUS_OK: {
-                            /* TODO: Close file asap */
                             if (list->count > 0) {
                                 undat_print_tree(root);
                             } else if (output->count > 0) {
@@ -95,6 +94,12 @@ int main(int argc, char *argv[]) {
                                                 break;
                                             case UNDAT_EXTRACT_TREE_STATUS_MKDIR:
                                                 fprintf(stderr, "Couldn't create or access directory.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_READ:
+                                                fprintf(stderr, "Couldn't read from input file, is it corrupted?.\n");
+                                                break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_INTERNAL:
+                                                fprintf(stderr, "Internal error occured. Please, make a bug report.\n");
                                                 break;
                                             case UNDAT_EXTRACT_TREE_STATUS_OK: {
                                                 result = 0;

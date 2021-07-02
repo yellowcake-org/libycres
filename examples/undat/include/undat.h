@@ -5,6 +5,7 @@
 #include <argtable3.h>
 
 #include "print/print.h"
+#include "extract/extract.h"
 #include "iterate/iterate.h"
 #include "platform/platform.h"
 

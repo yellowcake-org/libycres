@@ -63,15 +63,9 @@ int main(int argc, char *argv[]) {
                                 fprintf(stderr, "Couldn't close file: %s.\n", strerror(errno));
                             } else {
                                 if (list->count > 0) {
-                                    char* accum = NULL;
-                                    undat_iterate_tree(root, (void**)&accum, 0, &undat_print_node_path);
-                                    
-                                    if (NULL != accum)
-                                        free(accum);
-                                    
-                                    result = 0;
+                                    undat_print_tree(root);
                                 } else if (output->count > 0) {
-                                    /* */
+                                    undat_extract_tree(root, output->filename);
                                 } else {
                                     undat_print_arg_errors(end, appname);
                                 }

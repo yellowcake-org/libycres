@@ -3,6 +3,11 @@
 
 #include <undat.h>
 
-void undat_extract_tree(yc_res_dat_directory_t* root, const char** path);
+typedef enum {
+    UNDAT_EXTRACT_TREE_STATUS_OK,
+    UNDAT_EXTRACT_TREE_STATUS_MALLOC
+} undat_extract_tree_status_t;
+
+undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, const char** path);
 
 #endif /* UNDAT_EXTRACT_H */

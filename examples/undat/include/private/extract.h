@@ -6,7 +6,7 @@
 typedef struct {
     char *current;
     const char *output;
-} undat_private_extract_iterate_accum_t;
+} undat_private_extract_node_accum_t;
 
 typedef enum {
     UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC = 1

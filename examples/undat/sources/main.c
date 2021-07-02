@@ -65,7 +65,13 @@ int main(int argc, char *argv[]) {
                                 if (list->count > 0) {
                                     undat_print_tree(root);
                                 } else if (output->count > 0) {
-                                    undat_extract_tree(root, output->filename);
+                                    switch (undat_extract_tree(root, output->filename)) {
+                                        case UNDAT_EXTRACT_TREE_STATUS_OK: result = 0; break;
+                                        case UNDAT_EXTRACT_TREE_STATUS_MALLOC: {
+                                            fprintf(stderr, "Couldn't allocate memory while extracting files.\n");
+                                            break;
+                                        }
+                                    }
                                 } else {
                                     undat_print_arg_errors(end, appname);
                                 }

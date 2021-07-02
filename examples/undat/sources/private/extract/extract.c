@@ -6,7 +6,7 @@
 undat_iterate_handler_result_t
 undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused unsigned long level) {
     undat_iterate_handler_result_t result;
-    undat_private_extract_iterate_accum_t* accumulator = (undat_private_extract_iterate_accum_t*)accum;
+    undat_private_extract_node_accum_t* accumulator = (undat_private_extract_node_accum_t*)accum;
 
     unsigned long f;
     char d = '/';
@@ -25,7 +25,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         memset(&accumulator->current[node->name_length], '\0', 1);
     } else {
         unsigned long length = 0;
-        unsigned long slash_index, si = 0;
+        unsigned long slash_index = 0, si = 0;
         
         unsigned long slash_count = level;
         unsigned long remained_slash_count, path_level;

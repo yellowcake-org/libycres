@@ -297,14 +297,6 @@ yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platfor
         }
         
         {
-            unsigned short buffer_size = 4096;
-            unsigned short buffer_read, buffer_write = 0;
-            unsigned char buffer[4096];
-            
-            short next_bytes_count;
-            unsigned char flags = 0;
-            unsigned char match_length = 0;
-            
             unsigned char* input = bytes;
             unsigned char* output = decompressed;
             
@@ -312,6 +304,8 @@ yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platfor
             unsigned char* output_end = output + file->original_size;
 
             while (input < input_end) {
+                short next_bytes_count;
+                
                 next_bytes_count = *(input++) << 8;
                 next_bytes_count |= *(input++);
                 
@@ -324,12 +318,17 @@ yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platfor
                         *(output++) = byte;
                     }
                 } else {
+                    unsigned short buffer_size = 4096;
+                    unsigned char buffer[4096];
+                    unsigned short buffer_read = 0;
+                    
                     unsigned char* end = input + next_bytes_count;
                     
                     buffer_read = buffer_size - 18;
                     memset(buffer, ' ', buffer_size);
                     
                     while (input < end) {
+                        unsigned char flags = 0;
                         unsigned int i;
                         
                         flags = *(input++);
@@ -342,8 +341,11 @@ yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platfor
                                 buffer[buffer_read] = byte;
                                 buffer_read++;
                                 
-                                if (buffer_read >= buffer_size) buffer_read = 0;
+                                if (buffer_read >= buffer_size)
+                                    buffer_read = 0;
                             } else {
+                                unsigned short buffer_write = 0;
+                                unsigned char match_length = 0;
                                 int j;
                                 
                                 buffer_write = *(input++);

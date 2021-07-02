@@ -273,7 +273,29 @@ yc_res_dat_tree(yc_res_platform_reader_t* reader, void* input, yc_res_dat_direct
 yc_res_dat_extract_status_t
 yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platform_writer_t* writer, void* output,
                    yc_res_dat_file_t* file) {
+    if (NULL == reader || NULL == input || NULL == writer || NULL == output || NULL == file)
+        return YC_RES_DAT_TREE_STATUS_INPUT;
     
+    if (0 < file->original_size) {
+        
+    } else {
+        unsigned char* bytes = malloc(sizeof(*bytes) * file->size);
+        
+        if (NULL == bytes)
+            return YC_RES_DAT_EXTRACT_STATUS_MALLOC;
+        
+        switch (reader(input, file->start, file->size, bytes)) {
+            case YC_RES_DAT_PLATFORM_READ_STATUS_OK: break;
+            case YC_RES_DAT_PLATFORM_READ_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_READ;
+        }
+        
+        switch (writer(bytes, file->size, output)) {
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_OK: break;
+            case YC_RES_DAT_PLATFORM_WRITE_STATUS_ERROR: free(bytes); return YC_RES_DAT_EXTRACT_STATUS_WRITE;
+        }
+        
+        free(bytes);
+    }
     
     return YC_RES_DAT_EXTRACT_STATUS_OK;
 }

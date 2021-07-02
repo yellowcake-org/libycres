@@ -131,6 +131,8 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                 free(filename);
                 
                 if (NULL == file) {
+                    free(dirname);
+                    
                     result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
                     result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                     
@@ -141,6 +143,8 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                                        &undat_platform_file_writer, file, &node->files[f]);
                     
                     if (0 != fclose(file)) {
+                        free(dirname);
+
                         result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
                         result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                         

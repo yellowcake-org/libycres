@@ -81,10 +81,6 @@ int main(int argc, char *argv[]) {
                                         break;
                                     case UNDAT_FILESYSTEM_MKPATH_OK: {
                                         switch (undat_extract_tree(root, file, output->filename)) {
-                                            case UNDAT_EXTRACT_TREE_STATUS_OK: {
-                                                result = 0;
-                                                break;
-                                            }
                                             case UNDAT_EXTRACT_TREE_STATUS_MALLOC:
                                                 fprintf(stderr, "Couldn't allocate memory.\n");
                                                 break;
@@ -100,6 +96,10 @@ int main(int argc, char *argv[]) {
                                             case UNDAT_EXTRACT_TREE_STATUS_MKDIR:
                                                 fprintf(stderr, "Couldn't create or access directory.\n");
                                                 break;
+                                            case UNDAT_EXTRACT_TREE_STATUS_OK: {
+                                                result = 0;
+                                                break;
+                                            }
                                         }
                                         
                                         break;

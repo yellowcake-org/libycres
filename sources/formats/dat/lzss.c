@@ -58,7 +58,7 @@ void yc_res_dat_lzss_decompress(unsigned char* input, unsigned long packed_size,
                         buffer_write = buffer_write | ((0xF0 & match_length) << 4);
                         match_length &= 0x0F;
 
-                        for (j = 0; j < match_length + 3; j++){
+                        for (j = 0; j < match_length + 3; ++j){
                             unsigned char byte = buffer[buffer_write];
                             
                             *(output++) = byte;

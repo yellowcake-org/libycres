@@ -21,5 +21,5 @@ void undat_print_arg_help(void* argtable, const char* appname) {
 }
 
 void undat_print_version(const char* appname) {
-    printf("%s v0.3.0\n", appname);
+    printf("%s v0.3.1\n", appname);
 }

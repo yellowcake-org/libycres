@@ -11,6 +11,9 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
     unsigned long f;
     char d = '/';
     
+    result.error = NULL;
+    result.status = UNDAT_ITERATE_HANDLER_STATUS_OK;
+    
     if (NULL == accumulator->current) {
         accumulator->current = malloc(sizeof(*accumulator->current) * (node->name_length + 1));
         
@@ -147,24 +150,28 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                         case YC_RES_DAT_EXTRACT_STATUS_READ: {
                             result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_READ;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                            break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_WRITE: {
                             result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_WRITE;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                            break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_INPUT: {
                             result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_INTERNAL;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
+                            break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_MALLOC: {
                             result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
-                            
-                            fclose(file);
-                            free(dirname);
-                            
-                            return result;
+                            break;
                         }
+                    }
+                    
+                    if (NULL != result.error) {
+                        free(dirname);
+                        return result;
                     }
                     
                     if (0 != fclose(file)) {
@@ -181,9 +188,6 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         
         free(dirname);
     }
-    
-    result.error = NULL;
-    result.status = UNDAT_ITERATE_HANDLER_STATUS_OK;
     
     return result;
 }

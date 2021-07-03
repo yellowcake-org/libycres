@@ -16,7 +16,8 @@ int main(int argc, char *argv[]) {
     int result = 1;
         
     void* argtable[6];
-    char appname[] = "undat";
+    char app_name[] = "undat";
+    char app_version[] = "0.3.2";
     
     input = arg_filen(NULL, "input", "<file>", 1, 1, "path to archive file");
     output = arg_filen(NULL, "extract", "<directory>", 0, 1, "extract to output directory");
@@ -35,14 +36,14 @@ int main(int argc, char *argv[]) {
     nerrors = arg_parse(argc, argv, argtable);
 
     if (help->count > 0) {
-        undat_print_arg_help(argtable, appname);
+        undat_print_arg_help(argtable, app_name);
         result = 0;
     } else if (version->count > 0) {
-        undat_print_version(appname);
+        undat_print_version(app_name, app_version);
         result = 0;
     } else {
         if (nerrors > 0) {
-            undat_print_arg_errors(end, appname);
+            undat_print_arg_errors(end, app_name);
         } else {
             yc_res_dat_directory_t *root = malloc(sizeof(*root));
             
@@ -111,7 +112,7 @@ int main(int argc, char *argv[]) {
                                     }
                                 }
                             } else {
-                                undat_print_arg_errors(end, appname);
+                                undat_print_arg_errors(end, app_name);
                             }
                             
                             if (0 != fclose(file)) {

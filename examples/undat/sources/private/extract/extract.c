@@ -18,7 +18,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         accumulator->current = malloc(sizeof(*accumulator->current) * (node->name_length + 1));
         
         if (NULL == accumulator->current) {
-            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
             
             return result;
@@ -65,7 +65,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             new_current = realloc(accumulator->current, sizeof(*accumulator->current) * (new_len + 1));
             
             if (NULL == new_current) {
-                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+                result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
                 return result;
@@ -86,7 +86,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
         if (NULL == dirname) {
             free(accumulator->current);
             
-            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
             
             return result;
@@ -102,7 +102,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             case UNDAT_FILESYSTEM_MKPATH_ERROR: {
                 free(dirname);
                 
-                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MKDIR;
+                result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MKDIR;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
                 return result;
@@ -116,7 +116,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
             if (NULL == filename) {
                 free(dirname);
                 
-                result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+                result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                 result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                 
                 return result;
@@ -136,7 +136,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                 if (NULL == file) {
                     free(dirname);
                     
-                    result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
+                    result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN;
                     result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                     
                     return result;
@@ -148,22 +148,22 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                     switch (status) {
                         case YC_RES_DAT_EXTRACT_STATUS_OK: break;
                         case YC_RES_DAT_EXTRACT_STATUS_READ: {
-                            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_READ;
+                            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_READ;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                             break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_WRITE: {
-                            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_WRITE;
+                            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_WRITE;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                             break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_INPUT: {
-                            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_INTERNAL;
+                            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_INTERNAL;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                             break;
                         }
                         case YC_RES_DAT_EXTRACT_STATUS_MALLOC: {
-                            result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
+                            result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC;
                             result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                             break;
                         }
@@ -177,7 +177,7 @@ undat_private_extract_node(yc_res_dat_directory_t* node, void* accum, __unused u
                     if (0 != fclose(file)) {
                         free(dirname);
 
-                        result.error = UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
+                        result.error = (void*)UNDAT_PRIVATE_EXTRACT_NODE_ERROR_CLOSE;
                         result.status = UNDAT_ITERATE_HANDLER_STATUS_ERROR;
                         
                         return result;

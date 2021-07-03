@@ -27,7 +27,7 @@ undat_extract_tree_status_t undat_extract_tree(yc_res_dat_directory_t* root, voi
     switch (result.inner.status) {
         case UNDAT_ITERATE_HANDLER_STATUS_OK: break;
         case UNDAT_ITERATE_HANDLER_STATUS_ERROR: {
-            undat_private_extract_node_error_t error = result.inner.error;
+            undat_private_extract_node_error_t error = (undat_private_extract_node_error_t)(size_t)result.inner.error;
             switch (error) {
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_MALLOC: return UNDAT_EXTRACT_TREE_STATUS_MALLOC;
                 case UNDAT_PRIVATE_EXTRACT_NODE_ERROR_OPEN: return UNDAT_EXTRACT_TREE_STATUS_OPEN;

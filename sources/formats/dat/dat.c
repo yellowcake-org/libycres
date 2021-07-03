@@ -276,7 +276,7 @@ yc_res_dat_extract(yc_res_platform_reader_t* reader, void* input, yc_res_platfor
     unsigned char* bytes;
     
     if (NULL == reader || NULL == input || NULL == writer || NULL == output || NULL == file)
-        return YC_RES_DAT_TREE_STATUS_INPUT;
+        return YC_RES_DAT_EXTRACT_STATUS_INPUT;
     
     bytes = malloc(sizeof(*bytes) * file->size);
     

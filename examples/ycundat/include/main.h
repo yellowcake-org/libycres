@@ -1,0 +1,4 @@
+#ifndef YCUNDAT_MAIN_H
+#define YCUNDAT_MAIN_H
+
+#endif //YCUNDAT_MAIN_H

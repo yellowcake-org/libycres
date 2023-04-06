@@ -8,3 +8,8 @@ FILE(GLOB_RECURSE YCUNDAT_SOURCES source/*)
 
 add_executable(ycundat ${YCUNDAT_SOURCES})
 target_include_directories(ycundat PUBLIC include)
+target_include_directories(ycundat PUBLIC dependencies/argtable/src)
+
+add_subdirectory(dependencies/argtable)
+add_dependencies(ycundat argtable3)
+target_link_libraries(ycundat argtable3)

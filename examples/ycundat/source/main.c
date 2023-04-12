@@ -5,7 +5,7 @@ struct arg_lit *help;
 struct arg_file *input, *output;
 struct arg_end *end;
 
-void callback_parse(yc_res_dat_directory_t *list, uint32_t count);
+void ycundat_cb_dat_parse(yc_res_dat_directory_t *list, uint32_t count);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
 
-        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &callback_parse)) {
+        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &ycundat_cb_dat_parse)) {
             exit_code = 2;
         }
     }
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
-void callback_parse(yc_res_dat_directory_t *list, uint32_t count) {
+void ycundat_cb_dat_parse(yc_res_dat_directory_t *list, uint32_t count) {
     for (uint32_t dir_idx = 0; dir_idx < count; ++dir_idx) {
         printf("%s\n", list[dir_idx].path);
     }

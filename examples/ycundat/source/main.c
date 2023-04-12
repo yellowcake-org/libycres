@@ -1,5 +1,6 @@
 #include <ycundat.h>
 #include <memory.h>
+#include <stdlib.h>
 
 struct arg_lit *help;
 struct arg_file *input, *output;
@@ -54,6 +55,17 @@ int main(int argc, char *argv[]) {
 
 void ycundat_cb_dat_parse(yc_res_dat_directory_t *list, uint32_t count) {
     for (uint32_t dir_idx = 0; dir_idx < count; ++dir_idx) {
-        printf("%s\n", list[dir_idx].path);
+        printf("%s\n", (&list[dir_idx])->path);
+
+        for (uint32_t file_idx = 0; file_idx < (&list[dir_idx])->count; ++file_idx) {
+            printf("%s\n", (&(&list[dir_idx])->files[file_idx])->name);
+            printf("is_compressed == %u\n", (&(&list[dir_idx])->files[file_idx])->is_compressed);
+            printf("size == %u\n", (&(&list[dir_idx])->files[file_idx])->count_plain);
+            printf("compressed == %u\n", (&(&list[dir_idx])->files[file_idx])->count_compressed);
+        }
+
+        yc_res_dat_invalidate_directory(&list[dir_idx]);
     }
+
+    free(list);
 }

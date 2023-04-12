@@ -8,6 +8,7 @@ FILE(GLOB_RECURSE YCRES_SOURCES source/*)
 
 add_library(ycres ${YCRES_SOURCES})
 target_include_directories(ycres PUBLIC include)
+target_include_directories(ycres PRIVATE private)
 
 add_subdirectory(examples/ycundat)
 target_link_libraries(ycundat ycres)

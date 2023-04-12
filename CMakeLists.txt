@@ -4,7 +4,7 @@ project(libycres C)
 set(CMAKE_C_STANDARD 99)
 add_compile_options(-Wall -Wextra -pedantic -Werror)
 
-FILE(GLOB_RECURSE YCRES_SOURCES source/*)
+FILE(GLOB_RECURSE YCRES_SOURCES source/** source/)
 
 add_library(ycres ${YCRES_SOURCES})
 target_include_directories(ycres PUBLIC include)

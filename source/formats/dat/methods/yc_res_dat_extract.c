@@ -46,11 +46,11 @@ yc_res_dat_status_t yc_res_dat_extract(
         while (processed < file->count_compressed) {
             int16_t count = 0;
 
+            processed += 2;
             if (0 == fread(&count, 2, 1, archive)) {
                 yc_res_dat_extract_cleanup(archive, NULL);
                 return YC_RES_DAT_STATUS_IO;
             }
-            processed += 2;
 
             count = yc_res_byteorder_int16(count);
 
@@ -67,11 +67,11 @@ yc_res_dat_status_t yc_res_dat_extract(
                         return YC_RES_DAT_STATUS_MEM;
                     }
 
+                    processed++;
                     if (0 == fread(byte, 1, 1, archive)) {
                         yc_res_dat_extract_cleanup(archive, byte);
                         return YC_RES_DAT_STATUS_IO;
                     }
-                    processed++;
 
                     callback(byte, 1);
                     written++;
@@ -91,11 +91,11 @@ yc_res_dat_status_t yc_res_dat_extract(
                 while (processed < end) {
                     unsigned char flags = 0;
 
+                    processed++;
                     if (0 == fread(&flags, 1, 1, archive)) {
                         yc_res_dat_extract_cleanup(archive, NULL);
                         return YC_RES_DAT_STATUS_IO;
                     }
-                    processed++;
 
                     for (unsigned int i = 0; i < 8 && processed < end; i++) {
                         if ((flags & 1) != 0) {
@@ -106,37 +106,37 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 return YC_RES_DAT_STATUS_MEM;
                             }
 
+                            processed++;
                             if (0 == fread(byte, 1, 1, archive)) {
                                 yc_res_dat_extract_cleanup(archive, byte);
                                 return YC_RES_DAT_STATUS_IO;
                             }
-                            processed++;
 
                             buffer[offset_r] = *byte;
 
-                            callback(byte, 1);
                             written++;
+                            callback(byte, 1);
 
                             offset_r++;
                             if (offset_r >= SIZE) { offset_r = 0; }
                         } else {
-                            unsigned char tmp = 0;
+                            unsigned char tmp_byte = 0;
 
-                            if (0 == fread(&tmp, 1, 1, archive)) {
+                            processed++;
+                            if (0 == fread(&tmp_byte, 1, 1, archive)) {
                                 yc_res_dat_extract_cleanup(archive, NULL);
                                 return YC_RES_DAT_STATUS_IO;
                             }
+
+                            uint16_t offset_w = tmp_byte;
+
                             processed++;
-
-                            uint16_t offset_w = tmp;
-
-                            if (0 == fread(&tmp, 1, 1, archive)) {
+                            if (0 == fread(&tmp_byte, 1, 1, archive)) {
                                 yc_res_dat_extract_cleanup(archive, NULL);
                                 return YC_RES_DAT_STATUS_IO;
                             }
-                            processed++;
 
-                            uint16_t length = tmp;
+                            uint16_t length = tmp_byte;
 
                             offset_w |= (0xF0 & length) << 4;
                             length &= 0x0F;
@@ -152,8 +152,8 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 *byte = buffer[offset_w];
                                 buffer[offset_r] = buffer[offset_w];
 
-                                callback(byte, 1);
                                 written++;
+                                callback(byte, 1);
 
                                 offset_w++;
                                 offset_r++;

@@ -57,24 +57,26 @@ yc_res_dat_status_t yc_res_dat_extract(
             if (count == 0) { break; }
 
             if (count < 0) {
-                size_t end = processed - count;
+                size_t end = -count;
+                size_t limit = file->count_plain - written;
+                size_t chunk_size = (limit < end ? limit : end);
 
-                while (processed < end && written < file->count_plain) {
-                    unsigned char *byte = malloc(sizeof(unsigned char));
+                if (chunk_size > 0) {
+                    unsigned char *bytes = malloc(chunk_size);
 
-                    if (NULL == byte) {
+                    if (NULL == bytes) {
                         yc_res_dat_extract_cleanup(archive, NULL);
                         return YC_RES_DAT_STATUS_MEM;
                     }
 
-                    processed++;
-                    if (0 == fread(byte, 1, 1, archive)) {
-                        yc_res_dat_extract_cleanup(archive, byte);
+                    processed += chunk_size;
+                    if (0 == fread(bytes, chunk_size, 1, archive)) {
+                        yc_res_dat_extract_cleanup(archive, bytes);
                         return YC_RES_DAT_STATUS_IO;
                     }
 
-                    callback(byte, 1);
-                    written++;
+                    callback(bytes, chunk_size);
+                    written += chunk_size;
                 }
             } else {
                 const size_t SIZE = 4096;

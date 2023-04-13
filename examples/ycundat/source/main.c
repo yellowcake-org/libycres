@@ -1,12 +1,22 @@
 #include <ycundat.h>
 #include <memory.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
-struct arg_lit *help;
-struct arg_file *input, *output;
-struct arg_end *end;
+arg_lit_t *help;
+arg_file_t *input, *output;
+arg_end_t *end;
 
-void ycundat_cb_dat_parse(yc_res_dat_directory_t *list, uint32_t count);
+uint32_t parsed_count = 0;
+yc_res_dat_directory_t *parsed = NULL;
+
+FILE *exporting = NULL;
+
+static void _mkdir(const char *dir);
+
+void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
+
+void ycundat_cb_extract(unsigned char *bytes, size_t count);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -26,25 +36,75 @@ int main(int argc, char *argv[]) {
         printf("Usage: %s", program_name);
         arg_print_syntax(stdout, arg_table, "\n");
         arg_print_glossary(stdout, arg_table, "  %-25s %s\n");
-        exit_code = 0;
 
+        exit_code = 0;
         goto exit;
     }
 
     if (errors_count > 0) {
         arg_print_errors(stdout, end, program_name);
         printf("Try '%s --help' for more information.\n", program_name);
-        exit_code = 1;
 
+        exit_code = 1;
         goto exit;
     }
 
     if (input->count == 1) {
         const char *filename = input->filename[0];
 
-        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &ycundat_cb_dat_parse)) {
+        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &ycundat_cb_parse)) {
             exit_code = 2;
+            goto exit;
         }
+
+        for (uint32_t dir_idx = 0; dir_idx < parsed_count; ++dir_idx) {
+            yc_res_dat_directory_t *directory = &parsed[dir_idx];
+
+            for (uint32_t file_idx = 0; file_idx < directory->count; ++file_idx) {
+                yc_res_dat_file_t *file = &directory->files[file_idx];
+
+                char *destination = malloc(
+                        strlen(*output->filename) + 1 +
+                        strlen(directory->path) + 1 +
+                        strlen(file->name) + 1
+                );
+
+                strcpy(destination, *output->filename);
+                strcat(destination, "/");
+                strcat(destination, directory->path);
+
+                for (size_t i = 0; i < strlen(destination); ++i) {
+                    if (destination[i] == '\\') { destination[i] = '/'; }
+                }
+
+                _mkdir(destination);
+
+                strcat(destination, "/");
+                strcat(destination, file->name);
+
+                printf("%s\n", destination);
+                exporting = fopen(destination, "wb");
+
+                if (NULL == exporting) {
+                    exit_code = 3;
+                    goto exit;
+                }
+
+                if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(filename, file, ycundat_cb_extract)) {
+                    exit_code = 4;
+                    goto exit;
+                }
+
+                fclose(exporting);
+                exporting = NULL;
+            }
+
+            yc_res_dat_invalidate_directory(&parsed[dir_idx]);
+        }
+
+        free(parsed);
+        parsed = NULL;
+        parsed_count = 0;
     }
 
     exit:
@@ -53,19 +113,30 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
-void ycundat_cb_dat_parse(yc_res_dat_directory_t *list, uint32_t count) {
-    for (uint32_t dir_idx = 0; dir_idx < count; ++dir_idx) {
-        printf("%s\n", (&list[dir_idx])->path);
+void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count) {
+    parsed = list;
+    parsed_count = count;
+}
 
-        for (uint32_t file_idx = 0; file_idx < (&list[dir_idx])->count; ++file_idx) {
-            printf("%s\n", (&(&list[dir_idx])->files[file_idx])->name);
-            printf("is_compressed == %u\n", (&(&list[dir_idx])->files[file_idx])->is_compressed);
-            printf("size == %u\n", (&(&list[dir_idx])->files[file_idx])->count_plain);
-            printf("compressed == %u\n", (&(&list[dir_idx])->files[file_idx])->count_compressed);
+void ycundat_cb_extract(unsigned char *bytes, size_t count) {
+    fwrite(bytes, count, 1, exporting);
+    free(bytes);
+}
+
+static void _mkdir(const char *dir) {
+    char tmp[256];
+    char *p = NULL;
+    size_t len;
+
+    snprintf(tmp, sizeof(tmp), "%s", dir);
+    len = strlen(tmp);
+    if (tmp[len - 1] == '/')
+        tmp[len - 1] = 0;
+    for (p = tmp + 1; *p; p++)
+        if (*p == '/') {
+            *p = 0;
+            mkdir(tmp, S_IRWXU);
+            *p = '/';
         }
-
-        yc_res_dat_invalidate_directory(&list[dir_idx]);
-    }
-
-    free(list);
+    mkdir(tmp, S_IRWXU);
 }

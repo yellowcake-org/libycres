@@ -1,6 +1,8 @@
 #include <ycundat.h>
-#include <memory.h>
+
 #include <stdlib.h>
+#include <memory.h>
+
 #include <sys/stat.h>
 
 arg_lit_t *help;
@@ -21,7 +23,7 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count);
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<file.dat>", 1, 1, "input file"),
+            input = arg_filen("i", "input", "<archive.dat>", 1, 1, "input file"),
             output = arg_filen("o", "output", "<directory>", 1, 1, "output directory"),
             end = arg_end(2),
     };
@@ -124,19 +126,20 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count) {
 }
 
 static void _mkdir(const char *dir) {
-    char tmp[256];
-    char *p = NULL;
-    size_t len;
+    char temp[256];
+    char *iterator = NULL;
 
-    snprintf(tmp, sizeof(tmp), "%s", dir);
-    len = strlen(tmp);
-    if (tmp[len - 1] == '/')
-        tmp[len - 1] = 0;
-    for (p = tmp + 1; *p; p++)
-        if (*p == '/') {
-            *p = 0;
-            mkdir(tmp, S_IRWXU);
-            *p = '/';
+    snprintf(temp, sizeof(temp), "%s", dir);
+    size_t length = strlen(temp);
+
+    if (temp[length - 1] == '/') { temp[length - 1] = 0; }
+
+    for (iterator = temp + 1; *iterator; iterator++)
+        if (*iterator == '/') {
+            *iterator = 0;
+            mkdir(temp, S_IRWXU);
+            *iterator = '/';
         }
-    mkdir(tmp, S_IRWXU);
+
+    mkdir(temp, S_IRWXU);
 }

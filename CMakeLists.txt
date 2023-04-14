@@ -10,5 +10,9 @@ add_library(ycres ${YCRES_SOURCES})
 target_include_directories(ycres PUBLIC include)
 target_include_directories(ycres PRIVATE private)
 
+add_subdirectory(examples/dependencies/argtable)
 add_subdirectory(examples/ycundat)
+
+add_dependencies(ycundat argtable3)
+target_link_libraries(ycundat argtable3)
 target_link_libraries(ycundat ycres)

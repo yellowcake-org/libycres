@@ -1,6 +1,9 @@
 #ifndef LIB_YCRES_DAT_H
 #define LIB_YCRES_DAT_H
 
-void yc_res_dat_hello(void);
+#include "types/types.h"
+#include "methods/methods.h"
+#include "statuses/statuses.h"
+#include "callbacks/callbacks.h"
 
 #endif //LIB_YCRES_DAT_H

@@ -29,7 +29,7 @@ yc_res_pal_status_t yc_res_pal_parse(const char *filename, yc_res_pal_colors_cb_
     for (size_t idx = 0; idx < LENGTH; ++idx) {
         yc_res_pal_color_t *color = &colors[idx];
 
-        const size_t MAX = 63;
+        const size_t MAX = (LENGTH / 4) - 1;
         yc_res_pal_color_t transparent = {.r = 0, .g = 0, .b = 0};
 
         if (color->r > MAX || color->g > MAX || color->b > MAX) {

@@ -42,6 +42,8 @@ yc_res_pal_status_t yc_res_pal_parse(const char *filename, yc_res_pal_colors_cb_
     }
 
     callback(colors, LENGTH);
+
+    yc_res_pal_parse_cleanup(palette, NULL);
     return YC_RES_PAL_STATUS_OK;
 }
 

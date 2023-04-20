@@ -53,8 +53,14 @@ int main(int argc, char *argv[]) {
 
     if (input->count == 1) {
         const char *filename = input->filename[0];
+        yc_res_io_fs_api_t io_api = {
+                .fopen = (yc_res_io_fopen_t *) &fopen,
+                .fclose = (yc_res_io_fclose_t *) &fclose,
+                .fseek = (yc_res_io_fseek_t *) &fseek,
+                .fread = (yc_res_io_fread_t *) &fread,
+        };
 
-        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &ycundat_cb_parse)) {
+        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &io_api, &ycundat_cb_parse)) {
             exit_code = 2;
             goto exit;
         }
@@ -92,7 +98,12 @@ int main(int argc, char *argv[]) {
                     goto exit;
                 }
 
-                if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(filename, file, ycundat_cb_extract)) {
+                if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(
+                        filename,
+                        &io_api,
+                        file,
+                        ycundat_cb_extract
+                )) {
                     exit_code = 4;
                     goto exit;
                 }

@@ -161,7 +161,7 @@ void yc_res_dat_parse_cleanup(
 
     if (NULL != list) {
         for (uint32_t dir_idx = 0; dir_idx < list->count; ++dir_idx) {
-            yc_res_dat_invalidate_directory(&list[dir_idx]);
+            yc_res_dat_directory_invalidate(&list[dir_idx]);
         }
 
         free(list);

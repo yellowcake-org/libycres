@@ -1,9 +1,11 @@
 #include <ycifrm.h>
+#include <stdlib.h>
 
 arg_lit_t *help;
 arg_file_t *input;
 arg_end_t *end;
 
+void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -36,11 +38,30 @@ int main(int argc, char *argv[]) {
     }
 
     if (input->count == 1) {
-//        const char *filename = input->filename[0];
+        const char *filename = input->filename[0];
+        yc_res_io_fs_api_t io_api = {
+                .fopen = (yc_res_io_fopen_t *) &fopen,
+                .fclose = (yc_res_io_fclose_t *) &fclose,
+                .fseek = (yc_res_io_fseek_t *) &fseek,
+                .fread = (yc_res_io_fread_t *) &fread,
+        };
+
+        if (YC_RES_FRM_STATUS_OK != yc_res_frm_sprite_parse(filename, &io_api, &ycifrm_parse_cb)) {
+            exit_code = 2;
+            goto exit;
+        }
     }
 
     exit:
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
 
     return exit_code;
+}
+
+void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
+    printf("FPS: %u\n", sprite->fps);
+    printf("Animations: %zu\n", sprite->count);
+
+    yc_res_frm_sprite_invalidate(sprite);
+    free(sprite);
 }

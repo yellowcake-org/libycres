@@ -12,7 +12,7 @@ typedef struct yc_res_frm_shift {
 typedef struct yc_res_frm_texture {
     yc_res_frm_shift_t shift; /// Pixel shift for this particular texture
 
-    unsigned char *indexes;
+    unsigned char *pixels; /// Color index table: pixel -> palette value
     yc_res_frm_dimensions_t dimensions;
 } yc_res_frm_texture_t;
 

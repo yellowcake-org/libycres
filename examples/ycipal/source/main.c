@@ -43,8 +43,16 @@ int main(int argc, char *argv[]) {
 
     if (input->count == 1) {
         const char *filename = input->filename[0];
+        yc_res_io_fs_api_t io_api = {
+                .fopen = (yc_res_io_fopen_t *) &fopen,
+                .fclose = (yc_res_io_fclose_t *) &fclose,
+                .fseek = (yc_res_io_fseek_t *) &fseek,
+                .fread = (yc_res_io_fread_t *) &fread,
+        };
 
-        if (YC_RES_PAL_STATUS_OK != yc_res_pal_parse(filename, &ycipal_parse_cb)) {
+        if (YC_RES_PAL_STATUS_OK != yc_res_pal_parse(
+                filename, &io_api, &ycipal_parse_cb
+        )) {
             exit_code = 2;
             goto exit;
         }
@@ -60,7 +68,7 @@ void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count) {
     size_t trans_count = 0;
 
     for (size_t idx = 0; idx < count; ++idx) {
-        printf("[%zu]  r: %d, g: %d, b: %d\n", idx,  colors[idx].r, colors[idx].g, colors[idx].b);
+        printf("[%zu]  r: %d, g: %d, b: %d\n", idx, colors[idx].r, colors[idx].g, colors[idx].b);
         if (yc_res_pal_color_is_transparent(&colors[idx])) { trans_count++; }
     }
 

@@ -1,15 +1,22 @@
 #include <libycres.h>
 
-#include <stdio.h>
 #include <stdlib.h>
 
-void yc_res_pal_parse_cleanup(FILE *palette, yc_res_pal_color_t *colors);
+void yc_res_pal_parse_cleanup(
+        void *file,
+        const yc_res_io_fs_api_t *io,
+        yc_res_pal_color_t *colors
+);
 
-yc_res_pal_status_t yc_res_pal_parse(const char *filename, yc_res_pal_colors_cb_t *callback) {
-    FILE *palette = fopen(filename, "rb");
+yc_res_pal_status_t yc_res_pal_parse(
+        const char *filename,
+        const yc_res_io_fs_api_t *io,
+        yc_res_pal_colors_cb_t *callback
+) {
+    void *palette = io->fopen(filename, "rb");
 
     if (NULL == palette) {
-        yc_res_pal_parse_cleanup(NULL, NULL);
+        yc_res_pal_parse_cleanup(NULL, io, NULL);
         return YC_RES_PAL_STATUS_IO;
     }
 
@@ -17,12 +24,12 @@ yc_res_pal_status_t yc_res_pal_parse(const char *filename, yc_res_pal_colors_cb_
     yc_res_pal_color_t *colors = malloc(sizeof(yc_res_pal_color_t) * LENGTH);
 
     if (NULL == colors) {
-        yc_res_pal_parse_cleanup(palette, NULL);
+        yc_res_pal_parse_cleanup(palette, io, NULL);
         return YC_RES_PAL_STATUS_MEM;
     }
 
-    if (0 == fread(colors, sizeof(yc_res_pal_color_t), LENGTH, palette)) {
-        yc_res_pal_parse_cleanup(palette, colors);
+    if (0 == io->fread(colors, sizeof(yc_res_pal_color_t), LENGTH, palette)) {
+        yc_res_pal_parse_cleanup(palette, io, colors);
         return YC_RES_PAL_STATUS_IO;
     }
 
@@ -43,13 +50,17 @@ yc_res_pal_status_t yc_res_pal_parse(const char *filename, yc_res_pal_colors_cb_
 
     callback(colors, LENGTH);
 
-    yc_res_pal_parse_cleanup(palette, NULL);
+    yc_res_pal_parse_cleanup(palette, io, NULL);
     return YC_RES_PAL_STATUS_OK;
 }
 
-void yc_res_pal_parse_cleanup(FILE *palette, yc_res_pal_color_t *colors) {
+void yc_res_pal_parse_cleanup(
+        void *palette,
+        const yc_res_io_fs_api_t *io,
+        yc_res_pal_color_t *colors
+) {
     if (NULL != palette) {
-        fclose(palette);
+        io->fclose(palette);
     }
 
     if (NULL != colors) {

@@ -144,9 +144,9 @@ yc_res_dat_status_t yc_res_dat_parse(
         }
     }
 
-    callback(list, dir_count);
-
     yc_res_dat_parse_cleanup(archive, io, NULL);
+
+    callback(list, dir_count);
     return YC_RES_DAT_STATUS_OK;
 }
 

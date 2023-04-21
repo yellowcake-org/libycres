@@ -48,9 +48,9 @@ yc_res_pal_status_t yc_res_pal_parse(
         }
     }
 
-    callback(colors, LENGTH);
-
     yc_res_pal_parse_cleanup(palette, io, NULL);
+
+    callback(colors, LENGTH);
     return YC_RES_PAL_STATUS_OK;
 }
 

@@ -62,6 +62,26 @@ void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
     printf("FPS: %u\n", sprite->fps);
     printf("Animations: %zu\n", sprite->count);
 
+    for (size_t animation_idx = 0; animation_idx < sprite->count; ++animation_idx) {
+        yc_res_frm_animation_t *animation = &sprite->animations[animation_idx];
+
+        printf("\n");
+        printf("Animation #%zu\n", animation_idx);
+        printf("Shift x: %u\nShift y: %u\n", animation->shift.horizontal, animation->shift.vertical);
+        printf("\n");
+
+        for (size_t frame_idx = 0; frame_idx < animation->count; ++frame_idx) {
+            yc_res_frm_texture_t *frame = &animation->frames[frame_idx];
+
+            printf("Frame #%zu\n", frame_idx);
+            printf(
+                    "Width: %u + %u shift\nHeight: %u + %u shift\n",
+                    frame->dimensions.horizontal, frame->shift.horizontal,
+                    frame->dimensions.vertical, frame->shift.vertical
+            );
+        }
+    }
+
     yc_res_frm_sprite_invalidate(sprite);
     free(sprite);
 }

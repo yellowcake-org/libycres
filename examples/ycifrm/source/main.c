@@ -59,7 +59,6 @@ int main(int argc, char *argv[]) {
 }
 
 void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
-    printf("FPS: %u\n", sprite->fps);
     printf("Animations: %zu\n", sprite->count);
 
     for (size_t animation_idx = 0; animation_idx < sprite->count; ++animation_idx) {
@@ -67,6 +66,8 @@ void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
 
         printf("\n");
         printf("Animation #%zu\n", animation_idx);
+        printf("FPS: %u\n", animation->fps);
+        printf("Frames: %zu\n", animation->count);
         printf("Shift x: %u\nShift y: %u\n", animation->shift.horizontal, animation->shift.vertical);
         printf("\n");
 

@@ -17,6 +17,7 @@ typedef struct yc_res_frm_texture {
 } yc_res_frm_texture_t;
 
 typedef struct yc_res_frm_animation {
+    uint16_t fps, keyframe_idx;
     yc_res_frm_shift_t shift; /// Common shift for all frames within this animation
 
     size_t count;
@@ -24,8 +25,6 @@ typedef struct yc_res_frm_animation {
 } yc_res_frm_animation_t;
 
 typedef struct yc_res_frm_sprite {
-    uint16_t fps, keyframe_idx;
-
     size_t count; /// Unique animations count
     yc_res_frm_animation_t *animations; /// Unique animations list
 

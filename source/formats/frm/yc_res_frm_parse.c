@@ -29,19 +29,21 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
         return YC_RES_FRM_STATUS_IO;
     }
 
-    if (0 == io->fread(&sprite->fps, sizeof(uint16_t), 1, file)) {
+    uint16_t fps = 0;
+    if (0 == io->fread(&fps, sizeof(uint16_t), 1, file)) {
         yc_res_frm_parse_cleanup(file, io, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
 
-    sprite->fps = yc_res_byteorder_uint16(sprite->fps);
+    fps = yc_res_byteorder_uint16(fps);
 
-    if (0 == io->fread(&sprite->keyframe_idx, sizeof(uint16_t), 1, file)) {
+    uint16_t keyframe_idx = 0;
+    if (0 == io->fread(&keyframe_idx, sizeof(uint16_t), 1, file)) {
         yc_res_frm_parse_cleanup(file, io, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
 
-    sprite->keyframe_idx = yc_res_byteorder_uint16(sprite->keyframe_idx);
+    keyframe_idx = yc_res_byteorder_uint16(keyframe_idx);
 
     uint16_t fpo = 0;
     if (0 == io->fread(&fpo, sizeof(uint16_t), 1, file)) {
@@ -103,6 +105,9 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
         for (int o = 0; o < 6; ++o) {
             if (offset == yc_res_byteorder_uint32(offsets[o])) { _table[o] = (char) idx; }
         }
+
+        animation->fps = fps;
+        animation->keyframe_idx = keyframe_idx;
 
         animation->count = fpo;
         animation->frames = malloc(sizeof(yc_res_frm_texture_t) * animation->count);

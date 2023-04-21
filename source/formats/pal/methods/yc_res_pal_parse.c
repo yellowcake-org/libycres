@@ -48,19 +48,19 @@ yc_res_pal_status_t yc_res_pal_parse(
         }
     }
 
-    callback(colors, LENGTH);
-
     yc_res_pal_parse_cleanup(palette, io, NULL);
+
+    callback(colors, LENGTH);
     return YC_RES_PAL_STATUS_OK;
 }
 
 void yc_res_pal_parse_cleanup(
-        void *palette,
+        void *file,
         const yc_res_io_fs_api_t *io,
         yc_res_pal_color_t *colors
 ) {
-    if (NULL != palette) {
-        io->fclose(palette);
+    if (NULL != file) {
+        io->fclose(file);
     }
 
     if (NULL != colors) {

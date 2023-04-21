@@ -17,7 +17,7 @@ yc_res_dat_status_t yc_res_dat_extract(
         yc_res_dat_extract_cb_t *callback
 );
 
-void yc_res_dat_invalidate_file(yc_res_dat_file_t *file);
-void yc_res_dat_invalidate_directory(yc_res_dat_directory_t *directory);
+void yc_res_dat_file_invalidate(yc_res_dat_file_t *file);
+void yc_res_dat_directory_invalidate(yc_res_dat_directory_t *directory);
 
 #endif //LIB_YCRES_DAT_METHODS_H

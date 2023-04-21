@@ -1,7 +1,7 @@
-#ifndef YCUNDAT_H
-#define YCUNDAT_H
+#ifndef YCIPAL_H
+#define YCIPAL_H
 
 #include <argtable3.h>
 #include <libycres.h>
 
-#endif //YCUNDAT_H
+#endif //YCIPAL_H

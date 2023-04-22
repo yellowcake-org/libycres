@@ -91,7 +91,9 @@ int main(int argc, char *argv[]) {
                 strcat(destination, file->name);
 
                 printf("%s\n", destination);
+
                 exporting = fopen(destination, "wb");
+                free(destination);
 
                 if (NULL == exporting) {
                     exit_code = 3;

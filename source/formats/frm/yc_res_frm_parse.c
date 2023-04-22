@@ -54,15 +54,15 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
     fpo = yc_res_byteorder_uint16(fpo);
 
     // warning: storing temporary in big endian, still
-    uint16_t animations_shifts_h[6], animations_shifts_v[6];
+    int16_t animations_shifts_h[6], animations_shifts_v[6];
     uint32_t offsets[6];
 
-    if (0 == io->fread(&animations_shifts_h, sizeof(uint16_t) * 6, 1, file)) {
+    if (0 == io->fread(&animations_shifts_h, sizeof(int16_t) * 6, 1, file)) {
         yc_res_frm_parse_cleanup(file, io, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
 
-    if (0 == io->fread(&animations_shifts_v, sizeof(uint16_t) * 6, 1, file)) {
+    if (0 == io->fread(&animations_shifts_v, sizeof(int16_t) * 6, 1, file)) {
         yc_res_frm_parse_cleanup(file, io, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
@@ -100,11 +100,13 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
         }
 
         size_t idx = sprite->count - 1;
-        yc_res_frm_animation_t *animation = &sprite->animations[idx];
+        sprite->orientations[orientation] = idx;
 
-        for (int o = 0; o < 6; ++o) {
+        for (size_t o = orientation; o < 6; ++o) {
             if (offset == yc_res_byteorder_uint32(offsets[o])) { _table[o] = (char) idx; }
         }
+
+        yc_res_frm_animation_t *animation = &sprite->animations[idx];
 
         animation->fps = fps;
         animation->keyframe_idx = keyframe_idx;
@@ -117,8 +119,8 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
             return YC_RES_FRM_STATUS_MEM;
         }
 
-        animation->shift.vertical = yc_res_byteorder_uint16(animations_shifts_v[orientation]);
-        animation->shift.horizontal = yc_res_byteorder_uint16(animations_shifts_h[orientation]);
+        animation->shift.vertical = yc_res_byteorder_int16(animations_shifts_v[orientation]);
+        animation->shift.horizontal = yc_res_byteorder_int16(animations_shifts_h[orientation]);
 
         for (uint16_t frame_idx = 0; frame_idx < fpo; ++frame_idx) {
             yc_res_frm_texture_t *frame = &animation->frames[frame_idx];
@@ -150,20 +152,20 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
                 return YC_RES_FRM_STATUS_CORR;
             }
 
-            uint16_t x, y;
+            int16_t x, y;
 
-            if (0 == io->fread(&x, sizeof(uint16_t), 1, file)) {
+            if (0 == io->fread(&x, sizeof(int16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, io, sprite);
                 return YC_RES_FRM_STATUS_IO;
             }
 
-            if (0 == io->fread(&y, sizeof(uint16_t), 1, file)) {
+            if (0 == io->fread(&y, sizeof(int16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, io, sprite);
                 return YC_RES_FRM_STATUS_IO;
             }
 
-            frame->shift.vertical = yc_res_byteorder_uint16(y);
-            frame->shift.horizontal = yc_res_byteorder_uint16(x);
+            frame->shift.vertical = yc_res_byteorder_int16(y);
+            frame->shift.horizontal = yc_res_byteorder_int16(x);
 
             frame->pixels = malloc(square);
 

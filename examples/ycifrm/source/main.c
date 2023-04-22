@@ -16,7 +16,7 @@ void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<sprite.fr(0-5)|(m)>", 1, 1, "input sprite file"),
+            input = arg_filen("i", "input", "<sprite(.frm)>", 1, 1, "input sprite file"),
             merge = arg_litn(NULL, "merge", 0, 1, "specified sprite is split into .fr(0-5)"),
             end = arg_end(1),
     };

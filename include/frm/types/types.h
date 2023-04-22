@@ -6,7 +6,7 @@ typedef struct yc_res_frm_dimensions {
 } yc_res_frm_dimensions_t;
 
 typedef struct yc_res_frm_shift {
-    uint16_t horizontal, vertical;
+    int16_t horizontal, vertical;
 } yc_res_frm_shift_t;
 
 typedef struct yc_res_frm_texture {

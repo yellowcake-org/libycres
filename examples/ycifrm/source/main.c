@@ -68,7 +68,7 @@ void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
         printf("Animation #%zu\n", animation_idx);
         printf("FPS: %u\n", animation->fps);
         printf("Frames: %zu\n", animation->count);
-        printf("Shift x: %u\nShift y: %u\n", animation->shift.horizontal, animation->shift.vertical);
+        printf("Shift x: %d\nShift y: %d\n", animation->shift.horizontal, animation->shift.vertical);
         printf("\n");
 
         for (size_t frame_idx = 0; frame_idx < animation->count; ++frame_idx) {
@@ -76,7 +76,7 @@ void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
 
             printf("Frame #%zu\n", frame_idx);
             printf(
-                    "Width: %u + %u shift\nHeight: %u + %u shift\n",
+                    "Width: %u + %d shift\nHeight: %u + %d shift\n",
                     frame->dimensions.horizontal, frame->shift.horizontal,
                     frame->dimensions.vertical, frame->shift.vertical
             );

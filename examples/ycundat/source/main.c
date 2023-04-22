@@ -91,7 +91,9 @@ int main(int argc, char *argv[]) {
                 strcat(destination, file->name);
 
                 printf("%s\n", destination);
+
                 exporting = fopen(destination, "wb");
+                free(destination);
 
                 if (NULL == exporting) {
                     exit_code = 3;
@@ -112,7 +114,7 @@ int main(int argc, char *argv[]) {
                 exporting = NULL;
             }
 
-            yc_res_dat_invalidate_directory(&parsed[dir_idx]);
+            yc_res_dat_directory_invalidate(&parsed[dir_idx]);
         }
 
         free(parsed);

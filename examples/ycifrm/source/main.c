@@ -1,4 +1,5 @@
 #include <ycifrm.h>
+
 #include <stdlib.h>
 #include <memory.h>
 
@@ -117,10 +118,10 @@ int main(int argc, char *argv[]) {
 
 void ycifrm_append_cb(yc_res_frm_sprite_t *sprite) {
     if (NULL != split) {
-        yc_res_frm_sprite_t *list = *split;
+        yc_res_frm_sprite_t *sprites = *split;
 
         count++;
-        memmove(&list[count - 1], sprite, sizeof(yc_res_frm_sprite_t));
+        sprites[count - 1] = *sprite;
     }
 }
 

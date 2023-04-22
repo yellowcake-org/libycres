@@ -1,7 +1,5 @@
 #include <libycres.h>
-
 #include <stdlib.h>
-#include <memory.h>
 
 yc_res_frm_status_t yc_res_frm_sprites_merge(yc_res_frm_sprite_t **sprites_ptr, size_t count) {
     // orientations count is 6, so...

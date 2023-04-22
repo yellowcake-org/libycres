@@ -1,16 +1,23 @@
 #include <ycifrm.h>
 #include <stdlib.h>
+#include <memory.h>
 
-arg_lit_t *help;
+arg_lit_t *help, *merge;
 arg_file_t *input;
 arg_end_t *end;
 
-void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite);
+size_t count = 0;
+yc_res_frm_sprite_t **split = NULL;
+
+void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
+
+void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<sprite.frm>", 1, 1, "input sprite file"),
+            input = arg_filen("i", "input", "<sprite.fr(0-5)|(m)>", 1, 1, "input sprite file"),
+            merge = arg_litn(NULL, "merge", 0, 1, "specified sprite is split into .fr(0-5)"),
             end = arg_end(1),
     };
 
@@ -46,9 +53,59 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_FRM_STATUS_OK != yc_res_frm_sprite_parse(filename, &io_api, &ycifrm_parse_cb)) {
-            exit_code = 2;
-            goto exit;
+        if (merge->count == 0) {
+            if (YC_RES_FRM_STATUS_OK != yc_res_frm_sprite_parse(filename, &io_api, &ycifrm_print_cb)) {
+                exit_code = 3;
+                goto exit;
+            }
+        } else {
+            split = malloc(sizeof(yc_res_frm_sprite_t *));
+            if (NULL == split) {
+                exit_code = 2;
+                goto exit;
+            }
+
+            *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
+            if (NULL == *split) {
+                exit_code = 2;
+                goto exit;
+            }
+
+            size_t base = strlen(filename);
+            for (size_t idx = 0; idx < 6; ++idx) {
+                char *final = malloc(base + 4);
+
+                if (NULL == final) {
+                    exit_code = 3;
+                    goto exit;
+                }
+
+                strcpy(final, filename);
+                sprintf(&final[base], ".FR%lu", idx);
+
+                yc_res_frm_status_t status =
+                        yc_res_frm_sprite_parse(final, &io_api, &ycifrm_append_cb);
+
+                free(final);
+
+                if (YC_RES_FRM_STATUS_OK != status) {
+                    exit_code = 4;
+                    goto exit;
+                }
+            }
+
+            yc_res_frm_status_t status = yc_res_frm_sprites_merge(split, count);
+
+            if (YC_RES_FRM_STATUS_OK != status) {
+                exit_code = 4;
+                goto exit;
+            }
+
+            ycifrm_print_cb(*split);
+            yc_res_frm_sprite_invalidate(*split);
+
+            free(split);
+            split = NULL;
         }
     }
 
@@ -58,7 +115,16 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
-void ycifrm_parse_cb(yc_res_frm_sprite_t *sprite) {
+void ycifrm_append_cb(yc_res_frm_sprite_t *sprite) {
+    if (NULL != split) {
+        yc_res_frm_sprite_t *list = *split;
+
+        count++;
+        memmove(&list[count - 1], sprite, sizeof(yc_res_frm_sprite_t));
+    }
+}
+
+void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {
     printf("Animations: %zu\n", sprite->count);
 
     for (size_t animation_idx = 0; animation_idx < sprite->count; ++animation_idx) {

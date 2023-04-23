@@ -7,7 +7,7 @@ void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_f
 
 yc_res_frm_status_t yc_res_frm_sprite_parse(
         const char *filename,
-        yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *io,
         yc_res_frm_sprite_cb_t *callback
 ) {
     void *file = io->fopen(filename, "rb");

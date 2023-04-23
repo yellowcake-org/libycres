@@ -7,7 +7,7 @@ arg_lit_t *help;
 arg_file_t *input;
 arg_end_t *end;
 
-void ycipro_print_cb(yc_res_pro_object_header_t *header);
+void ycipro_print_cb(yc_res_pro_object_t *object);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_FRM_STATUS_OK != yc_res_pro_header_parse(filename, &io_api, &ycipro_print_cb)) {
+        if (YC_RES_FRM_STATUS_OK != yc_res_pro_object_parse(filename, &io_api, &ycipro_print_cb)) {
             exit_code = 3;
             goto exit;
         }
@@ -60,39 +60,93 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
-void ycipro_print_cb(yc_res_pro_object_header_t *header) {
-    printf("Prototype is ");
+void ycipro_print_cb(yc_res_pro_object_t *object) {
+    printf("Proto .LST: %u\n", yc_res_pro_index_from_id(object->proto_id));
+    printf("Text .LST: %u\n", yc_res_pro_index_from_id(object->text_id));
+    printf("Sprite .LST: %u\n", yc_res_pro_index_from_id(object->sprite_id));
+    printf("\n");
+    printf("Light level: %u\n", object->lighting.level);
+    printf("Light radius: %u\n", object->lighting.radius);
 
+    printf("\n");
+    printf("Flags: {\n");
 
-    switch (yc_res_entity_from_pid(header->proto_id)) {
-        case YC_RES_PRO_ENTITY_ITEM:
-            printf("ITEM");
+    if (true == object->flags.no_block) { printf("no_block\n"); }
+    if (true == object->flags.no_border) { printf("no_border\n"); }
+
+    if (true == object->flags.is_flat) { printf("is_flat\n"); }
+    if (true == object->flags.multi_hex) { printf("multi_hex\n"); }
+    if (true == object->flags.light_through) { printf("light_through\n"); }
+    if (true == object->flags.shoot_through) { printf("shoot_through\n"); }
+
+    printf("}\n");
+    printf("\n");
+
+    printf("Transparency: ");
+    switch (object->flags.transparency) {
+        case YC_RES_PRO_TRANS_NONE:
+            printf("none.");
             break;
-        case YC_RES_PRO_ENTITY_CRITTER:
+        case YC_RES_PRO_TRANS_RED:
+            printf("RED.");
+            break;
+        case YC_RES_PRO_TRANS_WALL:
+            printf("WALL.");
+            break;
+        case YC_RES_PRO_TRANS_GLASS:
+            printf("GLASS.");
+            break;
+        case YC_RES_PRO_TRANS_STEAM:
+            printf("STEAM.");
+            break;
+        case YC_RES_PRO_TRANS_ENERGY:
+            printf("ENERGY.");
+            break;
+        case YC_RES_PRO_TRANS_WALL_END:
+            printf("WALL END.");
+            break;
+        default:
+            printf("UNKNOWN.");
+            break;
+    }
+    printf("\n");
+
+    printf("\n");
+    printf("Prototype is ");
+    switch (yc_res_pro_type_from_pid(object->proto_id)) {
+        case YC_RES_PRO_OBJECT_TYPE_ITEM: {
+            printf("ITEM");
+            printf("\n\n");
+            printf("Cost: %d\n", object->data.item->cost);
+            printf("Weight: %d\n", object->data.item->weight);
+            printf("Volume: %d\n", object->data.item->volume);
+        }
+            break;
+        case YC_RES_PRO_OBJECT_TYPE_CRITTER:
             printf("CRITTER");
             break;
-        case YC_RES_PRO_ENTITY_SCENERY:
+        case YC_RES_PRO_OBJECT_TYPE_SCENERY:
             printf("SCENERY");
             break;
-        case YC_RES_PRO_ENTITY_WALL:
+        case YC_RES_PRO_OBJECT_TYPE_WALL:
             printf("WALL");
             break;
-        case YC_RES_PRO_ENTITY_TILE:
+        case YC_RES_PRO_OBJECT_TYPE_TILE:
             printf("TILE");
             break;
-        case YC_RES_PRO_ENTITY_MISC:
+        case YC_RES_PRO_OBJECT_TYPE_MISC:
             printf("MISC");
             break;
-        case YC_RES_PRO_ENTITY_INTERFACE:
+        case YC_RES_PRO_OBJECT_TYPE_INTERFACE:
             printf("INTERFACE");
             break;
-        case YC_RES_PRO_ENTITY_INVENTORY:
+        case YC_RES_PRO_OBJECT_TYPE_INVENTORY:
             printf("INVENTORY");
             break;
-        case YC_RES_PRO_ENTITY_HEAD:
+        case YC_RES_PRO_OBJECT_TYPE_HEAD:
             printf("HEAD");
             break;
-        case YC_RES_PRO_ENTITY_BACKGROUND:
+        case YC_RES_PRO_OBJECT_TYPE_BACKGROUND:
             printf("BACKGROUND");
             break;
         default:
@@ -101,27 +155,6 @@ void ycipro_print_cb(yc_res_pro_object_header_t *header) {
     }
     printf("\n");
 
-    printf("\n");
-    printf("Proto .LST: %u\n", yc_res_index_from_any_id(header->proto_id));
-    printf("Text .LST: %u\n", yc_res_index_from_any_id(header->text_id));
-    printf("Sprite .LST: %u\n", yc_res_index_from_any_id(header->sprite_id));
-    printf("\n");
-    printf("Light level: %u\n", header->lighting.level);
-    printf("Light radius: %u\n", header->lighting.radius);
-
-    printf("\n");
-    printf("Flags: {\n");
-
-    if (true == header->flags.multi_hex) { printf("multi_hex\n"); }
-    if (true == header->flags.light_through) { printf("light_through\n"); }
-    if (true == header->flags.shoot_through) { printf("shoot_through\n"); }
-
-    if (true == header->flags.is_flat) { printf("is_flat\n"); }
-    if (true == header->flags.is_hidden) { printf("is_hidden\n"); }
-    if (true == header->flags.is_locked) { printf("is_locked\n"); }
-    if (true == header->flags.is_jammed) { printf("is_jammed\n"); }
-
-    printf("}\n");
-
-    free(header);
+    yc_res_pro_object_invalidate(object);
+    free(object);
 }

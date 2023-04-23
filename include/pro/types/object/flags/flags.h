@@ -11,16 +11,15 @@ typedef enum yc_res_pro_transparency {
     YC_RES_PRO_TRANS_WALL_END,
 } yc_res_pro_transparency_t;
 
-typedef struct yc_res_pro_flags {
+typedef struct yc_res_pro_object_flags {
     bool multi_hex;
 
     bool no_block, no_border;
     bool light_through, shoot_through;
 
-    bool is_flat, is_hidden;
-    bool is_locked, is_jammed;
+    bool is_flat;
 
     yc_res_pro_transparency_t transparency;
-} yc_res_pro_flags_t;
+} yc_res_pro_object_flags_t;
 
 #endif //LIB_YCRES_PRO_TYPES_FLAGS_H

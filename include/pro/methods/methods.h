@@ -4,16 +4,20 @@
 #include "../statuses/statuses.h"
 #include "../callbacks/callbacks.h"
 
-uint16_t yc_res_index_from_any_id(uint32_t any_id);
+bool yc_res_pro_is_valid_id(uint32_t any_id);
+uint16_t yc_res_pro_index_from_id(uint32_t any_id);
 
-yc_res_entity_t yc_res_entity_from_pid(uint32_t proto_id);
-yc_res_entity_t yc_res_entity_from_fid(uint32_t sprite_id);
-yc_res_entity_t yc_res_entity_from_sid(uint32_t script_id);
+yc_res_pro_id_type_t yc_res_pro_type_from_pid(uint32_t proto_id);
+yc_res_pro_id_type_t yc_res_pro_type_from_fid(uint32_t sprite_id);
+yc_res_pro_id_type_t yc_res_pro_type_from_sid(uint32_t script_id);
 
-yc_res_pro_status_t yc_res_pro_header_parse(
+yc_res_pro_status_t yc_res_pro_object_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_frm_object_header_cb_t *callback
+        yc_res_frm_object_cb_t *callback
 );
+
+void yc_res_pro_object_invalidate(yc_res_pro_object_t *object);
+void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item);
 
 #endif //LIB_YCRES_PRO_METHODS_H

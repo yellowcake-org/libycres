@@ -1,0 +1,10 @@
+#ifndef LIB_YCRES_PRO_TYPES_COMMON_GENDER_H
+#define LIB_YCRES_PRO_TYPES_COMMON_GENDER_H
+
+typedef enum yc_res_pro_types_gender {
+    YC_RES_PRO_TYPES_GENDER_MALE = 0,
+    YC_RES_PRO_TYPES_GENDER_FEMALE,
+    YC_RES_PRO_TYPES_GENDER_COUNT
+} yc_res_pro_types_gender_t;
+
+#endif //LIB_YCRES_PRO_TYPES_COMMON_GENDER_H

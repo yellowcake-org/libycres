@@ -1,5 +1,5 @@
-#include "libycres.h"
-#include "private.h"
+#include <libycres.h>
+#include <private.h>
 
 #include "yc_res_pro_parse_object.h"
 

@@ -120,6 +120,31 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("Cost: %d\n", object->data.item->cost);
             printf("Weight: %d\n", object->data.item->weight);
             printf("Volume: %d\n", object->data.item->volume);
+
+            printf("\n");
+            printf("Item is ");
+            switch (object->data.item->type) {
+                case YC_RES_PRO_OBJECT_ITEM_ARMOR:
+                    printf("ARMOR");
+                    printf("\n\n");
+                    printf("Class: %d", object->data.item->data.armor->class);
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+                    printf("CONTAINER");
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_DRUG:
+                    printf("DRUG");
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_AMMO:
+                    printf("AMMO");
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_MISC:
+                    printf("MISC");
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_KEY:
+                    printf("KEY");
+                    break;
+            }
         }
             break;
         case YC_RES_PRO_OBJECT_TYPE_CRITTER:

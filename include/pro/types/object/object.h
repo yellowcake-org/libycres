@@ -1,8 +1,6 @@
 #ifndef LIB_YCRES_PRO_TYPES_OBJECT_H
 #define LIB_YCRES_PRO_TYPES_OBJECT_H
 
-#include "../lighting/lighting.h"
-
 #include "flags/flags.h"
 #include "item/item.h"
 

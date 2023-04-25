@@ -1,9 +1,6 @@
 #ifndef LIB_YCRES_PRO_METHODS_H
 #define LIB_YCRES_PRO_METHODS_H
 
-#include "../statuses/statuses.h"
-#include "../callbacks/callbacks.h"
-
 bool yc_res_pro_is_valid_id(uint32_t any_id);
 uint16_t yc_res_pro_index_from_id(uint32_t any_id);
 

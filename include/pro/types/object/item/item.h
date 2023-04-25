@@ -1,10 +1,15 @@
 #ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
 #define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
 
-#include "../../material/material.h"
-
 #include "flags/flags.h"
 #include "attacks/attacks.h"
+
+#include "armor/armor.h"
+#include "container/container.h"
+#include "drug/drug.h"
+#include "ammo/ammo.h"
+#include "misc/misc.h"
+#include "key/key.h"
 
 typedef enum yc_res_pro_object_item_type {
     YC_RES_PRO_OBJECT_ITEM_ARMOR = 0,
@@ -14,6 +19,10 @@ typedef enum yc_res_pro_object_item_type {
     YC_RES_PRO_OBJECT_ITEM_MISC,
     YC_RES_PRO_OBJECT_ITEM_KEY,
 } yc_res_pro_object_item_type_t;
+
+typedef union yc_res_pro_object_item_type_data {
+    yc_res_pro_object_item_armor_t *armor;
+} yc_res_pro_object_item_type_data_t;
 
 typedef struct yc_res_pro_object_item {
     uint32_t sprite_id, script_id;
@@ -26,7 +35,7 @@ typedef struct yc_res_pro_object_item {
     yc_res_pro_item_attack_t primary, secondary;
 
     yc_res_pro_object_item_type_t type;
-    // TODO: union w/ data
+    yc_res_pro_object_item_type_data_t data;
 } yc_res_pro_object_item_t;
 
 #endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H

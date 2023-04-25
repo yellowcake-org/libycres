@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_MATERIAL_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_MATERIAL_H
+#ifndef LIB_YCRES_PRO_TYPES_COMMON_MATERIAL_H
+#define LIB_YCRES_PRO_TYPES_COMMON_MATERIAL_H
 
 typedef enum yc_res_pro_material {
     YC_RES_MATERIAL_GLASS = 0,
@@ -12,4 +12,4 @@ typedef enum yc_res_pro_material {
     YC_RES_MATERIAL_LEATHER,
 } yc_res_pro_material_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_MATERIAL_H
+#endif //LIB_YCRES_PRO_TYPES_COMMON_MATERIAL_H

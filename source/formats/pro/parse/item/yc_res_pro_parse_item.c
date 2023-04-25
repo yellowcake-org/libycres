@@ -103,7 +103,13 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
             }
         }
             break;
-        case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+        case YC_RES_PRO_OBJECT_ITEM_CONTAINER: {
+            yc_res_pro_status_t status = yc_res_pro_object_item_container_parse(file, io, item);
+            if (YC_RES_PRO_STATUS_OK != status) {
+                yc_res_pro_item_parse_cleanup(item);
+                return status;
+            }
+        }
             break;
         case YC_RES_PRO_OBJECT_ITEM_DRUG:
             break;

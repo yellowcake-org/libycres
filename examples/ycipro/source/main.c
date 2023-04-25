@@ -121,6 +121,10 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("Weight: %d\n", object->data.item->weight);
             printf("Volume: %d\n", object->data.item->volume);
 
+            if (yc_res_pro_is_valid_id(object->data.item->sprite_id)) {
+                printf("Sprite index: %d", yc_res_pro_index_from_id(object->data.item->sprite_id));
+            }
+
             printf("\n");
             printf("Item is ");
             switch (object->data.item->type) {
@@ -131,13 +135,13 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("Perk: %d\n", object->data.item->data.armor->perk);
 
                     printf(
-                            "Male sprite index: %d\n",
+                            "[♂︎] Sprite index: %d\n",
                             yc_res_pro_index_from_id(
                                     object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_MALE]
                             )
                     );
                     printf(
-                            "Female sprite index: %d\n",
+                            "[♀︎] Sprite index: %d\n",
                             yc_res_pro_index_from_id(
                                     object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_FEMALE]
                             )
@@ -188,6 +192,15 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
                     printf("CONTAINER");
+                    printf("\n\n");
+                    printf("Capacity: %d\n", object->data.item->data.container->capacity);
+                    printf("Flags: {\n");
+
+                    if (true == object->data.item->data.container->flags.no_pickup) { printf("no_pickup\n"); }
+                    if (true == object->data.item->data.container->flags.is_grounded) { printf("is_grounded\n"); }
+
+                    printf("}\n");
+                    printf("\n");
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_DRUG:
                     printf("DRUG");

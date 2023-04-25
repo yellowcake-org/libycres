@@ -22,6 +22,7 @@ typedef enum yc_res_pro_object_item_type {
 
 typedef union yc_res_pro_object_item_type_data {
     yc_res_pro_object_item_armor_t *armor;
+    yc_res_pro_object_item_container_t *container;
 } yc_res_pro_object_item_type_data_t;
 
 typedef struct yc_res_pro_object_item {

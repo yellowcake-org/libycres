@@ -127,7 +127,64 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                 case YC_RES_PRO_OBJECT_ITEM_ARMOR:
                     printf("ARMOR");
                     printf("\n\n");
-                    printf("Class: %d", object->data.item->data.armor->class);
+                    printf("Class: %d\n", object->data.item->data.armor->class);
+                    printf("Perk: %d\n", object->data.item->data.armor->perk);
+
+                    printf(
+                            "Male sprite index: %d\n",
+                            yc_res_pro_index_from_id(
+                                    object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_MALE]
+                            )
+                    );
+                    printf(
+                            "Female sprite index: %d\n",
+                            yc_res_pro_index_from_id(
+                                    object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_FEMALE]
+                            )
+                    );
+
+                    printf("\n");
+                    for (yc_res_pro_damage_type_t dmg_idx = 0; dmg_idx < YC_RES_PRO_DAMAGE_TYPE_COUNT; ++dmg_idx) {
+                        switch (dmg_idx) {
+                            case YC_RES_PRO_DAMAGE_TYPE_NORMAL:
+                                printf("DR Normal: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Normal: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_LASER:
+                                printf("DR Laser: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Laser: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_FIRE:
+                                printf("DR Fire: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Fire: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_PLASMA:
+                                printf("DR Plasma: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Plasma: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_ELECTRICAL:
+                                printf("DR Electrical: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Electrical: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_EMP:
+                                printf("DR EMP: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT EMP: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            case YC_RES_PRO_DAMAGE_TYPE_EXPLOSION:
+                                printf("DR Explosion: %d\n", object->data.item->data.armor->resistances[dmg_idx]);
+                                printf("DT Explosion: %d\n", object->data.item->data.armor->thresholds[dmg_idx]);
+                                printf("\n");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
                     printf("CONTAINER");

@@ -23,6 +23,36 @@ yc_res_pro_status_t yc_res_pro_object_item_armor_parse(
     }
     armor->class = yc_res_byteorder_uint32(armor->class);
 
+    if (0 == io->fread(&armor->resistances, YC_RES_PRO_DAMAGE_TYPE_COUNT * sizeof(uint32_t), 1, file)) {
+        yc_res_pro_armor_parse_cleanup(armor);
+        return YC_RES_PRO_STATUS_IO;
+    }
+
+    if (0 == io->fread(&armor->thresholds, sizeof(uint32_t), YC_RES_PRO_DAMAGE_TYPE_COUNT, file)) {
+        yc_res_pro_armor_parse_cleanup(armor);
+        return YC_RES_PRO_STATUS_IO;
+    }
+
+    for (size_t dmg_idx = 0; dmg_idx < YC_RES_PRO_DAMAGE_TYPE_COUNT; ++dmg_idx) {
+        armor->thresholds[dmg_idx] = yc_res_byteorder_uint32(armor->thresholds[dmg_idx]);
+        armor->resistances[dmg_idx] = yc_res_byteorder_uint32(armor->resistances[dmg_idx]);
+    }
+
+    if (0 == io->fread(&armor->perk, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_armor_parse_cleanup(armor);
+        return YC_RES_PRO_STATUS_IO;
+    }
+    armor->perk = yc_res_byteorder_uint32(armor->perk);
+
+    if (0 == io->fread(&armor->sprite_ids, sizeof(uint32_t), YC_RES_PRO_TYPES_GENDER_COUNT, file)) {
+        yc_res_pro_armor_parse_cleanup(armor);
+        return YC_RES_PRO_STATUS_IO;
+    }
+
+    for (size_t gender_idx = 0; gender_idx < YC_RES_PRO_TYPES_GENDER_COUNT; ++gender_idx) {
+        armor->sprite_ids[gender_idx] = yc_res_byteorder_uint32(armor->sprite_ids[gender_idx]);
+    }
+
     into->data.armor = armor;
     return YC_RES_PRO_STATUS_OK;
 }

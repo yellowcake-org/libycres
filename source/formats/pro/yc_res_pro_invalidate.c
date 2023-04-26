@@ -52,4 +52,9 @@ void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
         free(item->data.ammo);
         item->data.ammo = NULL;
     }
+
+    if (NULL != item->data.misc) {
+        free(item->data.misc);
+        item->data.misc = NULL;
+    }
 }

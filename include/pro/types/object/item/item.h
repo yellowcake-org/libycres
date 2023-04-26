@@ -28,6 +28,7 @@ typedef union yc_res_pro_object_item_data {
     yc_res_pro_object_item_drug_t *drug;
     yc_res_pro_object_item_weapon_t *weapon;
     yc_res_pro_object_item_ammo_t *ammo;
+    yc_res_pro_object_item_misc_t *misc;
 } yc_res_pro_object_item_data_t;
 
 typedef struct yc_res_pro_object_item {

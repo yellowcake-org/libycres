@@ -243,7 +243,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("\n");
                     printf("Ammo index: %d\n", weapon->ammo_item_idx);
                     printf("Crit fail index: %d\n", weapon->critical_failure_idx);
-                    printf("Projectile PID: 0x%x\n", weapon->projectile_pid);
+                    printf("Projectile PID: 0x%X\n", weapon->projectile_pid);
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
                     printf("AMMO");
@@ -272,6 +272,9 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
                     printf("KEY");
+                    printf("\n\n");
+
+                    printf("Code: 0x%X\n", object->data.item->data.key->code);
                     break;
             }
         }

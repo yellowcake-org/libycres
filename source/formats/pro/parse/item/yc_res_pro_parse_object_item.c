@@ -137,6 +137,7 @@ yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_p
         case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
             return &yc_res_pro_object_item_misc_parse;
         case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
+            return &yc_res_pro_object_item_key_parse;
         default:
             return NULL;
     }

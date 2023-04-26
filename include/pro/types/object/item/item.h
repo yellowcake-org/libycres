@@ -20,10 +20,11 @@ typedef enum yc_res_pro_object_item_type {
     YC_RES_PRO_OBJECT_ITEM_KEY,
 } yc_res_pro_object_item_type_t;
 
-typedef union yc_res_pro_object_item_type_data {
+typedef union yc_res_pro_object_item_data {
     yc_res_pro_object_item_armor_t *armor;
     yc_res_pro_object_item_container_t *container;
-} yc_res_pro_object_item_type_data_t;
+    yc_res_pro_object_item_drug_t *drug;
+} yc_res_pro_object_item_data_t;
 
 typedef struct yc_res_pro_object_item {
     uint32_t sprite_id, script_id;
@@ -36,7 +37,7 @@ typedef struct yc_res_pro_object_item {
     yc_res_pro_item_attack_t primary, secondary;
 
     yc_res_pro_object_item_type_t type;
-    yc_res_pro_object_item_type_data_t data;
+    yc_res_pro_object_item_data_t data;
 } yc_res_pro_object_item_t;
 
 #endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H

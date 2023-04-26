@@ -17,17 +17,16 @@ typedef enum yc_res_pro_id_type {
     YC_RES_PRO_OBJECT_TYPE_BACKGROUND
 } yc_res_pro_id_type_t;
 
-typedef union yc_res_pro_type_data {
+typedef union yc_res_pro_object_data {
     yc_res_pro_object_item_t *item;
-} yc_res_pro_type_data_t;
+} yc_res_pro_object_data_t;
 
 typedef struct yc_res_pro_object {
     uint32_t proto_id, text_id, sprite_id;
+    yc_res_pro_object_data_t data;
 
     yc_res_pro_lighting_t lighting;
     yc_res_pro_object_flags_t flags;
-
-    yc_res_pro_type_data_t data;
 } yc_res_pro_object_t;
 
 #endif //LIB_YCRES_PRO_TYPES_OBJECT_H

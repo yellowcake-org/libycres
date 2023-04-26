@@ -1,6 +1,7 @@
 #ifndef LIB_YCRES_PRO_TYPES_COMMON_H
 #define LIB_YCRES_PRO_TYPES_COMMON_H
 
+#include "stat/stat.h"
 #include "perk/perk.h"
 #include "damage/damage.h"
 #include "gender/gender.h"

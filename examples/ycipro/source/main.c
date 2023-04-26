@@ -122,7 +122,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("Volume: %d\n", object->data.item->volume);
 
             if (yc_res_pro_is_valid_id(object->data.item->sprite_id)) {
-                printf("Sprite index: %d", yc_res_pro_index_from_id(object->data.item->sprite_id));
+                printf("Sprite index: %d\n", yc_res_pro_index_from_id(object->data.item->sprite_id));
             }
 
             printf("\n");
@@ -204,6 +204,32 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_DRUG:
                     printf("DRUG");
+                    printf("\n\n");
+
+                    yc_res_pro_object_item_drug_t *drug = object->data.item->data.drug;
+
+                    printf("Addiction chance: %d\n", drug->addiction_chance);
+                    printf("Perk: %d\n", drug->withdrawal_perk);
+                    printf("Delay: %d\n", drug->withdrawal_delay);
+
+                    printf("\n");
+                    for (size_t effect_idx = 0; effect_idx < drug->count; ++effect_idx) {
+                        yc_res_pro_object_item_drug_effect_t effect = drug->effects[effect_idx];
+
+                        printf("Effect: %lu\n\n", effect_idx);
+                        printf("Stat: %d\n", effect.stat);
+                        for (size_t mod_idx = 0; mod_idx < 3; ++mod_idx) {
+                            printf("Modifier %lu:\n", mod_idx);
+                            yc_res_pro_object_item_drug_stat_modifier_t mod = effect.modifiers[mod_idx];
+
+                            printf("Delay: %d\n", mod.delay);
+                            printf("Impact: %d", mod.impact.to);
+
+                            if (mod.impact.from > 0) { printf(" to %d\n", mod.impact.to); }
+                            else { printf("\n"); }
+                        }
+                        printf("\n");
+                    }
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_AMMO:
                     printf("AMMO");

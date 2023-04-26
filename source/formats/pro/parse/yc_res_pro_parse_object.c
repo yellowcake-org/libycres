@@ -74,6 +74,8 @@ yc_res_pro_status_t yc_res_pro_object_parse(
     yc_res_pro_parse_flags(flags, object);
 
     yc_res_pro_id_type_t object_type = yc_res_pro_type_from_pid(object->proto_id);
+
+    // TODO: refactor: ptr to parse func
     switch (object_type) {
         case YC_RES_PRO_OBJECT_TYPE_ITEM: {
             yc_res_pro_status_t status = yc_res_pro_object_item_parse(file, io, object);

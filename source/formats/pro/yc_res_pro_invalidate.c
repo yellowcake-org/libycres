@@ -14,6 +14,20 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
 }
 
 void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
+    switch (item->type) {
+        case YC_RES_PRO_OBJECT_ITEM_DRUG: {
+            if (NULL != item->data.drug) {
+                item->data.drug->count = 0;
+
+                free(item->data.drug->effects);
+                item->data.drug->effects = NULL;
+            }
+        }
+            break;
+        default:
+            break;
+    }
+
     if (NULL != item->data.armor) {
         free(item->data.armor);
         item->data.armor = NULL;
@@ -22,5 +36,10 @@ void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
     if (NULL != item->data.container) {
         free(item->data.container);
         item->data.container = NULL;
+    }
+
+    if (NULL != item->data.drug) {
+        free(item->data.drug);
+        item->data.drug = NULL;
     }
 }

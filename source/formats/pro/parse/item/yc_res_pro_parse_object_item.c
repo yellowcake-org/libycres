@@ -133,6 +133,7 @@ yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_p
         case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
             return &yc_res_pro_object_item_weapon_parse;
         case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
+            return &yc_res_pro_object_item_ammo_parse;
         case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
         case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
         default:

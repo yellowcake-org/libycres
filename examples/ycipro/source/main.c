@@ -247,6 +247,18 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
                     printf("AMMO");
+                    printf("\n\n");
+
+                    yc_res_pro_object_item_ammo_t *ammo = object->data.item->data.ammo;
+
+                    printf("Count: %d\n", ammo->count);
+                    printf("Caliber: %d\n", ammo->caliber);
+                    printf("\n");
+                    printf("Armor Class: %d\n", ammo->armor_class);
+                    printf("Damage Resistance: %d\n", ammo->damage_resistance);
+                    printf("\n");
+                    printf("Damage mul: %d\n", ammo->damage_multiplier);
+                    printf("Damage div: %d\n", ammo->damage_divider);
                     break;
                 case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
                     printf("MISC");

@@ -61,9 +61,9 @@ int main(int argc, char *argv[]) {
 }
 
 void ycipro_print_cb(yc_res_pro_object_t *object) {
-    printf("Proto .LST: %u\n", yc_res_pro_index_from_id(object->proto_id));
-    printf("Text .LST: %u\n", yc_res_pro_index_from_id(object->text_id));
-    printf("Sprite .LST: %u\n", yc_res_pro_index_from_id(object->sprite_id));
+    printf("Proto .LST: %u\n", yc_res_pro_index_from_object_id(object->proto_id));
+    printf("Text .LST: %u\n", yc_res_pro_index_from_object_id(object->text_id));
+    printf("Sprite .LST: %u\n", yc_res_pro_index_from_object_id(object->sprite_id));
     printf("\n");
     printf("Light level: %u\n", object->lighting.level);
     printf("Light radius: %u\n", object->lighting.radius);
@@ -113,7 +113,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
     printf("\n");
     printf("Prototype is ");
-    switch (yc_res_pro_type_from_pid(object->proto_id)) {
+    switch (yc_res_pro_object_type_from_pid(object->proto_id)) {
         case YC_RES_PRO_OBJECT_TYPE_ITEM: {
             printf("ITEM");
             printf("\n\n");
@@ -121,8 +121,8 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("Weight: %d\n", object->data.item->weight);
             printf("Volume: %d\n", object->data.item->volume);
 
-            if (yc_res_pro_is_valid_id(object->data.item->sprite_id)) {
-                printf("Sprite index: %d\n", yc_res_pro_index_from_id(object->data.item->sprite_id));
+            if (yc_res_pro_is_valid_object_id(object->data.item->sprite_id)) {
+                printf("Sprite index: %d\n", yc_res_pro_index_from_object_id(object->data.item->sprite_id));
             }
 
             printf("\n");
@@ -136,13 +136,13 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
                     printf(
                             "[♂︎] Sprite index: %d\n",
-                            yc_res_pro_index_from_id(
+                            yc_res_pro_index_from_object_id(
                                     object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_MALE]
                             )
                     );
                     printf(
                             "[♀︎] Sprite index: %d\n",
-                            yc_res_pro_index_from_id(
+                            yc_res_pro_index_from_object_id(
                                     object->data.item->data.armor->sprite_ids[YC_RES_PRO_TYPES_GENDER_FEMALE]
                             )
                     );

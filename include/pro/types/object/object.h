@@ -4,7 +4,7 @@
 #include "flags/flags.h"
 #include "item/item.h"
 
-typedef enum yc_res_pro_id_type {
+typedef enum yc_res_pro_object_type {
     YC_RES_PRO_OBJECT_TYPE_ITEM = 0,
     YC_RES_PRO_OBJECT_TYPE_CRITTER,
     YC_RES_PRO_OBJECT_TYPE_SCENERY,
@@ -15,7 +15,7 @@ typedef enum yc_res_pro_id_type {
     YC_RES_PRO_OBJECT_TYPE_INVENTORY,
     YC_RES_PRO_OBJECT_TYPE_HEAD,
     YC_RES_PRO_OBJECT_TYPE_BACKGROUND
-} yc_res_pro_id_type_t;
+} yc_res_pro_object_type_t;
 
 typedef union yc_res_pro_object_data {
     yc_res_pro_object_item_t *item;

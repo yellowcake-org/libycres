@@ -111,7 +111,7 @@ void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into) {
 }
 
 yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object_t *from) {
-    switch (yc_res_pro_type_from_pid(from->proto_id)) {
+    switch (yc_res_pro_object_type_from_pid(from->proto_id)) {
         case YC_RES_PRO_OBJECT_TYPE_ITEM:
             return &yc_res_pro_object_item_parse;
         case YC_RES_PRO_OBJECT_TYPE_CRITTER:

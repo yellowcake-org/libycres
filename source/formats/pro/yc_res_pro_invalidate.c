@@ -4,7 +4,7 @@
 
 void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
     if (NULL != object->data.item) {
-        if (yc_res_pro_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_ITEM) {
+        if (yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_ITEM) {
             yc_res_pro_object_item_invalidate(object->data.item);
         }
 

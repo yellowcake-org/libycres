@@ -94,31 +94,16 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
         return YC_RES_PRO_STATUS_IO;
     }
 
-    // TODO: refactor: ptr to parse func
+    yc_res_pro_parser_item_data_t *parser = NULL;
     switch (item->type) {
-        case YC_RES_PRO_OBJECT_ITEM_ARMOR: {
-            yc_res_pro_status_t status = yc_res_pro_object_item_armor_parse(file, io, item);
-            if (YC_RES_PRO_STATUS_OK != status) {
-                yc_res_pro_item_parse_cleanup(item);
-                return status;
-            }
-        }
+        case YC_RES_PRO_OBJECT_ITEM_ARMOR:
+            parser = &yc_res_pro_object_item_armor_parse;
             break;
-        case YC_RES_PRO_OBJECT_ITEM_CONTAINER: {
-            yc_res_pro_status_t status = yc_res_pro_object_item_container_parse(file, io, item);
-            if (YC_RES_PRO_STATUS_OK != status) {
-                yc_res_pro_item_parse_cleanup(item);
-                return status;
-            }
-        }
+        case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+            parser = &yc_res_pro_object_item_container_parse;
             break;
-        case YC_RES_PRO_OBJECT_ITEM_DRUG: {
-            yc_res_pro_status_t status = yc_res_pro_object_item_drug_parse(file, io, item);
-            if (YC_RES_PRO_STATUS_OK != status) {
-                yc_res_pro_item_parse_cleanup(item);
-                return status;
-            }
-        }
+        case YC_RES_PRO_OBJECT_ITEM_DRUG:
+            parser = &yc_res_pro_object_item_drug_parse;
             break;
         case YC_RES_PRO_OBJECT_ITEM_AMMO:
             break;
@@ -126,6 +111,12 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
             break;
         case YC_RES_PRO_OBJECT_ITEM_KEY:
             break;
+    }
+
+    yc_res_pro_status_t status = parser(file, io, item);
+    if (YC_RES_PRO_STATUS_OK != status) {
+        yc_res_pro_item_parse_cleanup(item);
+        return status;
     }
 
     yc_res_pro_item_parse_cleanup(NULL);

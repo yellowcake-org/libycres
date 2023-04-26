@@ -97,11 +97,11 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
     chance = yc_res_byteorder_uint32(chance);
     drug->addiction_chance = chance;
 
-    if (0 == io->fread(&drug->withdrawal_perk, sizeof(uint32_t), 1, file)) {
+    if (0 == io->fread(&drug->withdrawal_perk, sizeof(yc_res_pro_perk_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
         return YC_RES_PRO_STATUS_IO;
     }
-    drug->withdrawal_perk = yc_res_byteorder_uint32(drug->withdrawal_perk);
+    drug->withdrawal_perk = yc_res_byteorder_int32(drug->withdrawal_perk);
 
     if (0 == io->fread(&drug->withdrawal_delay, sizeof(uint32_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
@@ -115,6 +115,13 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
 
 void yc_res_pro_drug_parse_cleanup(yc_res_pro_object_item_drug_t *drug) {
     if (NULL != drug) {
+        if (NULL != drug->effects) {
+            drug->count = 0;
+
+            free(drug->effects);
+            drug->effects = NULL;
+        }
+
         free(drug);
     }
 }

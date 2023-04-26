@@ -128,7 +128,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("\n");
             printf("Item is ");
             switch (object->data.item->type) {
-                case YC_RES_PRO_OBJECT_ITEM_ARMOR:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR:
                     printf("ARMOR");
                     printf("\n\n");
                     printf("Class: %d\n", object->data.item->data.armor->class);
@@ -190,7 +190,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                         }
                     }
                     break;
-                case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_CONTAINER:
                     printf("CONTAINER");
                     printf("\n\n");
                     printf("Capacity: %d\n", object->data.item->data.container->capacity);
@@ -202,7 +202,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("}\n");
                     printf("\n");
                     break;
-                case YC_RES_PRO_OBJECT_ITEM_DRUG:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG:
                     printf("DRUG");
                     printf("\n\n");
 
@@ -231,13 +231,27 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                         printf("\n");
                     }
                     break;
-                case YC_RES_PRO_OBJECT_ITEM_AMMO:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
+                    printf("WEAPON");
+                    printf("\n\n");
+
+                    yc_res_pro_object_item_weapon_t *weapon = object->data.item->data.weapon;
+
+                    printf("Min ST: %d\n", weapon->requirement.value);
+                    printf("Capacity: %d\n", weapon->capacity);
+                    printf("Burst: %d\n", weapon->burst);
+                    printf("\n");
+                    printf("Ammo index: %d\n", weapon->ammo_item_idx);
+                    printf("Crit fail index: %d\n", weapon->critical_failure_idx);
+                    printf("Projectile PID: 0x%x\n", weapon->projectile_pid);
+                    break;
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
                     printf("AMMO");
                     break;
-                case YC_RES_PRO_OBJECT_ITEM_MISC:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
                     printf("MISC");
                     break;
-                case YC_RES_PRO_OBJECT_ITEM_KEY:
+                case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
                     printf("KEY");
                     break;
             }

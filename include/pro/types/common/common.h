@@ -5,6 +5,7 @@
 #include "perk/perk.h"
 #include "damage/damage.h"
 #include "gender/gender.h"
+#include "caliber/caliber.h"
 #include "material/material.h"
 #include "lighting/lighting.h"
 

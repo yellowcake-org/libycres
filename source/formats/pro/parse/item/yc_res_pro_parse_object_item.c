@@ -115,8 +115,8 @@ void yc_res_pro_parse_item_flags(const unsigned char bytes[3], yc_res_pro_object
 }
 
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into) {
-    yc_res_pro_item_attack_t first = modes & 0xF;
-    yc_res_pro_item_attack_t second = (modes >> 4) & 0xF;
+    yc_res_pro_object_item_attack_t first = modes & 0xF;
+    yc_res_pro_object_item_attack_t second = (modes >> 4) & 0xF;
 
     into->primary = first;
     into->secondary = second;
@@ -124,15 +124,17 @@ void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_i
 
 yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_t *from) {
     switch (from->type) {
-        case YC_RES_PRO_OBJECT_ITEM_ARMOR:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR:
             return &yc_res_pro_object_item_armor_parse;
-        case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_CONTAINER:
             return &yc_res_pro_object_item_container_parse;
-        case YC_RES_PRO_OBJECT_ITEM_DRUG:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG:
             return &yc_res_pro_object_item_drug_parse;
-        case YC_RES_PRO_OBJECT_ITEM_AMMO:
-        case YC_RES_PRO_OBJECT_ITEM_MISC:
-        case YC_RES_PRO_OBJECT_ITEM_KEY:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
+            return &yc_res_pro_object_item_weapon_parse;
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
         default:
             return NULL;
     }

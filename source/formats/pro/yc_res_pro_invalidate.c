@@ -15,7 +15,7 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
 
 void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
     switch (item->type) {
-        case YC_RES_PRO_OBJECT_ITEM_DRUG: {
+        case YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG: {
             if (NULL != item->data.drug) {
                 item->data.drug->count = 0;
 
@@ -41,5 +41,10 @@ void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
     if (NULL != item->data.drug) {
         free(item->data.drug);
         item->data.drug = NULL;
+    }
+
+    if (NULL != item->data.weapon) {
+        free(item->data.weapon);
+        item->data.weapon = NULL;
     }
 }

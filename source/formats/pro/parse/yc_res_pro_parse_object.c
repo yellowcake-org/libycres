@@ -7,6 +7,8 @@
 
 void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into);
 
+yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object_t *from);
+
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object);
 
 yc_res_pro_status_t yc_res_pro_object_parse(
@@ -73,36 +75,12 @@ yc_res_pro_status_t yc_res_pro_object_parse(
     flags = yc_res_byteorder_uint32(flags);
     yc_res_pro_parse_flags(flags, object);
 
-    yc_res_pro_id_type_t object_type = yc_res_pro_type_from_pid(object->proto_id);
+    yc_res_pro_object_data_parser_t *parser = yc_res_pro_object_data_parser(object);
+    yc_res_pro_status_t status = parser(file, io, object);
 
-    // TODO: refactor: ptr to parse func
-    switch (object_type) {
-        case YC_RES_PRO_OBJECT_TYPE_ITEM: {
-            yc_res_pro_status_t status = yc_res_pro_object_item_parse(file, io, object);
-            if (YC_RES_PRO_STATUS_OK != status) {
-                yc_res_pro_parse_cleanup(file, io, object);
-                return status;
-            }
-        }
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_CRITTER:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_SCENERY:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_WALL:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_TILE:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_MISC:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_INTERFACE:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_INVENTORY:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_HEAD:
-            break;
-        case YC_RES_PRO_OBJECT_TYPE_BACKGROUND:
-            break;
+    if (YC_RES_PRO_STATUS_OK != status) {
+        yc_res_pro_parse_cleanup(file, io, object);
+        return status;
     }
 
     yc_res_pro_parse_cleanup(file, io, NULL);
@@ -130,6 +108,20 @@ void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into) {
     if (0x00040000 == (flags & 0x00040000)) { into->flags.transparency = YC_RES_PRO_TRANS_STEAM; }
     if (0x00080000 == (flags & 0x00080000)) { into->flags.transparency = YC_RES_PRO_TRANS_ENERGY; }
     if (0x10000000 == (flags & 0x10000000)) { into->flags.transparency = YC_RES_PRO_TRANS_WALL_END; }
+}
+
+yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object_t *from) {
+    switch (yc_res_pro_type_from_pid(from->proto_id)) {
+        case YC_RES_PRO_OBJECT_TYPE_ITEM:
+            return &yc_res_pro_object_item_parse;
+        case YC_RES_PRO_OBJECT_TYPE_CRITTER:
+        case YC_RES_PRO_OBJECT_TYPE_SCENERY:
+        case YC_RES_PRO_OBJECT_TYPE_WALL:
+        case YC_RES_PRO_OBJECT_TYPE_TILE:
+        case YC_RES_PRO_OBJECT_TYPE_MISC:
+        default:
+            return NULL;
+    }
 }
 
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object) {

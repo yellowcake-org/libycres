@@ -20,7 +20,6 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
     typedef struct _yc_res_pro_object_item_drug_raw {
         int32_t stat[3];
 
-        // "delay0" is always 0
         int32_t amount0[3];
 
         uint32_t delay1;
@@ -83,8 +82,7 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
             modifier->delay = delays[modifier_idx];
 
             modifier->impact.to = amounts[modifier_idx][stat_idx];
-            if (is_ranged) { modifier->impact.from = amounts[modifier_idx][stat_idx - 1]; }
-            else { modifier->impact.from = 0; }
+            modifier->impact.from = is_ranged ? amounts[modifier_idx][stat_idx - 1] : 0;
         }
     }
 

@@ -9,6 +9,8 @@ void yc_res_pro_parse_item_flags(const unsigned char bytes[3], yc_res_pro_object
 
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into);
 
+_yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_type_t from);
+
 void yc_res_pro_item_parse_cleanup(yc_res_pro_object_item_t *item);
 
 yc_res_pro_status_t yc_res_pro_object_item_parse(
@@ -94,26 +96,9 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
         return YC_RES_PRO_STATUS_IO;
     }
 
-    yc_res_pro_parser_item_data_t *parser = NULL;
-    switch (item->type) {
-        case YC_RES_PRO_OBJECT_ITEM_ARMOR:
-            parser = &yc_res_pro_object_item_armor_parse;
-            break;
-        case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
-            parser = &yc_res_pro_object_item_container_parse;
-            break;
-        case YC_RES_PRO_OBJECT_ITEM_DRUG:
-            parser = &yc_res_pro_object_item_drug_parse;
-            break;
-        case YC_RES_PRO_OBJECT_ITEM_AMMO:
-            break;
-        case YC_RES_PRO_OBJECT_ITEM_MISC:
-            break;
-        case YC_RES_PRO_OBJECT_ITEM_KEY:
-            break;
-    }
-
+    _yc_res_pro_object_item_data_parser_t *parser = yc_res_pro_parse_item_data_parser(item->type);
     yc_res_pro_status_t status = parser(file, io, item);
+
     if (YC_RES_PRO_STATUS_OK != status) {
         yc_res_pro_item_parse_cleanup(item);
         return status;
@@ -135,6 +120,25 @@ void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_i
 
     into->primary = first;
     into->secondary = second;
+}
+
+_yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_type_t from) {
+    switch (from) {
+        case YC_RES_PRO_OBJECT_ITEM_ARMOR:
+            return &yc_res_pro_object_item_armor_parse;
+        case YC_RES_PRO_OBJECT_ITEM_CONTAINER:
+            return &yc_res_pro_object_item_container_parse;
+        case YC_RES_PRO_OBJECT_ITEM_DRUG:
+            return &yc_res_pro_object_item_drug_parse;
+        case YC_RES_PRO_OBJECT_ITEM_AMMO: {
+        }
+        case YC_RES_PRO_OBJECT_ITEM_MISC: {
+        }
+        case YC_RES_PRO_OBJECT_ITEM_KEY: {
+        }
+        default:
+            return NULL;
+    }
 }
 
 void yc_res_pro_item_parse_cleanup(yc_res_pro_object_item_t *item) {

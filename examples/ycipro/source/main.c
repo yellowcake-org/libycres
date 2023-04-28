@@ -382,6 +382,8 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             break;
         case YC_RES_PRO_OBJECT_TYPE_MISC:
             printf("MISC");
+            printf("\n\n");
+            printf("Unknown: 0x%X\n", object->data.misc->_unknown);
             break;
         case YC_RES_PRO_OBJECT_TYPE_INTERFACE:
             printf("INTERFACE");

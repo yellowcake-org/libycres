@@ -8,6 +8,7 @@
 #include "scenery/scenery.h"
 #include "wall/wall.h"
 #include "tile/tile.h"
+#include "misc/misc.h"
 
 typedef enum yc_res_pro_object_type {
     YC_RES_PRO_OBJECT_TYPE_ITEM = 0,
@@ -28,6 +29,7 @@ typedef union yc_res_pro_object_data {
     yc_res_pro_object_scenery_t *scenery;
     yc_res_pro_object_wall_t *wall;
     yc_res_pro_object_tile_t *tile;
+    yc_res_pro_object_misc_t *misc;
 } yc_res_pro_object_data_t;
 
 typedef struct yc_res_pro_object {

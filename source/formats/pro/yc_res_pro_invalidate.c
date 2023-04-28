@@ -34,6 +34,11 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
         free(object->data.tile);
         object->data.tile = NULL;
     }
+
+    if (NULL != object->data.misc) {
+        free(object->data.misc);
+        object->data.misc = NULL;
+    }
 }
 
 void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object) {

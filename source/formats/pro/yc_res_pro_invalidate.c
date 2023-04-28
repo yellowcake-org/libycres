@@ -85,5 +85,10 @@ void yc_res_pro_object_scenery_invalidate(yc_res_pro_object_scenery_t *scenery) 
         free(scenery->data.stairs);
         scenery->data.stairs = NULL;
     }
+
+    if (NULL != scenery->data.elevator) {
+        free(scenery->data.elevator);
+        scenery->data.elevator = NULL;
+    }
 }
 

@@ -3,6 +3,7 @@
 
 #include "door/door.h"
 #include "stairs/stairs.h"
+#include "elevator/elevator.h"
 
 typedef enum yc_res_pro_object_scenery_type {
     YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR,
@@ -16,6 +17,7 @@ typedef enum yc_res_pro_object_scenery_type {
 typedef union yc_res_pro_object_scenery_data {
     yc_res_pro_object_scenery_door_t *door;
     yc_res_pro_object_scenery_stairs_t *stairs;
+    yc_res_pro_object_scenery_elevator_t *elevator;
 } yc_res_pro_object_scenery_data_t;
 
 typedef struct yc_res_pro_object_scenery {

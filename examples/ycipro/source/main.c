@@ -281,6 +281,19 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             break;
         case YC_RES_PRO_OBJECT_TYPE_CRITTER:
             printf("CRITTER");
+            printf("\n\n");
+
+            yc_res_pro_object_critter_t *critter = object->data.critter;
+
+            printf("Head FID: 0x%X\n", critter->sprite_id);
+            printf("Team index: %d\n", critter->team_idx);
+            printf("\n");
+            printf("Script type: %d\n", yc_res_pro_script_type_from_sid(critter->script_id));
+            printf("Script index: %d\n", yc_res_pro_index_from_script_id(critter->script_id));
+            printf("\n");
+            printf("Body type: %d\n", critter->body);
+            printf("Kill type: %d\n", critter->kill_type);
+            printf("Kill reward: %d\n", critter->kill_reward);
             break;
         case YC_RES_PRO_OBJECT_TYPE_SCENERY:
             printf("SCENERY");

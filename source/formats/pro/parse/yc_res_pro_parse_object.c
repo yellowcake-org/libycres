@@ -115,6 +115,7 @@ yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object
         case YC_RES_PRO_OBJECT_TYPE_ITEM:
             return &yc_res_pro_object_item_parse;
         case YC_RES_PRO_OBJECT_TYPE_CRITTER:
+            return &yc_res_pro_object_critter_parse;
         case YC_RES_PRO_OBJECT_TYPE_SCENERY:
         case YC_RES_PRO_OBJECT_TYPE_WALL:
         case YC_RES_PRO_OBJECT_TYPE_TILE:

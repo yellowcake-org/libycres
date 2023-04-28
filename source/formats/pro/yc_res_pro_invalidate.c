@@ -2,14 +2,35 @@
 
 #include <stdlib.h>
 
-void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
-    if (NULL != object->data.item) {
-        if (yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_ITEM) {
-            yc_res_pro_object_item_invalidate(object->data.item);
-        }
+void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object);
 
+void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item);
+void yc_res_pro_object_critter_invalidate(yc_res_pro_object_critter_t *critter);
+
+void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
+    yc_res_pro_object_invalidate_data(object);
+
+    if (NULL != object->data.item) {
         free(object->data.item);
         object->data.item = NULL;
+    }
+
+    if (NULL != object->data.critter) {
+        free(object->data.critter);
+        object->data.critter = NULL;
+    }
+}
+
+void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object) {
+    switch (yc_res_pro_object_type_from_pid(object->proto_id)) {
+        case YC_RES_PRO_OBJECT_TYPE_ITEM:
+            if (NULL != object->data.item) { yc_res_pro_object_item_invalidate(object->data.item); }
+            break;
+        case YC_RES_PRO_OBJECT_TYPE_CRITTER:
+            if (NULL != object->data.critter) { yc_res_pro_object_critter_invalidate(object->data.critter); }
+            break;
+        default:
+            break;
     }
 }
 
@@ -63,3 +84,10 @@ void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
         item->data.key = NULL;
     }
 }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
+void yc_res_pro_object_critter_invalidate(yc_res_pro_object_critter_t *critter) {
+    //
+}
+#pragma clang diagnostic pop

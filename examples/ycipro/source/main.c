@@ -121,7 +121,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             printf("Weight: %d\n", object->data.item->weight);
             printf("Volume: %d\n", object->data.item->volume);
 
-            if (yc_res_pro_is_valid_object_id(object->data.item->sprite_id)) {
+            if (yc_res_pro_is_valid_id(object->data.item->sprite_id)) {
                 printf("Sprite index: %d\n", yc_res_pro_index_from_object_id(object->data.item->sprite_id));
             }
 
@@ -302,7 +302,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             yc_res_pro_object_scenery_t *scenery = object->data.scenery;
 
             printf("Material: %d\n", scenery->material);
-            if (yc_res_pro_is_valid_script_id(scenery->script_id)) {
+            if (yc_res_pro_is_valid_id(scenery->script_id)) {
                 printf("Script type: %d\n", yc_res_pro_script_type_from_sid(scenery->script_id));
                 printf("Script index: %d\n", yc_res_pro_index_from_script_id(scenery->script_id));
             }
@@ -317,6 +317,17 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("Passable: %d\n", scenery->data.door->is_passable);
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS:
+                    printf("STAIRS");
+
+                    yc_res_pro_object_scenery_stairs_t *stairs = scenery->data.stairs;
+
+                    if (yc_res_pro_is_valid_id(stairs->map_id)) {
+                        printf("\n\n");
+                        printf("Map ID: 0x%X\n", stairs->map_id);
+                        printf("Destination tile: %d\n", scenery->data.stairs->destination.tile_idx);
+                        printf("Destination elevation: %d\n", scenery->data.stairs->destination.elevation_idx);
+                        printf("Destination orientation: %d\n", scenery->data.stairs->destination.orientation);
+                    }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR:
                     break;

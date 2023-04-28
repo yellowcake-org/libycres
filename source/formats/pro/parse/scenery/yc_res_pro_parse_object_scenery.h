@@ -10,5 +10,6 @@ typedef yc_res_pro_status_t (yc_res_pro_object_scenery_data_parser_t)(
 );
 
 yc_res_pro_object_scenery_data_parser_t yc_res_pro_object_scenery_door_parse;
+yc_res_pro_object_scenery_data_parser_t yc_res_pro_object_scenery_stairs_parse;
 
 #endif //LIB_YCRES_PRO_PARSE_OBJECT_SCENERY_H

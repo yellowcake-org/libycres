@@ -1,8 +1,7 @@
 #ifndef LIB_YCRES_PRO_METHODS_H
 #define LIB_YCRES_PRO_METHODS_H
 
-bool yc_res_pro_is_valid_object_id(uint32_t any_id);
-bool yc_res_pro_is_valid_script_id(uint32_t script_id);
+bool yc_res_pro_is_valid_id(uint32_t any_id);
 
 uint16_t yc_res_pro_index_from_object_id(uint32_t any_id);
 uint16_t yc_res_pro_index_from_script_id(uint32_t script_id);

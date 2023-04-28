@@ -21,8 +21,8 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
     }
 
     if (NULL != object->data.scenery) {
-        free(object->data.critter);
-        object->data.critter = NULL;
+        free(object->data.scenery);
+        object->data.scenery = NULL;
     }
 }
 
@@ -79,6 +79,11 @@ void yc_res_pro_object_scenery_invalidate(yc_res_pro_object_scenery_t *scenery) 
     if (NULL != scenery->data.door) {
         free(scenery->data.door);
         scenery->data.door = NULL;
+    }
+
+    if (NULL != scenery->data.stairs) {
+        free(scenery->data.stairs);
+        scenery->data.stairs = NULL;
     }
 }
 

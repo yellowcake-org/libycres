@@ -29,6 +29,11 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
         free(object->data.wall);
         object->data.wall = NULL;
     }
+
+    if (NULL != object->data.tile) {
+        free(object->data.tile);
+        object->data.tile = NULL;
+    }
 }
 
 void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object) {

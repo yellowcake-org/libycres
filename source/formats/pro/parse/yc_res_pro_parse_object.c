@@ -121,6 +121,7 @@ yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object
         case YC_RES_PRO_OBJECT_TYPE_WALL:
             return &yc_res_pro_object_wall_parse;
         case YC_RES_PRO_OBJECT_TYPE_TILE:
+            return &yc_res_pro_object_tile_parse;
         case YC_RES_PRO_OBJECT_TYPE_MISC:
         default:
             return NULL;

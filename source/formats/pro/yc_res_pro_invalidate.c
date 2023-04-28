@@ -5,6 +5,7 @@
 void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object);
 
 void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item);
+void yc_res_pro_object_scenery_invalidate(yc_res_pro_object_scenery_t *scenery);
 
 void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
     yc_res_pro_object_invalidate_data(object);
@@ -30,6 +31,8 @@ void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object) {
         case YC_RES_PRO_OBJECT_TYPE_ITEM:
             if (NULL != object->data.item) { yc_res_pro_object_item_invalidate(object->data.item); }
             break;
+        case YC_RES_PRO_OBJECT_TYPE_SCENERY:
+            if (NULL != object->data.scenery) { yc_res_pro_object_scenery_invalidate(object->data.scenery); }
         default:
             break;
     }
@@ -71,3 +74,11 @@ void yc_res_pro_object_item_invalidate(yc_res_pro_object_item_t *item) {
         item->data.key = NULL;
     }
 }
+
+void yc_res_pro_object_scenery_invalidate(yc_res_pro_object_scenery_t *scenery) {
+    if (NULL != scenery->data.door) {
+        free(scenery->data.door);
+        scenery->data.door = NULL;
+    }
+}
+

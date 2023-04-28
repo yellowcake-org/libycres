@@ -1,6 +1,8 @@
 #ifndef LIB_YCRES_PRO_TYPES_OBJECT_SCENERY_H
 #define LIB_YCRES_PRO_TYPES_OBJECT_SCENERY_H
 
+#include "door/door.h"
+
 typedef enum yc_res_pro_object_scenery_type {
     YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR,
     YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS,
@@ -10,13 +12,9 @@ typedef enum yc_res_pro_object_scenery_type {
     YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC,
 } yc_res_pro_object_scenery_type_t;
 
-//typedef union yc_res_pro_object_scenery_data {
-//
-//} yc_res_pro_object_scenery_data_t;
-
-uint8_t yc_res_pro_object_scenery_rotation_from_id(uint32_t destination_id);
-uint8_t yc_res_pro_object_scenery_elevation_from_id(uint32_t destination_id);
-uint16_t yc_res_pro_object_scenery_tile_from_id(uint32_t destination_id);
+typedef union yc_res_pro_object_scenery_data {
+    yc_res_pro_object_scenery_door_t *door;
+} yc_res_pro_object_scenery_data_t;
 
 typedef struct yc_res_pro_object_scenery {
     uint64_t script_id;
@@ -27,7 +25,7 @@ typedef struct yc_res_pro_object_scenery {
     yc_res_pro_light_passage_t light;
 
     yc_res_pro_object_scenery_type_t type;
-    // data
+    yc_res_pro_object_scenery_data_t data;
 } yc_res_pro_object_scenery_t;
 
 #endif //LIB_YCRES_PRO_TYPES_OBJECT_SCENERY_H

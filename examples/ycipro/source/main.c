@@ -306,6 +306,28 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                 printf("Script type: %d\n", yc_res_pro_script_type_from_sid(scenery->script_id));
                 printf("Script index: %d\n", yc_res_pro_index_from_script_id(scenery->script_id));
             }
+
+            printf("\n");
+            printf("Scenery is ");
+
+            switch (scenery->type) {
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR:
+                    printf("DOOR");
+                    printf("\n\n");
+                    printf("Passable: %d\n", scenery->data.door->is_passable);
+                    break;
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS:
+                    break;
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR:
+                    break;
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM:
+                    break;
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP:
+                    break;
+                case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
+                    break;
+            }
+
             break;
         case YC_RES_PRO_OBJECT_TYPE_WALL:
             printf("WALL");

@@ -332,8 +332,24 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR:
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM:
+                    printf("LADDER BOTTOM");
+
+                    if (yc_res_pro_is_valid_destination(scenery->data.ladder_bottom->destination)) {
+                        printf("\n\n");
+                        printf("Destination tile: %d\n", scenery->data.ladder_bottom->destination.tile_idx);
+                        printf("Destination elevation: %d\n", scenery->data.ladder_bottom->destination.elevation_idx);
+                        printf("Destination orientation: %d\n", scenery->data.ladder_bottom->destination.orientation);
+                    }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP:
+                    printf("LADDER TOP");
+
+                    if (yc_res_pro_is_valid_destination(scenery->data.ladder_top->destination)) {
+                        printf("\n\n");
+                        printf("Destination tile: %d\n", scenery->data.ladder_top->destination.tile_idx);
+                        printf("Destination elevation: %d\n", scenery->data.ladder_top->destination.elevation_idx);
+                        printf("Destination orientation: %d\n", scenery->data.ladder_top->destination.orientation);
+                    }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
                     break;

@@ -12,12 +12,10 @@ typedef enum yc_res_pro_object_transparency {
 } yc_res_pro_object_transparency_t;
 
 typedef struct yc_res_pro_object_flags {
-    bool multi_hex;
+    bool is_flat: 1, multi_hex: 1;
 
-    bool no_block, no_border;
-    bool light_through, shoot_through;
-
-    bool is_flat;
+    bool no_block: 1, no_border: 1;
+    bool light_through: 1, shoot_through: 1;
 
     yc_res_pro_object_transparency_t transparency;
 } yc_res_pro_object_flags_t;

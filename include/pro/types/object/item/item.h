@@ -1,7 +1,6 @@
 #ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
 #define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
 
-#include "flags/flags.h"
 #include "attacks/attacks.h"
 
 #include "armor/armor.h"
@@ -13,7 +12,7 @@
 #include "key/key.h"
 
 typedef enum yc_res_pro_object_item_type {
-    YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR = 0,
+    YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR,
     YC_RES_PRO_OBJECT_ITEM_TYPE_CONTAINER,
     YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG,
     YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON,
@@ -39,8 +38,9 @@ typedef struct yc_res_pro_object_item {
     uint32_t volume, weight, cost;
     yc_res_pro_material_t material;
 
-    yc_res_pro_item_flags_t flags;
-    yc_res_pro_object_item_attack_t primary, secondary;
+    yc_res_pro_action_flags_t action_flags;
+    yc_res_pro_weapon_flags_t weapon_flags;
+    yc_res_pro_object_item_attack_t modes[2];
 
     yc_res_pro_object_item_type_t type;
     yc_res_pro_object_item_data_t data;

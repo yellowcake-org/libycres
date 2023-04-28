@@ -9,5 +9,5 @@ yc_res_pro_object_type_t yc_res_pro_object_type_from_fid(uint32_t sprite_id) {
 }
 
 yc_res_pro_script_type_t yc_res_pro_script_type_from_sid(uint32_t script_id) {
-    return (script_id & 0xFF00000) >> 24;
+    return script_id >> 24;
 }

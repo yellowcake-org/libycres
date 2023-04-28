@@ -5,6 +5,7 @@
 
 #include "item/item.h"
 #include "critter/critter.h"
+#include "scenery/scenery.h"
 
 typedef enum yc_res_pro_object_type {
     YC_RES_PRO_OBJECT_TYPE_ITEM = 0,
@@ -22,13 +23,14 @@ typedef enum yc_res_pro_object_type {
 typedef union yc_res_pro_object_data {
     yc_res_pro_object_item_t *item;
     yc_res_pro_object_critter_t *critter;
+    yc_res_pro_object_scenery_t *scenery;
 } yc_res_pro_object_data_t;
 
 typedef struct yc_res_pro_object {
     uint32_t proto_id, text_id, sprite_id;
     yc_res_pro_object_data_t data;
 
-    yc_res_pro_lighting_t lighting;
+    yc_res_pro_light_source_t lighting;
     yc_res_pro_object_flags_t flags;
 } yc_res_pro_object_t;
 

@@ -4,6 +4,7 @@
 #include "stat/stat.h"
 #include "perk/perk.h"
 #include "skill/skill.h"
+#include "flags/flags.h"
 #include "damage/damage.h"
 #include "gender/gender.h"
 #include "caliber/caliber.h"

@@ -2,10 +2,9 @@
 #include <private.h>
 
 #include "yc_res_pro_parse_object_item.h"
+#include "../flags/yc_res_pro_parse_object_flags.h"
 
 #include <stdlib.h>
-
-void yc_res_pro_parse_item_flags(const unsigned char bytes[3], yc_res_pro_object_item_t *into);
 
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into);
 
@@ -30,7 +29,9 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
-    yc_res_pro_parse_item_flags(flags_bytes, item);
+
+    yc_res_pro_parse_action_flags(flags_bytes[0], &item->action_flags);
+    yc_res_pro_parse_weapon_flags(flags_bytes[0], &item->weapon_flags);
 
     unsigned char attack_modes;
     if (0 == io->fread(&attack_modes, 1, 1, file)) {
@@ -110,16 +111,9 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     return YC_RES_PRO_STATUS_OK;
 }
 
-void yc_res_pro_parse_item_flags(const unsigned char bytes[3], yc_res_pro_object_item_t *into) {
-    into->flags.is_hidden = (bytes[0] & 0x08) == 0x08;
-}
-
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into) {
-    yc_res_pro_object_item_attack_t first = modes & 0xF;
-    yc_res_pro_object_item_attack_t second = (modes >> 4) & 0xF;
-
-    into->primary = first;
-    into->secondary = second;
+    into->modes[0] = modes & 0xF;
+    into->modes[1] = (modes >> 4) & 0xF;
 }
 
 yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_t *from) {

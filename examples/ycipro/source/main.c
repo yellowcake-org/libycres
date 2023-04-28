@@ -364,6 +364,15 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             break;
         case YC_RES_PRO_OBJECT_TYPE_WALL:
             printf("WALL");
+            printf("\n\n");
+
+            yc_res_pro_object_wall_t *wall = object->data.wall;
+
+            printf("Material: %d\n", wall->material);
+            if (yc_res_pro_is_valid_id(wall->script_id)) {
+                printf("Script type: %d\n", yc_res_pro_script_type_from_sid(wall->script_id));
+                printf("Script index: %d\n", yc_res_pro_index_from_script_id(wall->script_id));
+            }
             break;
         case YC_RES_PRO_OBJECT_TYPE_TILE:
             printf("TILE");

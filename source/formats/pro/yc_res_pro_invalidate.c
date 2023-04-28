@@ -24,6 +24,11 @@ void yc_res_pro_object_invalidate(yc_res_pro_object_t *object) {
         free(object->data.scenery);
         object->data.scenery = NULL;
     }
+
+    if (NULL != object->data.wall) {
+        free(object->data.wall);
+        object->data.wall = NULL;
+    }
 }
 
 void yc_res_pro_object_invalidate_data(yc_res_pro_object_t *object) {

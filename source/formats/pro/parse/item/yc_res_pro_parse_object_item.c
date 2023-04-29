@@ -8,8 +8,6 @@
 
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into);
 
-yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_t *from);
-
 void yc_res_pro_item_parse_cleanup(yc_res_pro_object_item_t *item);
 
 yc_res_pro_status_t yc_res_pro_object_item_parse(
@@ -97,8 +95,18 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
         return YC_RES_PRO_STATUS_IO;
     }
 
-    yc_res_pro_object_item_data_parser_t *parser = yc_res_pro_parse_item_data_parser(item);
-    yc_res_pro_status_t status = parser(file, io, item);
+    yc_res_pro_object_item_data_parser_t *all[] = {
+            &yc_res_pro_object_item_armor_parse,
+            &yc_res_pro_object_item_container_parse,
+            &yc_res_pro_object_item_drug_parse,
+            &yc_res_pro_object_item_weapon_parse,
+            &yc_res_pro_object_item_ammo_parse,
+            &yc_res_pro_object_item_misc_parse,
+            &yc_res_pro_object_item_key_parse
+    };
+
+    yc_res_pro_object_item_data_parser_t *fitting = all[item->type];
+    yc_res_pro_status_t status = fitting(file, io, item);
 
     if (YC_RES_PRO_STATUS_OK != status) {
         yc_res_pro_item_parse_cleanup(item);
@@ -114,27 +122,6 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
 void yc_res_pro_parse_item_attack_modes(unsigned char modes, yc_res_pro_object_item_t *into) {
     into->modes[0] = modes & 0xF;
     into->modes[1] = (modes >> 4) & 0xF;
-}
-
-yc_res_pro_object_item_data_parser_t *yc_res_pro_parse_item_data_parser(yc_res_pro_object_item_t *from) {
-    switch (from->type) {
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR:
-            return &yc_res_pro_object_item_armor_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_CONTAINER:
-            return &yc_res_pro_object_item_container_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG:
-            return &yc_res_pro_object_item_drug_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
-            return &yc_res_pro_object_item_weapon_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO:
-            return &yc_res_pro_object_item_ammo_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_MISC:
-            return &yc_res_pro_object_item_misc_parse;
-        case YC_RES_PRO_OBJECT_ITEM_TYPE_KEY:
-            return &yc_res_pro_object_item_key_parse;
-        default:
-            return NULL;
-    }
 }
 
 void yc_res_pro_item_parse_cleanup(yc_res_pro_object_item_t *item) {

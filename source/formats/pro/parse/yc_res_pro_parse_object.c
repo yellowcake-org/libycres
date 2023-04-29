@@ -6,9 +6,6 @@
 #include <stdlib.h>
 
 void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into);
-
-yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object_t *from);
-
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object);
 
 yc_res_pro_status_t yc_res_pro_object_parse(
@@ -75,8 +72,17 @@ yc_res_pro_status_t yc_res_pro_object_parse(
     flags = yc_res_byteorder_uint32(flags);
     yc_res_pro_parse_flags(flags, object);
 
-    yc_res_pro_object_data_parser_t *parser = yc_res_pro_object_data_parser(object);
-    yc_res_pro_status_t status = parser(file, io, object);
+    yc_res_pro_object_data_parser_t *all[] = {
+            &yc_res_pro_object_item_parse,
+            &yc_res_pro_object_critter_parse,
+            &yc_res_pro_object_scenery_parse,
+            &yc_res_pro_object_wall_parse,
+            &yc_res_pro_object_tile_parse,
+            &yc_res_pro_object_misc_parse
+    };
+
+    yc_res_pro_object_data_parser_t *fitting = all[yc_res_pro_object_type_from_pid(object->proto_id)];
+    yc_res_pro_status_t status = fitting(file, io, object);
 
     if (YC_RES_PRO_STATUS_OK != status) {
         yc_res_pro_parse_cleanup(file, io, object);
@@ -108,25 +114,6 @@ void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into) {
     if (0x00040000 == (flags & 0x00040000)) { into->flags.transparency = YC_RES_PRO_TRANS_STEAM; }
     if (0x00080000 == (flags & 0x00080000)) { into->flags.transparency = YC_RES_PRO_TRANS_ENERGY; }
     if (0x10000000 == (flags & 0x10000000)) { into->flags.transparency = YC_RES_PRO_TRANS_WALL_END; }
-}
-
-yc_res_pro_object_data_parser_t *yc_res_pro_object_data_parser(yc_res_pro_object_t *from) {
-    switch (yc_res_pro_object_type_from_pid(from->proto_id)) {
-        case YC_RES_PRO_OBJECT_TYPE_ITEM:
-            return &yc_res_pro_object_item_parse;
-        case YC_RES_PRO_OBJECT_TYPE_CRITTER:
-            return &yc_res_pro_object_critter_parse;
-        case YC_RES_PRO_OBJECT_TYPE_SCENERY:
-            return &yc_res_pro_object_scenery_parse;
-        case YC_RES_PRO_OBJECT_TYPE_WALL:
-            return &yc_res_pro_object_wall_parse;
-        case YC_RES_PRO_OBJECT_TYPE_TILE:
-            return &yc_res_pro_object_tile_parse;
-        case YC_RES_PRO_OBJECT_TYPE_MISC:
-            return &yc_res_pro_object_misc_parse;
-        default:
-            return NULL;
-    }
 }
 
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object) {

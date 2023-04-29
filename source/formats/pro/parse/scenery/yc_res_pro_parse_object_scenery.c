@@ -6,7 +6,6 @@
 
 #include <stdlib.h>
 
-yc_res_pro_object_scenery_data_parser_t *yc_res_pro_parse_scenery_data_parser(yc_res_pro_object_scenery_t *from);
 void yc_res_pro_scenery_parse_cleanup(yc_res_pro_object_scenery_t *scenery);
 
 yc_res_pro_status_t yc_res_pro_object_scenery_parse(
@@ -53,8 +52,18 @@ yc_res_pro_status_t yc_res_pro_object_scenery_parse(
         return YC_RES_PRO_STATUS_IO;
     }
 
-    yc_res_pro_object_scenery_data_parser_t *parser = yc_res_pro_parse_scenery_data_parser(scenery);
-    yc_res_pro_status_t status = parser(file, io, scenery);
+
+    yc_res_pro_object_scenery_data_parser_t *all[] = {
+            &yc_res_pro_object_scenery_door_parse,
+            &yc_res_pro_object_scenery_stairs_parse,
+            &yc_res_pro_object_scenery_elevator_parse,
+            &yc_res_pro_object_scenery_ladder_bottom_parse,
+            &yc_res_pro_object_scenery_ladder_top_parse,
+            &yc_res_pro_object_scenery_generic_parse,
+    };
+
+    yc_res_pro_object_scenery_data_parser_t *fitting = all[scenery->type];
+    yc_res_pro_status_t status = fitting(file, io, scenery);
 
     if (YC_RES_PRO_STATUS_OK != status) {
         yc_res_pro_scenery_parse_cleanup(scenery);
@@ -65,25 +74,6 @@ yc_res_pro_status_t yc_res_pro_object_scenery_parse(
 
     into->data.scenery = scenery;
     return YC_RES_PRO_STATUS_OK;
-}
-
-yc_res_pro_object_scenery_data_parser_t *yc_res_pro_parse_scenery_data_parser(yc_res_pro_object_scenery_t *from) {
-    switch (from->type) {
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR:
-            return &yc_res_pro_object_scenery_door_parse;
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS:
-            return &yc_res_pro_object_scenery_stairs_parse;
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR:
-            return &yc_res_pro_object_scenery_elevator_parse;
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM:
-            return &yc_res_pro_object_scenery_ladder_bottom_parse;
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP:
-            return &yc_res_pro_object_scenery_ladder_top_parse;
-        case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
-            return &yc_res_pro_object_scenery_generic_parse;
-        default:
-            return NULL;
-    }
 }
 
 void yc_res_pro_scenery_parse_cleanup(yc_res_pro_object_scenery_t *scenery) {

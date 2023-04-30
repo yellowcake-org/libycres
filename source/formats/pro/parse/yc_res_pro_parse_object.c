@@ -118,5 +118,9 @@ void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into) {
 
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object) {
     if (NULL != file) { io->fclose(file); }
-    if (NULL != object) { free(object); }
+
+    if (NULL != object) {
+        yc_res_pro_object_invalidate(object);
+        free(object);
+    }
 }

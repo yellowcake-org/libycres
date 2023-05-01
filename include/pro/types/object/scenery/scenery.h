@@ -25,7 +25,7 @@ typedef union yc_res_pro_object_scenery_data {
 } yc_res_pro_object_scenery_data_t;
 
 typedef struct yc_res_pro_object_scenery {
-    uint64_t script_id;
+    uint32_t script_id;
     unsigned char sound_id;
 
     yc_res_pro_material_t material;

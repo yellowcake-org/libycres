@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     };
 
     int exit_code = 0;
-    char program_name[] = "ycipal";
+    char program_name[] = "ycipro";
 
     int errors_count;
     errors_count = arg_parse(argc, argv, arg_table);

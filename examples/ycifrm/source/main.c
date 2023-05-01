@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
 
             size_t base = strlen(filename);
             for (size_t idx = 0; idx < 6; ++idx) {
-                char *final = malloc(base + 4);
+                char *final = malloc(base + 4 + 1);
 
                 if (NULL == final) {
                     exit_code = 3;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
                 }
 
                 strcpy(final, filename);
-                sprintf(&final[base], ".FR%lu", idx);
+                snprintf(&final[base], 5, ".FR%lu", idx);
 
                 yc_res_frm_status_t status =
                         yc_res_frm_sprite_parse(final, &io_api, &ycifrm_append_cb);
@@ -149,7 +149,4 @@ void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {
             );
         }
     }
-
-    yc_res_frm_sprite_invalidate(sprite);
-    free(sprite);
 }

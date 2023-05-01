@@ -7,7 +7,7 @@ void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_f
 
 yc_res_frm_status_t yc_res_frm_sprite_parse(
         const char *filename,
-        yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *io,
         yc_res_frm_sprite_cb_t *callback
 ) {
     void *file = io->fopen(filename, "rb");
@@ -92,11 +92,15 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
 
         sprite->count++;
         size_t size = sizeof(yc_res_frm_animation_t) * sprite->count;
-        sprite->animations = NULL == sprite->animations ? malloc(size) : realloc(sprite->animations, size);
 
-        if (NULL == sprite->animations) {
+        yc_res_frm_animation_t *animations_tmp =
+                NULL == sprite->animations ? malloc(size) : realloc(sprite->animations, size);
+
+        if (NULL == animations_tmp) {
             yc_res_frm_parse_cleanup(file, io, sprite);
             return YC_RES_FRM_STATUS_MEM;
+        } else {
+            sprite->animations = animations_tmp;
         }
 
         size_t idx = sprite->count - 1;

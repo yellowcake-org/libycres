@@ -2,9 +2,8 @@
 #include <stdlib.h>
 
 yc_res_frm_status_t yc_res_frm_sprites_merge(yc_res_frm_sprite_t **sprites_ptr, size_t count) {
-    // orientations count is 6, so...
-    if (1 > count) { return YC_RES_FRM_STATUS_IN; } // min 2 sprites_ptr
-    if (6 != count) { return YC_RES_FRM_STATUS_IN; } // max 6 sprites_ptr
+    if (2 > count) { return YC_RES_FRM_STATUS_IN; } // min 2 sprites_ptr
+    if (6 < count) { return YC_RES_FRM_STATUS_IN; } // max 6 sprites_ptr
 
     yc_res_frm_sprite_t *sprites = *sprites_ptr;
 

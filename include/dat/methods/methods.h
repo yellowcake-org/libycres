@@ -1,9 +1,6 @@
 #ifndef LIB_YCRES_DAT_METHODS_H
 #define LIB_YCRES_DAT_METHODS_H
 
-#include "dat/statuses/statuses.h"
-#include "dat/callbacks/callbacks.h"
-
 yc_res_dat_status_t yc_res_dat_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,

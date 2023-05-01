@@ -5,7 +5,7 @@ int16_t yc_res_byteorder_int16(int16_t input) {
 }
 
 int32_t yc_res_byteorder_int32(int32_t input) {
-    int64_t result = ((int64_t) input << 8 & 0xFF00FF00) | ((int64_t) input >> 8 & 0xFF00FF);
+    uint64_t result = ((uint64_t) input << 8 & 0xFF00FF00) | ((uint64_t) input >> 8 & 0xFF00FF);
     return (int32_t) ((result << 16) | ((result >> 16) & 0xFFFF));
 }
 

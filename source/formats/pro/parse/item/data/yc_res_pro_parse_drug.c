@@ -45,11 +45,6 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
         _raw_drug.amount2[_i] = yc_res_byteorder_int32(_raw_drug.amount2[_i]);
     }
 
-    if (_raw_drug.delay2 <= _raw_drug.delay1) {
-        yc_res_pro_drug_parse_cleanup(drug);
-        return YC_RES_PRO_STATUS_CORR;
-    }
-
     size_t effects_count = 0;
     yc_res_pro_object_item_drug_effect_t *effects = NULL;
 

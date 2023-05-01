@@ -12,7 +12,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object);
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<object.pro>", 1, 1, "input sprite file"),
+            input = arg_filen("i", "input", "<object.pro>", 1, 1, "input game object file"),
             end = arg_end(1),
     };
 
@@ -57,6 +57,8 @@ int main(int argc, char *argv[]) {
     exit:
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
 
+    if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
+    
     return exit_code;
 }
 

@@ -42,7 +42,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                 return YC_RES_DAT_STATUS_IO;
             }
 
-            result->callback(byte, 1, result->environment);
+            result->callback(byte, 1, result->context);
         }
     } else {
         size_t processed = 0, written = 0;
@@ -79,7 +79,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                         return YC_RES_DAT_STATUS_IO;
                     }
 
-                    result->callback(bytes, chunk_size, result->environment);
+                    result->callback(bytes, chunk_size, result->context);
                     written += chunk_size;
                 }
             } else {
@@ -121,7 +121,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                             buffer[offset_r] = *byte;
 
                             written++;
-                            result->callback(byte, 1, result->environment);
+                            result->callback(byte, 1, result->context);
 
                             offset_r++;
                             if (offset_r >= SIZE) { offset_r = 0; }
@@ -159,7 +159,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 buffer[offset_r] = buffer[offset_w];
 
                                 written++;
-                                result->callback(byte, 1, result->environment);
+                                result->callback(byte, 1, result->context);
 
                                 offset_w++;
                                 offset_r++;

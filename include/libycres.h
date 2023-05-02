@@ -7,5 +7,6 @@
 #include <pal/pal.h>
 #include <frm/frm.h>
 #include <pro/pro.h>
+#include <map/map.h>
 
 #endif //LIB_YCRES_H

@@ -1,0 +1,4 @@
+#ifndef LIB_YCRES_MAP_TYPES_H
+#define LIB_YCRES_MAP_TYPES_H
+
+#endif //LIB_YCRES_MAP_TYPES_H

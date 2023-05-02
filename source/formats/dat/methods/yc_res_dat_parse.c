@@ -12,7 +12,7 @@ void yc_res_dat_parse_cleanup(
 yc_res_dat_status_t yc_res_dat_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_dat_list_cb_t *callback
+        yc_res_dat_parse_result_t *result
 ) {
     void *archive = io->fopen(filename, "rb");
 
@@ -146,7 +146,9 @@ yc_res_dat_status_t yc_res_dat_parse(
 
     yc_res_dat_parse_cleanup(archive, io, NULL);
 
-    callback(list, dir_count);
+    result->list = list;
+    result->count = dir_count;
+
     return YC_RES_DAT_STATUS_OK;
 }
 

@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     };
 
     int exit_code = 0;
-    char program_name[] = "ycipal";
+    char program_name[] = "ycipro";
 
     int errors_count;
     errors_count = arg_parse(argc, argv, arg_table);
@@ -48,17 +48,20 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_FRM_STATUS_OK != yc_res_pro_object_parse(filename, &io_api, &ycipro_print_cb)) {
+        yc_res_pro_parse_result_t result = {NULL};
+        if (YC_RES_FRM_STATUS_OK != yc_res_pro_parse(filename, &io_api, &result)) {
             exit_code = 3;
             goto exit;
         }
+
+        ycipro_print_cb(result.object);
     }
 
     exit:
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
 
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
-    
+
     return exit_code;
 }
 

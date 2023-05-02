@@ -9,16 +9,11 @@ arg_lit_t *help;
 arg_file_t *input, *output;
 arg_end_t *end;
 
-uint32_t parsed_count = 0;
-yc_res_dat_directory_t *parsed = NULL;
-
-FILE *exporting = NULL;
-
 static void _mkdir(const char *dir);
 
 void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
 
-void ycundat_cb_extract(unsigned char *bytes, size_t count);
+void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -60,13 +55,14 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &io_api, &ycundat_cb_parse)) {
+        yc_res_dat_parse_result_t result = {0, NULL};
+        if (YC_RES_DAT_STATUS_OK != yc_res_dat_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }
 
-        for (uint32_t dir_idx = 0; dir_idx < parsed_count; ++dir_idx) {
-            yc_res_dat_directory_t *directory = &parsed[dir_idx];
+        for (uint32_t dir_idx = 0; dir_idx < result.count; ++dir_idx) {
+            yc_res_dat_directory_t *directory = &result.list[dir_idx];
 
             for (uint32_t file_idx = 0; file_idx < directory->count; ++file_idx) {
                 yc_res_dat_file_t *file = &directory->files[file_idx];
@@ -92,7 +88,7 @@ int main(int argc, char *argv[]) {
 
                 printf("%s\n", destination);
 
-                exporting = fopen(destination, "wb");
+                FILE *exporting = fopen(destination, "wb");
                 free(destination);
 
                 if (NULL == exporting) {
@@ -100,12 +96,20 @@ int main(int argc, char *argv[]) {
                     goto exit;
                 }
 
+                yc_res_dat_extract_result_t ext_result = {
+                        &ycundat_cb_extract,
+                        exporting
+                };
+
                 if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(
                         filename,
                         &io_api,
                         file,
-                        ycundat_cb_extract
+                        &ext_result
                 )) {
+                    fclose(exporting);
+                    exporting = NULL;
+
                     exit_code = 4;
                     goto exit;
                 }
@@ -114,12 +118,13 @@ int main(int argc, char *argv[]) {
                 exporting = NULL;
             }
 
-            yc_res_dat_directory_invalidate(&parsed[dir_idx]);
+            yc_res_dat_directory_invalidate(&result.list[dir_idx]);
         }
 
-        free(parsed);
-        parsed = NULL;
-        parsed_count = 0;
+        result.count = 0;
+
+        free(result.list);
+        result.list = NULL;
     }
 
     exit:
@@ -128,13 +133,8 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
-void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count) {
-    parsed = list;
-    parsed_count = count;
-}
-
-void ycundat_cb_extract(unsigned char *bytes, size_t count) {
-    fwrite(bytes, count, 1, exporting);
+void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
+    fwrite(bytes, count, 1, file);
     free(bytes);
 }
 

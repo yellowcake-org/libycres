@@ -11,7 +11,7 @@ void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_p
 yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_frm_object_cb_t *callback
+        yc_res_pro_parse_result_t *result
 ) {
     void *file = io->fopen(filename, "rb");
 
@@ -91,7 +91,7 @@ yc_res_pro_status_t yc_res_pro_parse(
 
     yc_res_pro_parse_cleanup(file, io, NULL);
 
-    callback(object);
+    result->object = object;
     return YC_RES_PRO_STATUS_OK;
 }
 

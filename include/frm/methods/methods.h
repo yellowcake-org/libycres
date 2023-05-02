@@ -1,7 +1,7 @@
 #ifndef LIB_YCRES_FRM_METHODS_H
 #define LIB_YCRES_FRM_METHODS_H
 
-typedef struct yc_res_frm_sprite_parse_result {
+typedef struct yc_res_frm_parse_result {
     yc_res_frm_sprite_t *sprite;
 } yc_res_frm_sprite_parse_result_t;
 

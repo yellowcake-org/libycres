@@ -8,7 +8,7 @@
 void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into);
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object);
 
-yc_res_pro_status_t yc_res_pro_object_parse(
+yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
         yc_res_frm_object_cb_t *callback

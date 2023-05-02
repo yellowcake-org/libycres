@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_FRM_STATUS_OK != yc_res_pro_object_parse(filename, &io_api, &ycipro_print_cb)) {
+        if (YC_RES_FRM_STATUS_OK != yc_res_pro_parse(filename, &io_api, &ycipro_print_cb)) {
             exit_code = 3;
             goto exit;
         }

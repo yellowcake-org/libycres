@@ -5,7 +5,7 @@
 
 void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_frm_sprite_t *sprite);
 
-yc_res_frm_status_t yc_res_frm_sprite_parse(
+yc_res_frm_status_t yc_res_frm_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
         yc_res_frm_sprite_parse_result_t *result

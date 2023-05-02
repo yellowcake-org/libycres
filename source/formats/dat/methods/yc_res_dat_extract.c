@@ -14,7 +14,7 @@ yc_res_dat_status_t yc_res_dat_extract(
         const char *filename,
         const yc_res_io_fs_api_t *io,
         yc_res_dat_file_t *file,
-        yc_res_dat_extract_cb_t *callback
+        yc_res_dat_extract_result_t *result
 ) {
     void *archive = io->fopen(filename, "rb");
 
@@ -42,7 +42,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                 return YC_RES_DAT_STATUS_IO;
             }
 
-            callback(byte, 1);
+            result->callback(byte, 1, result->context);
         }
     } else {
         size_t processed = 0, written = 0;
@@ -79,7 +79,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                         return YC_RES_DAT_STATUS_IO;
                     }
 
-                    callback(bytes, chunk_size);
+                    result->callback(bytes, chunk_size, result->context);
                     written += chunk_size;
                 }
             } else {
@@ -121,7 +121,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                             buffer[offset_r] = *byte;
 
                             written++;
-                            callback(byte, 1);
+                            result->callback(byte, 1, result->context);
 
                             offset_r++;
                             if (offset_r >= SIZE) { offset_r = 0; }
@@ -159,7 +159,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 buffer[offset_r] = buffer[offset_w];
 
                                 written++;
-                                callback(byte, 1);
+                                result->callback(byte, 1, result->context);
 
                                 offset_w++;
                                 offset_r++;

@@ -11,7 +11,7 @@ void yc_res_pal_parse_cleanup(
 yc_res_pal_status_t yc_res_pal_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_pal_colors_cb_t *callback
+        yc_res_pal_parse_result_t *result
 ) {
     void *palette = io->fopen(filename, "rb");
 
@@ -50,7 +50,9 @@ yc_res_pal_status_t yc_res_pal_parse(
 
     yc_res_pal_parse_cleanup(palette, io, NULL);
 
-    callback(colors, LENGTH);
+    result->count = LENGTH;
+    result->colors = colors;
+
     return YC_RES_PAL_STATUS_OK;
 }
 

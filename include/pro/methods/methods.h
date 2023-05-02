@@ -11,10 +11,14 @@ yc_res_pro_object_type_t yc_res_pro_object_type_from_pid(uint32_t proto_id);
 yc_res_pro_object_type_t yc_res_pro_object_type_from_fid(uint32_t sprite_id);
 yc_res_pro_script_type_t yc_res_pro_script_type_from_sid(uint32_t script_id);
 
-yc_res_pro_status_t yc_res_pro_object_parse(
+typedef struct yc_res_pro_parse_result {
+    yc_res_pro_object_t *object;
+} yc_res_pro_parse_result_t;
+
+yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_frm_object_cb_t *callback
+        yc_res_pro_parse_result_t *result
 );
 
 void yc_res_pro_object_invalidate(yc_res_pro_object_t *object);

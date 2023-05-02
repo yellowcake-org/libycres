@@ -50,12 +50,13 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        if (YC_RES_PAL_STATUS_OK != yc_res_pal_parse(
-                filename, &io_api, &ycipal_parse_cb
-        )) {
+        yc_res_pal_parse_result_t result = {0, NULL};
+        if (YC_RES_PAL_STATUS_OK != yc_res_pal_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }
+
+        ycipal_parse_cb(result.colors, result.count);
     }
 
     exit:
@@ -73,7 +74,7 @@ void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count) {
     }
 
     printf("\n");
-    printf("EXIST: %zu", count - trans_count);
+    printf("PRESENT: %zu", count - trans_count);
     printf(", ");
     printf("EMPTY: %zu", trans_count);
     printf(", ");

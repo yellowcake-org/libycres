@@ -8,7 +8,7 @@ void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_f
 yc_res_frm_status_t yc_res_frm_sprite_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
-        yc_res_frm_sprite_cb_t *callback
+        yc_res_frm_sprite_parse_result_t *result
 ) {
     void *file = io->fopen(filename, "rb");
 
@@ -187,7 +187,7 @@ yc_res_frm_status_t yc_res_frm_sprite_parse(
 
     yc_res_frm_parse_cleanup(file, io, NULL);
 
-    callback(sprite);
+    result->sprite = sprite;
     return YC_RES_FRM_STATUS_OK;
 }
 

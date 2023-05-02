@@ -7,9 +7,6 @@ arg_lit_t *help, *merge;
 arg_file_t *input;
 arg_end_t *end;
 
-size_t count = 0;
-yc_res_frm_sprite_t **split = NULL;
-
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
 
 void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
@@ -55,12 +52,17 @@ int main(int argc, char *argv[]) {
         };
 
         if (merge->count == 0) {
-            if (YC_RES_FRM_STATUS_OK != yc_res_frm_sprite_parse(filename, &io_api, &ycifrm_print_cb)) {
+            yc_res_frm_sprite_parse_result_t result = {NULL};
+            if (YC_RES_FRM_STATUS_OK != yc_res_frm_sprite_parse(filename, &io_api, &result)) {
                 exit_code = 3;
                 goto exit;
             }
+
+            ycifrm_print_cb(result.sprite);
         } else {
-            split = malloc(sizeof(yc_res_frm_sprite_t *));
+            size_t count = 0;
+            yc_res_frm_sprite_t **split = malloc(sizeof(yc_res_frm_sprite_t *));
+
             if (NULL == split) {
                 exit_code = 2;
                 goto exit;
@@ -84,15 +86,23 @@ int main(int argc, char *argv[]) {
                 strcpy(final, filename);
                 snprintf(&final[base], 5, ".FR%lu", idx);
 
-                yc_res_frm_status_t status =
-                        yc_res_frm_sprite_parse(final, &io_api, &ycifrm_append_cb);
+                yc_res_frm_sprite_parse_result_t result = {NULL};
+                yc_res_frm_status_t status = yc_res_frm_sprite_parse(final, &io_api, &result);
 
                 free(final);
 
                 if (YC_RES_FRM_STATUS_OK != status) {
+                    free(*split);
+                    free(split);
+
                     exit_code = 4;
                     goto exit;
                 }
+
+                yc_res_frm_sprite_t *sprites = *split;
+
+                count++;
+                sprites[count - 1] = *(result.sprite);
             }
 
             yc_res_frm_status_t status = yc_res_frm_sprites_merge(split, count);
@@ -114,15 +124,6 @@ int main(int argc, char *argv[]) {
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
 
     return exit_code;
-}
-
-void ycifrm_append_cb(yc_res_frm_sprite_t *sprite) {
-    if (NULL != split) {
-        yc_res_frm_sprite_t *sprites = *split;
-
-        count++;
-        sprites[count - 1] = *sprite;
-    }
 }
 
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {

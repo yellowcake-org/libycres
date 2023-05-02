@@ -13,11 +13,11 @@ yc_res_dat_status_t yc_res_dat_parse(
 );
 
 typedef void (yc_res_dat_extract_cb_t)
-        (unsigned char *bytes, size_t count, void *passthrough);
+        (unsigned char *bytes, size_t count, void *environment);
 
 typedef struct yc_res_dat_extract_result {
     yc_res_dat_extract_cb_t *callback;
-    void *passthrough;
+    void *environment;
 } yc_res_dat_extract_result_t;
 
 yc_res_dat_status_t yc_res_dat_extract(

@@ -120,7 +120,7 @@ yc_res_map_status_t yc_res_map_parse(
             return YC_RES_MAP_STATUS_MEM;
         }
 
-        if (0 == io->fread(&map->local_variables, sizeof(uint32_t), map->count_local_variables, file)) {
+        if (0 == io->fread(map->local_variables, sizeof(int32_t), map->count_local_variables, file)) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_IO;
         }
@@ -138,7 +138,7 @@ yc_res_map_status_t yc_res_map_parse(
             return YC_RES_MAP_STATUS_MEM;
         }
 
-        if (0 == io->fread(&map->global_variables, sizeof(uint32_t), map->count_global_variables, file)) {
+        if (0 == io->fread(map->global_variables, sizeof(int32_t), map->count_global_variables, file)) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_IO;
         }

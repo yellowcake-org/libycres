@@ -75,6 +75,9 @@ int main(int argc, char *argv[]) {
             printf("Tile index: %d\n", result.map->entrance.tile_idx);
             printf("Orientation: %d\n", result.map->entrance.orientation);
         }
+
+        printf("Local vars: %lu\n", result.map->count_local_variables);
+        printf("Global vars: %lu\n", result.map->count_global_variables);
     }
 
     exit:

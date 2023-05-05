@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_map_t *map);
+void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_map_t *map);
 
 yc_res_map_status_t yc_res_map_parse(
         const char *filename,
@@ -17,7 +17,7 @@ yc_res_map_status_t yc_res_map_parse(
         return YC_RES_MAP_STATUS_IO;
     }
 
-    yc_res_pro_map_t *map = malloc(sizeof(yc_res_pro_map_t));
+    yc_res_map_t *map = malloc(sizeof(yc_res_map_t));
 
     if (NULL == map) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -82,6 +82,19 @@ yc_res_map_status_t yc_res_map_parse(
 
     map->is_save = (flags[3] & 0x01) != 0x00;
 
+    for (size_t elevation_idx = 0, byte = 0x02;
+         elevation_idx < YC_RES_MAP_ELEVATION_COUNT;
+         ++elevation_idx, byte <<= 1) {
+        if ((flags[3] & byte) == 0x00) {
+            map->levels[elevation_idx] = malloc(sizeof(yc_res_map_level_t));
+
+            if (NULL == map->levels[elevation_idx]) {
+                yc_res_map_parse_cleanup(file, io, map);
+                return YC_RES_MAP_STATUS_MEM;
+            }
+        }
+    }
+
     uint32_t _darkness = 0;
     if (0 == io->fread(&_darkness, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -112,24 +125,6 @@ yc_res_map_status_t yc_res_map_parse(
         return YC_RES_MAP_STATUS_IO;
     }
 
-    if (0 < map->count_local_variables) {
-        map->local_variables = malloc(sizeof(int32_t) * map->count_local_variables);
-
-        if (NULL == map->local_variables) {
-            yc_res_map_parse_cleanup(file, io, map);
-            return YC_RES_MAP_STATUS_MEM;
-        }
-
-        if (0 == io->fread(map->local_variables, sizeof(int32_t), map->count_local_variables, file)) {
-            yc_res_map_parse_cleanup(file, io, map);
-            return YC_RES_MAP_STATUS_IO;
-        }
-
-        for (size_t var_idx = 0; var_idx < map->count_local_variables; ++var_idx) {
-            map->local_variables[var_idx] = yc_res_byteorder_int32(map->local_variables[var_idx]);
-        }
-    }
-
     if (0 < map->count_global_variables) {
         map->global_variables = malloc(sizeof(int32_t) * map->count_global_variables);
 
@@ -148,13 +143,33 @@ yc_res_map_status_t yc_res_map_parse(
         }
     }
 
+    if (0 < map->count_local_variables) {
+        map->local_variables = malloc(sizeof(int32_t) * map->count_local_variables);
+
+        if (NULL == map->local_variables) {
+            yc_res_map_parse_cleanup(file, io, map);
+            return YC_RES_MAP_STATUS_MEM;
+        }
+
+        if (0 == io->fread(map->local_variables, sizeof(int32_t), map->count_local_variables, file)) {
+            yc_res_map_parse_cleanup(file, io, map);
+            return YC_RES_MAP_STATUS_IO;
+        }
+
+        for (size_t var_idx = 0; var_idx < map->count_local_variables; ++var_idx) {
+            map->local_variables[var_idx] = yc_res_byteorder_int32(map->local_variables[var_idx]);
+        }
+    }
+
+    //
+
     yc_res_map_parse_cleanup(file, io, NULL);
 
     result->map = map;
     return YC_RES_MAP_STATUS_OK;
 }
 
-void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_map_t *map) {
+void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_map_t *map) {
     if (NULL != file) {
         io->fclose(file);
     }

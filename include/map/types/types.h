@@ -1,7 +1,10 @@
 #ifndef LIB_YCRES_MAP_TYPES_H
 #define LIB_YCRES_MAP_TYPES_H
 
-typedef struct yc_res_pro_map {
+#include "level/level.h"
+#include "elevation/elevation.h"
+
+typedef struct yc_res_map {
     bool is_save;
     uint32_t map_idx, script_id;
 
@@ -13,6 +16,8 @@ typedef struct yc_res_pro_map {
 
     size_t count_global_variables;
     int32_t *global_variables;
-} yc_res_pro_map_t;
+
+    yc_res_map_level_t *levels[YC_RES_MAP_ELEVATION_COUNT];
+} yc_res_map_t;
 
 #endif //LIB_YCRES_MAP_TYPES_H

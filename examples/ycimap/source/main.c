@@ -76,8 +76,8 @@ int main(int argc, char *argv[]) {
             printf("Orientation: %d\n", result.map->entrance.orientation);
         }
 
-        printf("Local vars: %lu\n", result.map->count_local_variables);
         printf("Global vars: %lu\n", result.map->count_global_variables);
+        printf("Local vars: %lu\n", result.map->count_local_variables);
     }
 
     exit:

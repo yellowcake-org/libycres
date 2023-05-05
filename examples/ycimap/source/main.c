@@ -78,6 +78,15 @@ int main(int argc, char *argv[]) {
 
         printf("Global vars: %lu\n", result.map->count_global_variables);
         printf("Local vars: %lu\n", result.map->count_local_variables);
+
+        printf("\n");
+        for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
+            yc_res_map_level_t *level = result.map->levels[elevation_idx];
+
+            if (NULL != level) {
+                printf("Level #%lu presented.\n\n", elevation_idx + 1);
+            }
+        }
     }
 
     exit:

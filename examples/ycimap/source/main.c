@@ -76,8 +76,28 @@ int main(int argc, char *argv[]) {
             printf("Orientation: %d\n", result.map->entrance.orientation);
         }
 
-        printf("Global vars: %lu\n", result.map->count_global_variables);
-        printf("Local vars: %lu\n", result.map->count_local_variables);
+        printf("\n");
+        printf("Local vars: %lu\n", result.map->count_lvars);
+        printf("Global vars: %lu\n", result.map->count_gvars);
+
+        printf("\n");
+        for (size_t script_idx = 0; script_idx < result.map->count_scripts; ++script_idx) {
+            yc_res_map_script_t *script = &result.map->scripts[script_idx];
+            yc_res_pro_script_type_t type = yc_res_pro_script_type_from_sid(script->script_id);
+
+            printf("Script ID: 0x%X", script->script_id);
+
+            if (YC_RES_PRO_SCRIPT_TYPE_SPATIAL == type) {
+                printf(", elevation == %d", script->data.spatial->elevation);
+                printf(", distance == %d", script->data.spatial->distance);
+            }
+
+            if (YC_RES_PRO_SCRIPT_TYPE_TIMED == type) {
+                printf(", duration == %d", script->data.timed->duration);
+            }
+
+            printf("\n");
+        }
 
         printf("\n");
         for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {

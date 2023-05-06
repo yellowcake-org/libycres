@@ -1,6 +1,8 @@
 #include <libycres.h>
 #include <private.h>
 
+#include "yc_res_map_parse.h"
+
 #include <stdlib.h>
 #include <assert.h>
 
@@ -63,11 +65,11 @@ yc_res_map_status_t yc_res_map_parse(
     map->entrance.elevation_idx = elevation;
     map->entrance.orientation = direction;
 
-    if (0 == io->fread(&map->count_local_variables, sizeof(uint32_t), 1, file)) {
+    if (0 == io->fread(&map->count_lvars, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    map->count_local_variables = yc_res_byteorder_uint32(map->count_local_variables);
+    map->count_lvars = yc_res_byteorder_uint32(map->count_lvars);
 
     if (0 == io->fread(&map->script_id, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -103,11 +105,11 @@ yc_res_map_status_t yc_res_map_parse(
     }
     _darkness = yc_res_byteorder_uint32(_darkness);
 
-    if (0 == io->fread(&map->count_global_variables, sizeof(uint32_t), 1, file)) {
+    if (0 == io->fread(&map->count_gvars, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    map->count_global_variables = yc_res_byteorder_uint32(map->count_global_variables);
+    map->count_gvars = yc_res_byteorder_uint32(map->count_gvars);
 
     if (0 == io->fread(&map->map_idx, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -126,39 +128,39 @@ yc_res_map_status_t yc_res_map_parse(
         return YC_RES_MAP_STATUS_IO;
     }
 
-    if (0 < map->count_global_variables) {
-        map->global_variables = malloc(sizeof(int32_t) * map->count_global_variables);
+    if (0 < map->count_gvars) {
+        map->gvars = malloc(sizeof(int32_t) * map->count_gvars);
 
-        if (NULL == map->global_variables) {
+        if (NULL == map->gvars) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_MEM;
         }
 
-        if (0 == io->fread(map->global_variables, sizeof(int32_t), map->count_global_variables, file)) {
+        if (0 == io->fread(map->gvars, sizeof(int32_t), map->count_gvars, file)) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_IO;
         }
 
-        for (size_t var_idx = 0; var_idx < map->count_global_variables; ++var_idx) {
-            map->global_variables[var_idx] = yc_res_byteorder_int32(map->global_variables[var_idx]);
+        for (size_t var_idx = 0; var_idx < map->count_gvars; ++var_idx) {
+            map->gvars[var_idx] = yc_res_byteorder_int32(map->gvars[var_idx]);
         }
     }
 
-    if (0 < map->count_local_variables) {
-        map->local_variables = malloc(sizeof(int32_t) * map->count_local_variables);
+    if (0 < map->count_lvars) {
+        map->lvars = malloc(sizeof(int32_t) * map->count_lvars);
 
-        if (NULL == map->local_variables) {
+        if (NULL == map->lvars) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_MEM;
         }
 
-        if (0 == io->fread(map->local_variables, sizeof(int32_t), map->count_local_variables, file)) {
+        if (0 == io->fread(map->lvars, sizeof(int32_t), map->count_lvars, file)) {
             yc_res_map_parse_cleanup(file, io, map);
             return YC_RES_MAP_STATUS_IO;
         }
 
-        for (size_t var_idx = 0; var_idx < map->count_local_variables; ++var_idx) {
-            map->local_variables[var_idx] = yc_res_byteorder_int32(map->local_variables[var_idx]);
+        for (size_t var_idx = 0; var_idx < map->count_lvars; ++var_idx) {
+            map->lvars[var_idx] = yc_res_byteorder_int32(map->lvars[var_idx]);
         }
     }
 
@@ -189,6 +191,83 @@ yc_res_map_status_t yc_res_map_parse(
                     level->floor.idxes[GRID_SIZE_HORIZONTAL - 1 - x][y] = yc_res_byteorder_uint16(floor_idx);
                 }
             }
+        }
+    }
+
+    map->count_scripts = 0;
+    size_t consumed_idx = 0;
+
+    for (size_t script_type = 0; script_type < YC_RES_PRO_SCRIPT_TYPE_COUNT; ++script_type) {
+        uint32_t count = 0;
+        if (0 == io->fread(&count, sizeof(uint32_t), 1, file)) {
+            yc_res_map_parse_cleanup(file, io, map);
+            return YC_RES_MAP_STATUS_IO;
+        }
+        count = yc_res_byteorder_uint32(count);
+
+        map->count_scripts += count;
+        size_t size = sizeof(yc_res_map_script_t) * map->count_scripts;
+
+        yc_res_map_script_t *scripts =
+                map->scripts == NULL ? malloc(size) : realloc(map->scripts, size);
+
+        if (NULL == scripts) {
+            yc_res_map_parse_cleanup(file, io, map);
+            return YC_RES_MAP_STATUS_MEM;
+        } else {
+            map->scripts = scripts;
+        }
+
+        const size_t BATCH_LENGTH = 16;
+        size_t batches = count / BATCH_LENGTH + (count % BATCH_LENGTH != 0);
+
+        size_t processed = 0;
+        for (size_t batch_idx = 0; batch_idx < batches; ++batch_idx) {
+            for (size_t record_idx = 0; record_idx < BATCH_LENGTH; ++record_idx) {
+                if (batch_idx * BATCH_LENGTH + record_idx < count) {
+                    yc_res_map_script_t *script = &map->scripts[consumed_idx];
+                    yc_res_map_status_t status = yc_res_map_parse_script(
+                            file, io, script, script_type
+                    );
+
+                    ++consumed_idx;
+                    if (YC_RES_MAP_STATUS_OK != status) {
+                        yc_res_map_parse_cleanup(file, io, map);
+                        return status;
+                    }
+                } else {
+                    unsigned char sid[4];
+                    if (0 == io->fread(&sid, sizeof(unsigned char) * 4, 1, file)) {
+                        yc_res_map_parse_cleanup(file, io, map);
+                        return YC_RES_MAP_STATUS_IO;
+                    }
+
+                    yc_res_pro_script_type_t type = sid[0];
+                    long fields_count = 15 + (type == YC_RES_PRO_SCRIPT_TYPE_SPATIAL ? 2 : 0);
+
+                    if (0 != io->fseek(file, (long) sizeof(uint32_t) * fields_count, SEEK_CUR)) {
+                        yc_res_map_parse_cleanup(file, io, map);
+                        return YC_RES_MAP_STATUS_IO;
+                    }
+                }
+            }
+
+            uint32_t checksum = 0;
+            if (0 == io->fread(&checksum, sizeof(uint32_t), 1, file)) {
+                yc_res_map_parse_cleanup(file, io, map);
+                return YC_RES_MAP_STATUS_IO;
+            }
+            processed += yc_res_byteorder_uint32(checksum);
+
+            if (0 != io->fseek(file, sizeof(uint32_t), SEEK_CUR)) {
+                yc_res_map_parse_cleanup(file, io, map);
+                return YC_RES_MAP_STATUS_IO;
+            }
+        }
+
+        if (processed != count) {
+            yc_res_map_parse_cleanup(file, io, map);
+            return YC_RES_MAP_STATUS_CORR;
         }
     }
 

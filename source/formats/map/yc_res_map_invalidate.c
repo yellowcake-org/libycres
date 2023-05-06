@@ -13,16 +13,37 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
         }
     }
 
-    map->count_local_variables = 0;
-    if (NULL != map->local_variables) {
-        free(map->local_variables);
-        map->local_variables = NULL;
+    map->count_lvars = 0;
+    if (NULL != map->lvars) {
+        free(map->lvars);
+        map->lvars = NULL;
     }
 
-    map->count_global_variables = 0;
-    if (NULL != map->global_variables) {
-        free(map->global_variables);
-        map->global_variables = NULL;
+    map->count_gvars = 0;
+    if (NULL != map->gvars) {
+        free(map->gvars);
+        map->gvars = NULL;
+    }
+
+    if (NULL != map->scripts) {
+        for (size_t script_idx = 0; script_idx < map->count_scripts; ++script_idx) {
+            yc_res_map_script_t *script = &map->scripts[script_idx];
+
+            if (NULL != script->data.timed) {
+                free(script->data.timed);
+                script->data.timed = NULL;
+            }
+
+            if (NULL != script->data.spatial) {
+                free(script->data.spatial);
+                script->data.spatial = NULL;
+            }
+        }
+
+        map->count_scripts = 0;
+
+        free(map->scripts);
+        map->scripts = NULL;
     }
 }
 #pragma clang diagnostic pop

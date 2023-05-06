@@ -1,11 +1,20 @@
 #include <libycres.h>
 #include <stdlib.h>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-parameter"
 void yc_res_map_invalidate(yc_res_map_t *map) {
     for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
         yc_res_map_level_t *level = map->levels[elevation_idx];
+
+        if (NULL != level->objects.pointers) {
+            for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
+                // invalidate object
+            }
+
+            free(level->objects.pointers);
+            level->objects.pointers = NULL;
+        }
+
+        level->objects.count = 0;
 
         if (NULL != level) {
             free(level);
@@ -13,21 +22,21 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
         }
     }
 
-    map->count_lvars = 0;
-    if (NULL != map->lvars) {
-        free(map->lvars);
-        map->lvars = NULL;
+    map->local.count = 0;
+    if (NULL != map->local.values) {
+        free(map->local.values);
+        map->local.values = NULL;
     }
 
-    map->count_gvars = 0;
-    if (NULL != map->gvars) {
-        free(map->gvars);
-        map->gvars = NULL;
+    map->global.count = 0;
+    if (NULL != map->global.values) {
+        free(map->global.values);
+        map->global.values = NULL;
     }
 
-    if (NULL != map->scripts) {
-        for (size_t script_idx = 0; script_idx < map->count_scripts; ++script_idx) {
-            yc_res_map_script_t *script = &map->scripts[script_idx];
+    if (NULL != map->scripts.pointers) {
+        for (size_t script_idx = 0; script_idx < map->scripts.count; ++script_idx) {
+            yc_res_map_script_t *script = &map->scripts.pointers[script_idx];
 
             if (NULL != script->data.timed) {
                 free(script->data.timed);
@@ -40,10 +49,9 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
             }
         }
 
-        map->count_scripts = 0;
+        map->scripts.count = 0;
 
-        free(map->scripts);
-        map->scripts = NULL;
+        free(map->scripts.pointers);
+        map->scripts.pointers = NULL;
     }
 }
-#pragma clang diagnostic pop

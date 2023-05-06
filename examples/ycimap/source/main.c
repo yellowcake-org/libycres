@@ -77,12 +77,12 @@ int main(int argc, char *argv[]) {
         }
 
         printf("\n");
-        printf("Local vars: %lu\n", result.map->count_lvars);
-        printf("Global vars: %lu\n", result.map->count_gvars);
+        printf("Local vars: %lu\n", result.map->local.count);
+        printf("Global vars: %lu\n", result.map->global.count);
 
         printf("\n");
-        for (size_t script_idx = 0; script_idx < result.map->count_scripts; ++script_idx) {
-            yc_res_map_script_t *script = &result.map->scripts[script_idx];
+        for (size_t script_idx = 0; script_idx < result.map->scripts.count; ++script_idx) {
+            yc_res_map_script_t *script = &result.map->scripts.pointers[script_idx];
             yc_res_pro_script_type_t type = yc_res_pro_script_type_from_sid(script->script_id);
 
             printf("Script ID: 0x%X", script->script_id);
@@ -97,6 +97,11 @@ int main(int argc, char *argv[]) {
             }
 
             printf(", object ID: 0x%X", script->object_id);
+
+            if (script->variables_count > 0) {
+                printf(", vars count: %lu", script->variables_count);
+            }
+
             printf("\n");
         }
 

@@ -16,4 +16,9 @@ typedef struct yc_res_map_script {
     yc_res_map_script_data_t data;
 } yc_res_map_script_t;
 
+typedef struct yc_res_map_scripts {
+    size_t count;
+    yc_res_map_script_t *pointers;
+} yc_res_map_scripts_t;
+
 #endif //LIB_YCRES_MAP_TYPES_SCRIPT_H

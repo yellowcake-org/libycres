@@ -2,6 +2,7 @@
 #include <private.h>
 
 #include <stdlib.h>
+#include <assert.h>
 
 void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_map_t *map);
 
@@ -161,7 +162,35 @@ yc_res_map_status_t yc_res_map_parse(
         }
     }
 
-    //
+    for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
+        yc_res_map_level_t *level = map->levels[elevation_idx];
+
+        if (NULL != level) {
+            size_t const GRID_SIZE_HORIZONTAL = sizeof(level->floor.idxes) / sizeof(level->floor.idxes[0]);
+            size_t const GRID_SIZE_VERTICAL = sizeof(level->floor.idxes[0]) / sizeof(level->floor.idxes[0][0]);
+
+            assert(GRID_SIZE_HORIZONTAL == GRID_SIZE_HORIZONTAL);
+
+            for (size_t y = 0; y < GRID_SIZE_VERTICAL; ++y) {
+                for (size_t x = 0; x < GRID_SIZE_HORIZONTAL; ++x) {
+                    uint16_t roof_idx = 0, floor_idx = 0;
+
+                    if (0 == io->fread(&roof_idx, sizeof(uint16_t), 1, file)) {
+                        yc_res_map_parse_cleanup(file, io, map);
+                        return YC_RES_MAP_STATUS_IO;
+                    }
+
+                    if (0 == io->fread(&floor_idx, sizeof(uint16_t), 1, file)) {
+                        yc_res_map_parse_cleanup(file, io, map);
+                        return YC_RES_MAP_STATUS_IO;
+                    }
+
+                    level->roof.idxes[GRID_SIZE_HORIZONTAL - 1 - x][y] = yc_res_byteorder_uint16(roof_idx);
+                    level->floor.idxes[GRID_SIZE_HORIZONTAL - 1 - x][y] = yc_res_byteorder_uint16(floor_idx);
+                }
+            }
+        }
+    }
 
     yc_res_map_parse_cleanup(file, io, NULL);
 

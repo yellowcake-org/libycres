@@ -225,12 +225,11 @@ yc_res_map_status_t yc_res_map_parse(
         for (size_t batch_idx = 0; batch_idx < batches; ++batch_idx) {
             for (size_t record_idx = 0; record_idx < BATCH_LENGTH; ++record_idx) {
                 if (batch_idx * BATCH_LENGTH + record_idx < count) {
-                    yc_res_map_script_t *script = &map->scripts[consumed_idx];
+                    yc_res_map_script_t *script = &map->scripts[consumed_idx++];
                     yc_res_map_status_t status = yc_res_map_parse_script(
                             file, io, script, script_type
                     );
 
-                    ++consumed_idx;
                     if (YC_RES_MAP_STATUS_OK != status) {
                         yc_res_map_parse_cleanup(file, io, map);
                         return status;

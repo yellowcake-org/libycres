@@ -96,6 +96,7 @@ int main(int argc, char *argv[]) {
                 printf(", duration == %d", script->data.timed->duration);
             }
 
+            printf(", object ID: 0x%X", script->object_id);
             printf("\n");
         }
 

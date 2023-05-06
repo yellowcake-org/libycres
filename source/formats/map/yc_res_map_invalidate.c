@@ -1,13 +1,15 @@
 #include <libycres.h>
 #include <stdlib.h>
 
+void yc_res_map_invalidate_object(yc_res_map_level_object_t *object);
+
 void yc_res_map_invalidate(yc_res_map_t *map) {
     for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
         yc_res_map_level_t *level = map->levels[elevation_idx];
 
         if (NULL != level->objects.pointers) {
             for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
-                // invalidate object
+                yc_res_map_invalidate_object(&level->objects.pointers[object_idx]);
             }
 
             free(level->objects.pointers);
@@ -54,4 +56,17 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
         free(map->scripts.pointers);
         map->scripts.pointers = NULL;
     }
+}
+
+void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
+    if (NULL != object->inventory) {
+        for (size_t object_idx = 0; object_idx < object->count; ++object_idx) {
+            yc_res_map_invalidate_object(&object->inventory[object_idx]);
+        }
+
+        free(object->inventory);
+        object->inventory = NULL;
+    }
+
+    object->count = 0;
 }

@@ -292,9 +292,13 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
             printf("Head FID: 0x%X\n", critter->sprite_id);
             printf("Team index: %d\n", critter->team_idx);
-            printf("\n");
-            printf("Script type: %d\n", yc_res_pro_script_type_from_sid(critter->script_id));
-            printf("Script index: %d\n", yc_res_pro_index_from_script_id(critter->script_id));
+
+            if (yc_res_pro_is_valid_id(critter->script_id)) {
+                printf("\n");
+                printf("Script type: %d\n", yc_res_pro_script_type_from_sid(critter->script_id));
+                printf("Script index: %d\n", yc_res_pro_index_from_script_id(critter->script_id));
+            }
+
             printf("\n");
             printf("Body type: %d\n", critter->body);
             printf("Kill type: %d\n", critter->kill_type);
@@ -330,9 +334,9 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     if (yc_res_pro_is_valid_id(stairs->map_id)) {
                         printf("\n");
                         printf("Map ID: 0x%X\n", stairs->map_id);
-                        printf("Destination tile: %d\n", scenery->data.stairs->destination.tile_idx);
+                        printf("Destination tile: %d\n", scenery->data.stairs->destination.grid_idx);
                         printf("Destination elevation: %d\n", scenery->data.stairs->destination.elevation_idx);
-                        printf("Destination orientation: %d\n", scenery->data.stairs->destination.orientation);
+                        printf("Destination orientation_idx: %d\n", scenery->data.stairs->destination.orientation_idx);
                     }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR:
@@ -341,22 +345,22 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("LADDER BOTTOM");
                     printf("\n");
 
-                    if (yc_res_pro_is_valid_destination(scenery->data.ladder_bottom->destination)) {
+                    if (yc_res_math_is_valid_location(scenery->data.ladder_bottom->destination)) {
                         printf("\n");
-                        printf("Destination tile: %d\n", scenery->data.ladder_bottom->destination.tile_idx);
+                        printf("Destination tile: %d\n", scenery->data.ladder_bottom->destination.grid_idx);
                         printf("Destination elevation: %d\n", scenery->data.ladder_bottom->destination.elevation_idx);
-                        printf("Destination orientation: %d\n", scenery->data.ladder_bottom->destination.orientation);
+                        printf("Destination orientation_idx: %d\n", scenery->data.ladder_bottom->destination.orientation_idx);
                     }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP:
                     printf("LADDER TOP");
                     printf("\n");
 
-                    if (yc_res_pro_is_valid_destination(scenery->data.ladder_top->destination)) {
+                    if (yc_res_math_is_valid_location(scenery->data.ladder_top->destination)) {
                         printf("\n");
-                        printf("Destination tile: %d\n", scenery->data.ladder_top->destination.tile_idx);
+                        printf("Destination tile: %d\n", scenery->data.ladder_top->destination.grid_idx);
                         printf("Destination elevation: %d\n", scenery->data.ladder_top->destination.elevation_idx);
-                        printf("Destination orientation: %d\n", scenery->data.ladder_top->destination.orientation);
+                        printf("Destination orientation_idx: %d\n", scenery->data.ladder_top->destination.orientation_idx);
                     }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:

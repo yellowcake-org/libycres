@@ -61,9 +61,9 @@ yc_res_map_status_t yc_res_map_parse(
     }
     direction = yc_res_byteorder_uint32(direction);
 
-    map->entrance.tile_idx = position;
+    map->entrance.grid_idx = position;
     map->entrance.elevation_idx = elevation;
-    map->entrance.orientation = direction;
+    map->entrance.orientation_idx = direction;
 
     if (0 == io->fread(&map->local.count, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);

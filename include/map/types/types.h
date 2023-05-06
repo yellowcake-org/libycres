@@ -11,7 +11,7 @@ typedef struct yc_res_map {
     uint32_t map_idx, script_id;
 
     uint32_t ticks;
-    yc_res_pro_destination_t entrance;
+    yc_res_math_location_t entrance;
 
     yc_res_map_scripts_t scripts;
     yc_res_map_variables_t local, global;

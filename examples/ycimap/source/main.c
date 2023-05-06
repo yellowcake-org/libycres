@@ -68,12 +68,12 @@ int main(int argc, char *argv[]) {
         printf("\n");
         printf("Ticks passed: %d\n", result.map->ticks);
 
-        if (yc_res_pro_is_valid_destination(result.map->entrance)) {
+        if (yc_res_math_is_valid_location(result.map->entrance)) {
             printf("\n");
             printf("Entrance details:\n");
             printf("Elevation: %d\n", result.map->entrance.elevation_idx);
-            printf("Tile index: %d\n", result.map->entrance.tile_idx);
-            printf("Orientation: %d\n", result.map->entrance.orientation);
+            printf("Tile index: %d\n", result.map->entrance.grid_idx);
+            printf("Orientation: %d\n", result.map->entrance.orientation_idx);
         }
 
         printf("\n");

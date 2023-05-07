@@ -59,10 +59,10 @@ int main(int argc, char *argv[]) {
         printf("Map index: %d\n", result.map->map_idx);
         if (result.map->is_save) { printf("This is save file.\n"); }
 
-        if (yc_res_pro_is_valid_id(result.map->script_id)) {
+        if (yc_res_pro_is_valid_id(result.map->script_idx)) {
             printf("\n");
-            printf("Script type: %d\n", yc_res_pro_script_type_from_sid(result.map->script_id));
-            printf("Script type: %d\n", yc_res_pro_index_from_script_id(result.map->script_id));
+            printf("Script type: %d\n", yc_res_pro_script_type_from_sid(result.map->script_idx));
+            printf("Script type: %d\n", yc_res_pro_index_from_script_id(result.map->script_idx));
         }
 
         printf("\n");

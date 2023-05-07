@@ -106,11 +106,11 @@ yc_res_pro_status_t yc_res_pro_object_item_weapon_parse(
     }
     weapon->caliber = yc_res_byteorder_int32(weapon->caliber);
 
-    if (0 == io->fread(&weapon->ammo_item_idx, sizeof(uint32_t), 1, file)) {
+    if (0 == io->fread(&weapon->ammo_pid, sizeof(uint32_t), 1, file)) {
         yc_res_pro_weapon_parse_cleanup(weapon);
         return YC_RES_PRO_STATUS_IO;
     }
-    weapon->ammo_item_idx = yc_res_byteorder_uint32(weapon->ammo_item_idx);
+    weapon->ammo_pid = yc_res_byteorder_uint32(weapon->ammo_pid);
 
     if (0 == io->fread(&weapon->capacity, sizeof(uint32_t), 1, file)) {
         yc_res_pro_weapon_parse_cleanup(weapon);

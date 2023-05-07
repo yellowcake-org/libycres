@@ -246,7 +246,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("Capacity: %d\n", weapon->capacity);
                     printf("Burst: %d\n", weapon->burst);
                     printf("\n");
-                    printf("Ammo index: %d\n", weapon->ammo_item_idx);
+                    printf("Ammo index: %d\n", weapon->ammo_pid);
                     printf("Crit fail index: %d\n", weapon->critical_failure_idx);
                     printf("Projectile PID: 0x%X\n", weapon->projectile_pid);
                     break;

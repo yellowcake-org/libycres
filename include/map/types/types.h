@@ -8,7 +8,7 @@
 
 typedef struct yc_res_map {
     bool is_save;
-    uint32_t map_idx, script_id;
+    uint32_t map_idx, script_idx; // script is SYSTEM script
 
     uint32_t ticks;
     yc_res_math_location_t entrance;

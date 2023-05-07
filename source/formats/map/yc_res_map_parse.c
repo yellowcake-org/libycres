@@ -71,11 +71,11 @@ yc_res_map_status_t yc_res_map_parse(
     }
     map->local.count = yc_res_byteorder_uint32(map->local.count);
 
-    if (0 == io->fread(&map->script_id, sizeof(uint32_t), 1, file)) {
+    if (0 == io->fread(&map->script_idx, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    map->script_id = yc_res_byteorder_uint32(map->script_id);
+    map->script_idx = yc_res_byteorder_uint32(map->script_idx);
 
     unsigned char flags[4] = {0, 0, 0, 0};
     if (0 == io->fread(&flags, sizeof(uint32_t), 1, file)) {

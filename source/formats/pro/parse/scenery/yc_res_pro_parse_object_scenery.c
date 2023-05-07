@@ -57,8 +57,8 @@ yc_res_pro_status_t yc_res_pro_object_scenery_parse(
             &yc_res_pro_object_scenery_door_parse,
             &yc_res_pro_object_scenery_stairs_parse,
             &yc_res_pro_object_scenery_elevator_parse,
-            &yc_res_pro_object_scenery_ladder_bottom_parse,
-            &yc_res_pro_object_scenery_ladder_top_parse,
+            &yc_res_pro_object_scenery_ladder_parse,
+            &yc_res_pro_object_scenery_ladder_parse,
             &yc_res_pro_object_scenery_generic_parse,
     };
 

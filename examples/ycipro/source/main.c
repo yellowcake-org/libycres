@@ -345,22 +345,22 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                     printf("LADDER BOTTOM");
                     printf("\n");
 
-                    if (yc_res_math_is_valid_location(scenery->data.ladder_bottom->destination)) {
+                    if (yc_res_math_is_valid_location(scenery->data.ladder->destination)) {
                         printf("\n");
-                        printf("Destination tile: %d\n", scenery->data.ladder_bottom->destination.grid_idx);
-                        printf("Destination elevation: %d\n", scenery->data.ladder_bottom->destination.elevation_idx);
-                        printf("Destination orientation_idx: %d\n", scenery->data.ladder_bottom->destination.orientation_idx);
+                        printf("Destination tile: %d\n", scenery->data.ladder->destination.grid_idx);
+                        printf("Destination elevation: %d\n", scenery->data.ladder->destination.elevation_idx);
+                        printf("Destination orientation_idx: %d\n", scenery->data.ladder->destination.orientation_idx);
                     }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP:
                     printf("LADDER TOP");
                     printf("\n");
 
-                    if (yc_res_math_is_valid_location(scenery->data.ladder_top->destination)) {
+                    if (yc_res_math_is_valid_location(scenery->data.ladder->destination)) {
                         printf("\n");
-                        printf("Destination tile: %d\n", scenery->data.ladder_top->destination.grid_idx);
-                        printf("Destination elevation: %d\n", scenery->data.ladder_top->destination.elevation_idx);
-                        printf("Destination orientation_idx: %d\n", scenery->data.ladder_top->destination.orientation_idx);
+                        printf("Destination tile: %d\n", scenery->data.ladder->destination.grid_idx);
+                        printf("Destination elevation: %d\n", scenery->data.ladder->destination.elevation_idx);
+                        printf("Destination orientation_idx: %d\n", scenery->data.ladder->destination.orientation_idx);
                     }
                     break;
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:

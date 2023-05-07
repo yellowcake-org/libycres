@@ -20,7 +20,8 @@ typedef enum yc_res_pro_object_type {
     YC_RES_PRO_OBJECT_TYPE_INTERFACE,
     YC_RES_PRO_OBJECT_TYPE_INVENTORY,
     YC_RES_PRO_OBJECT_TYPE_HEAD,
-    YC_RES_PRO_OBJECT_TYPE_BACKGROUND
+    YC_RES_PRO_OBJECT_TYPE_BACKGROUND,
+    YC_RES_PRO_OBJECT_TYPE_COUNT
 } yc_res_pro_object_type_t;
 
 typedef union yc_res_pro_object_data {

@@ -156,8 +156,29 @@ yc_res_map_status_t yc_res_map_parse_object(
     }
     _flags_ext = yc_res_byteorder_uint32(_flags_ext);
 
-    // read patch
-    // read inventory
+    yc_res_map_parse_object_patch_parser_t *parsers[YC_RES_PRO_OBJECT_TYPE_COUNT] = {
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            &yc_res_map_parse_object_patch_misc,
+            NULL,
+            NULL,
+            NULL,
+            NULL
+    };
+
+    yc_res_map_parse_object_patch_parser_t *fitting =
+            parsers[yc_res_pro_object_type_from_pid(into->proto_id)];
+    yc_res_map_status_t status = fitting(file, io, &into->patch);
+
+    if (YC_RES_MAP_STATUS_OK != status) {
+        yc_res_map_parse_object_cleanup(into);
+        return status;
+    }
+
+    // TODO: read inventory.
 
     return YC_RES_MAP_STATUS_OK;
 }

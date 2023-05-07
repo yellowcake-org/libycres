@@ -187,11 +187,11 @@ yc_res_map_status_t yc_res_map_parse_object(
     return YC_RES_MAP_STATUS_OK;
 }
 
-void yc_res_map_parse_object_cleanup(yc_res_map_level_object_t *into) {
-    if (NULL != into->inventory) {
-        free(into->inventory);
-        into->inventory = NULL;
-    }
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 
-    into->count = 0;
+void yc_res_map_parse_object_cleanup(yc_res_map_level_object_t *into) {
+    // do nothing, in case something wrong whole map invalidation should do
 }
+
+#pragma clang diagnostic pop

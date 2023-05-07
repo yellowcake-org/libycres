@@ -59,6 +59,26 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 }
 
 void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
+    if (NULL != object->patch.item) {
+        free(object->patch.item);
+        object->patch.item = NULL;
+    }
+
+    if (NULL != object->patch.critter) {
+        free(object->patch.critter);
+        object->patch.critter = NULL;
+    }
+
+    if (NULL != object->patch.scenery) {
+        free(object->patch.scenery);
+        object->patch.scenery = NULL;
+    }
+
+    if (NULL != object->patch.misc) {
+        free(object->patch.misc);
+        object->patch.misc = NULL;
+    }
+
     if (NULL != object->inventory) {
         for (size_t object_idx = 0; object_idx < object->count; ++object_idx) {
             yc_res_map_invalidate_object(&object->inventory[object_idx]);

@@ -60,6 +60,26 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 
 void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     if (NULL != object->patch.item) {
+        if (NULL != object->patch.item->data.weapon) {
+            free(object->patch.item->data.weapon);
+            object->patch.item->data.weapon = NULL;
+        }
+
+        if (NULL != object->patch.item->data.ammo) {
+            free(object->patch.item->data.ammo);
+            object->patch.item->data.ammo = NULL;
+        }
+
+        if (NULL != object->patch.item->data.misc) {
+            free(object->patch.item->data.misc);
+            object->patch.item->data.misc = NULL;
+        }
+
+        if (NULL != object->patch.item->data.key) {
+            free(object->patch.item->data.key);
+            object->patch.item->data.key = NULL;
+        }
+
         free(object->patch.item);
         object->patch.item = NULL;
     }
@@ -70,6 +90,26 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     }
 
     if (NULL != object->patch.scenery) {
+        if (NULL != object->patch.scenery->data.door) {
+            free(object->patch.scenery->data.door);
+            object->patch.scenery->data.door = NULL;
+        }
+
+        if (NULL != object->patch.scenery->data.stairs) {
+            free(object->patch.scenery->data.stairs);
+            object->patch.scenery->data.stairs = NULL;
+        }
+
+        if (NULL != object->patch.scenery->data.elevator) {
+            free(object->patch.scenery->data.elevator);
+            object->patch.scenery->data.elevator = NULL;
+        }
+
+        if (NULL != object->patch.scenery->data.ladder) {
+            free(object->patch.scenery->data.ladder);
+            object->patch.scenery->data.ladder = NULL;
+        }
+
         free(object->patch.scenery);
         object->patch.scenery = NULL;
     }

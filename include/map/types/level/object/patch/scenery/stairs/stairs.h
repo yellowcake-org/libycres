@@ -1,0 +1,9 @@
+#ifndef LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_STAIRS_H
+#define LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_STAIRS_H
+
+typedef struct yc_res_map_level_object_patch_scenery_stairs {
+    int32_t map_id;
+    yc_res_math_location_t destination;
+} yc_res_map_level_object_patch_scenery_stairs_t;
+
+#endif //LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_STAIRS_H

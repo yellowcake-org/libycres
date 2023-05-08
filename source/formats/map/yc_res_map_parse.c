@@ -289,7 +289,6 @@ yc_res_map_status_t yc_res_map_parse(
             level->objects.count = yc_res_byteorder_uint32(level->objects.count);
 
             level->objects.pointers = malloc(sizeof(yc_res_map_level_object_t) * level->objects.count);
-
             if (NULL == level->objects.pointers) {
                 yc_res_map_parse_cleanup(file, io, map);
                 return YC_RES_MAP_STATUS_MEM;
@@ -314,9 +313,7 @@ yc_res_map_status_t yc_res_map_parse(
 }
 
 void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_map_t *map) {
-    if (NULL != file) {
-        io->fclose(file);
-    }
+    if (NULL != file) { io->fclose(file); }
 
     if (NULL != map) {
         yc_res_map_invalidate(map);

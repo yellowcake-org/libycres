@@ -52,7 +52,6 @@ yc_res_pro_status_t yc_res_pro_object_scenery_parse(
         return YC_RES_PRO_STATUS_IO;
     }
 
-
     yc_res_pro_object_scenery_data_parser_t *all[] = {
             &yc_res_pro_object_scenery_door_parse,
             &yc_res_pro_object_scenery_stairs_parse,

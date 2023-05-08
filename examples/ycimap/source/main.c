@@ -194,15 +194,19 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
 
         if (c == '\r' || c == '\n') { break; }
 
-        char *tmp = realloc(proto, strlen(proto) + 1);
+        size_t len = strlen(proto);
+        char *tmp = realloc(proto, len + 1 + 1);
         if (NULL == tmp) {
             free(proto);
             proto = NULL;
+            
             goto back;
         }
 
         proto = tmp;
-        snprintf(&proto[strlen(proto)], 1 + 1, "%s", &c);
+        
+        proto[len] = c;
+        proto[len + 1] = '\0';
     }
 
     back:

@@ -90,7 +90,6 @@ yc_res_map_status_t yc_res_map_parse_object(
     if (0 == io->fread(&_flags_ext, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     _flags_ext = yc_res_byteorder_uint32(_flags_ext);
 
-    // TODO: Complete all parsers.
     yc_res_map_parse_object_patch_parser_t *parsers[YC_RES_PRO_OBJECT_TYPE_COUNT] = {
             &yc_res_map_parse_object_patch_item,
             &yc_res_map_parse_object_patch_critter,
@@ -133,7 +132,7 @@ yc_res_map_status_t yc_res_map_parse_object(
 
         yc_res_map_level_object_t *item = &into->inventory[item_idx];
         yc_res_map_status_t status = yc_res_map_parse_object(file, io, db, item);
-        
+
         if (YC_RES_MAP_STATUS_OK != status) { return status; }
     }
 

@@ -117,11 +117,11 @@ int main(int argc, char *argv[]) {
             printf("\n");
         }
 
-        printf("\n");
         for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
             yc_res_map_level_t *level = result.map->levels[elevation_idx];
 
             if (NULL != level) {
+                printf("\n");
                 printf("Level #%lu presented.\n", elevation_idx + 1);
                 printf("%lu objects on this level.\n", level->objects.count);
 
@@ -138,8 +138,6 @@ int main(int argc, char *argv[]) {
                     );
                 }
             }
-
-            printf("\n");
         }
 
         yc_res_map_invalidate(result.map);

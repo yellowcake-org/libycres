@@ -6,6 +6,7 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object);
 void yc_res_map_invalidate(yc_res_map_t *map) {
     for (size_t elevation_idx = 0; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx) {
         yc_res_map_level_t *level = map->levels[elevation_idx];
+        if (NULL == level) { continue; }
 
         if (NULL != level->objects.pointers) {
             for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {

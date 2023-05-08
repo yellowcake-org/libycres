@@ -158,7 +158,7 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
         unsigned char next = 0xF;
 
         if (0 == fread(&next, 1, 1, file)) { break; }
-        if (next == '\n' || next == '\r') { ++current; }
+        if (next == '\n') { ++current; }
     }
 
     char *proto = malloc(1);

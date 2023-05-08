@@ -63,6 +63,7 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
         case YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR:
         case YC_RES_PRO_OBJECT_ITEM_TYPE_CONTAINER:
         case YC_RES_PRO_OBJECT_ITEM_TYPE_DRUG:
+            return YC_RES_MAP_STATUS_OK;
         default:
             return YC_RES_MAP_STATUS_CORR;
     }

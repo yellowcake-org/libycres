@@ -59,23 +59,28 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 }
 
 void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
-    if (NULL != object->patch.item) {
-        if (NULL != object->patch.item->data.weapon) {
+    if (NULL != object->patch.item &&
+        yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_ITEM) {
+        if (NULL != object->patch.item->data.weapon
+            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON) {
             free(object->patch.item->data.weapon);
             object->patch.item->data.weapon = NULL;
         }
 
-        if (NULL != object->patch.item->data.ammo) {
+        if (NULL != object->patch.item->data.ammo
+            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO) {
             free(object->patch.item->data.ammo);
             object->patch.item->data.ammo = NULL;
         }
 
-        if (NULL != object->patch.item->data.misc) {
+        if (NULL != object->patch.item->data.misc
+            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_MISC) {
             free(object->patch.item->data.misc);
             object->patch.item->data.misc = NULL;
         }
 
-        if (NULL != object->patch.item->data.key) {
+        if (NULL != object->patch.item->data.key
+            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_KEY) {
             free(object->patch.item->data.key);
             object->patch.item->data.key = NULL;
         }
@@ -84,12 +89,14 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
         object->patch.item = NULL;
     }
 
-    if (NULL != object->patch.critter) {
+    if (NULL != object->patch.critter
+        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_CRITTER) {
         free(object->patch.critter);
         object->patch.critter = NULL;
     }
 
-    if (NULL != object->patch.scenery) {
+    if (NULL != object->patch.scenery
+        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_SCENERY) {
         if (NULL != object->patch.scenery->data.door) {
             free(object->patch.scenery->data.door);
             object->patch.scenery->data.door = NULL;
@@ -114,7 +121,8 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
         object->patch.scenery = NULL;
     }
 
-    if (NULL != object->patch.misc) {
+    if (NULL != object->patch.misc
+        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_MISC) {
         free(object->patch.misc);
         object->patch.misc = NULL;
     }

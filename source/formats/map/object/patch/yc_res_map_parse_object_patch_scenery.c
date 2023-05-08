@@ -72,6 +72,7 @@ yc_res_map_status_t yc_res_map_parse_object_patch_scenery(
         }
             break;
         case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
+            return YC_RES_MAP_STATUS_OK;
         default:
             return YC_RES_MAP_STATUS_CORR;
     }

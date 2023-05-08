@@ -19,8 +19,8 @@ typedef struct yc_res_map_level_object {
     // for in-battle .SAV files
     uint32_t critter_idx, outline_color_idx;
 
-    size_t count;
-    struct yc_res_map_level_object *inventory;
+    size_t capacity, occupied;
+    struct yc_res_map_level_object **inventory;
 } yc_res_map_level_object_t;
 
 typedef struct yc_res_map_level_objects {

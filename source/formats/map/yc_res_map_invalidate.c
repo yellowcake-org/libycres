@@ -9,7 +9,8 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 
         if (NULL != level->objects.pointers) {
             for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
-                yc_res_map_invalidate_object(&level->objects.pointers[object_idx]);
+                yc_res_map_level_object_t *object = &level->objects.pointers[object_idx];
+                if (NULL != object) { yc_res_map_invalidate_object(object); }
             }
 
             free(level->objects.pointers);
@@ -59,28 +60,24 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 }
 
 void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
-    if (NULL != object->patch.item &&
-        YC_RES_PRO_OBJECT_TYPE_ITEM == yc_res_pro_object_type_from_pid(object->proto_id)) {
-        if (NULL != object->patch.item->data.weapon
-            && YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON == object->patch.item->type) {
+    if (YC_RES_PRO_OBJECT_TYPE_ITEM == yc_res_pro_object_type_from_pid(object->proto_id)
+        && NULL != object->patch.item) {
+        if (YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON == object->patch.item->type && NULL != object->patch.item->data.weapon) {
             free(object->patch.item->data.weapon);
             object->patch.item->data.weapon = NULL;
         }
 
-        if (NULL != object->patch.item->data.ammo
-            && YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO == object->patch.item->type) {
+        if (YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO == object->patch.item->type && NULL != object->patch.item->data.ammo) {
             free(object->patch.item->data.ammo);
             object->patch.item->data.ammo = NULL;
         }
 
-        if (NULL != object->patch.item->data.misc
-            && YC_RES_PRO_OBJECT_ITEM_TYPE_MISC == object->patch.item->type) {
+        if (YC_RES_PRO_OBJECT_ITEM_TYPE_MISC == object->patch.item->type && NULL != object->patch.item->data.misc) {
             free(object->patch.item->data.misc);
             object->patch.item->data.misc = NULL;
         }
 
-        if (NULL != object->patch.item->data.key
-            && YC_RES_PRO_OBJECT_ITEM_TYPE_KEY == object->patch.item->type) {
+        if (YC_RES_PRO_OBJECT_ITEM_TYPE_KEY == object->patch.item->type && NULL != object->patch.item->data.key) {
             free(object->patch.item->data.key);
             object->patch.item->data.key = NULL;
         }
@@ -89,35 +86,35 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
         object->patch.item = NULL;
     }
 
-    if (NULL != object->patch.critter
-        && YC_RES_PRO_OBJECT_TYPE_CRITTER == yc_res_pro_object_type_from_pid(object->proto_id)) {
+    if (YC_RES_PRO_OBJECT_TYPE_CRITTER == yc_res_pro_object_type_from_pid(object->proto_id) &&
+        NULL != object->patch.critter) {
         free(object->patch.critter);
         object->patch.critter = NULL;
     }
 
-    if (NULL != object->patch.scenery
-        && YC_RES_PRO_OBJECT_TYPE_SCENERY == yc_res_pro_object_type_from_pid(object->proto_id)) {
+    if (YC_RES_PRO_OBJECT_TYPE_SCENERY == yc_res_pro_object_type_from_pid(object->proto_id) &&
+        NULL != object->patch.scenery) {
         if (NULL != object->patch.scenery->data.door
             && YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR == object->patch.scenery->type) {
             free(object->patch.scenery->data.door);
             object->patch.scenery->data.door = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.stairs
-            && YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS == object->patch.scenery->type) {
+        if (YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS == object->patch.scenery->type
+            && NULL != object->patch.scenery->data.stairs) {
             free(object->patch.scenery->data.stairs);
             object->patch.scenery->data.stairs = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.elevator
-            && YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR == object->patch.scenery->type) {
+        if (YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR == object->patch.scenery->type &&
+            NULL != object->patch.scenery->data.elevator) {
             free(object->patch.scenery->data.elevator);
             object->patch.scenery->data.elevator = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.ladder
-            && (YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM == object->patch.scenery->type ||
-                YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP == object->patch.scenery->type)) {
+        if ((YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM == object->patch.scenery->type ||
+             YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP == object->patch.scenery->type) &&
+            NULL != object->patch.scenery->data.ladder) {
             free(object->patch.scenery->data.ladder);
             object->patch.scenery->data.ladder = NULL;
         }
@@ -126,20 +123,21 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
         object->patch.scenery = NULL;
     }
 
-    if (NULL != object->patch.misc
-        && YC_RES_PRO_OBJECT_TYPE_MISC == yc_res_pro_object_type_from_pid(object->proto_id)) {
+    if (YC_RES_PRO_OBJECT_TYPE_MISC == yc_res_pro_object_type_from_pid(object->proto_id) &&
+        NULL != object->patch.misc) {
         free(object->patch.misc);
         object->patch.misc = NULL;
     }
 
     if (NULL != object->inventory) {
-        for (size_t object_idx = 0; object_idx < object->count; ++object_idx) {
-            yc_res_map_invalidate_object(&object->inventory[object_idx]);
+        for (size_t object_idx = 0; object_idx < object->capacity; ++object_idx) {
+            yc_res_map_level_object_t *item = object->inventory[object_idx];
+            if (NULL != item) { yc_res_map_invalidate_object(item); }
         }
 
         free(object->inventory);
         object->inventory = NULL;
     }
 
-    object->count = 0;
+    object->capacity = 0;
 }

@@ -1,6 +1,7 @@
 #include <libycres.h>
 #include <private.h>
 #include <stdlib.h>
+#include <memory.h>
 
 #include "yc_res_map_parse_object.h"
 #include "../../pro/parse/yc_res_pro_parse_object.h"
@@ -111,8 +112,10 @@ yc_res_map_status_t yc_res_map_parse_object(
         if (YC_RES_MAP_STATUS_OK != status) { return status; }
     }
 
-    into->count = inventory_capacity;
-    into->inventory = malloc(sizeof(yc_res_map_level_object_t) * into->count);
+    into->occupied = 0;
+    into->capacity = inventory_capacity;
+
+    into->inventory = calloc(into->capacity, sizeof(yc_res_map_level_object_t *));
     if (NULL == into->inventory) { return YC_RES_MAP_STATUS_MEM; }
 
     for (size_t record_idx = 0; record_idx < inventory_records_count; ++record_idx) {
@@ -120,20 +123,26 @@ yc_res_map_status_t yc_res_map_parse_object(
         if (0 == io->fread(&item_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
         item_idx = yc_res_byteorder_uint32(item_idx);
 
-        int32_t overhead = (int32_t) item_idx - ((int32_t) into->count - 1);
+        int32_t overhead = (int32_t) item_idx - ((int32_t) into->capacity - 1);
         if (0 < overhead) {
-            into->count += overhead;
-            yc_res_map_level_object_t *grown =
-                    realloc(into->inventory, sizeof(yc_res_map_level_object_t) * into->count);
+            into->capacity += overhead;
+            yc_res_map_level_object_t **grown =
+                    realloc(into->inventory, sizeof(yc_res_map_level_object_t *) * into->capacity);
 
             if (NULL == grown) { return YC_RES_MAP_STATUS_MEM; }
             into->inventory = grown;
+
+            memset(&into->inventory[into->capacity - 1 - overhead], 0, overhead);
         }
 
-        yc_res_map_level_object_t *item = &into->inventory[item_idx];
+        into->inventory[item_idx] = malloc(sizeof(yc_res_map_level_object_t));
+        if (NULL == into->inventory[item_idx]) { return YC_RES_MAP_STATUS_MEM; }
+
+        yc_res_map_level_object_t *item = into->inventory[item_idx];
         yc_res_map_status_t status = yc_res_map_parse_object(file, io, db, item);
 
         if (YC_RES_MAP_STATUS_OK != status) { return status; }
+        into->occupied++;
     }
 
     return YC_RES_MAP_STATUS_OK;

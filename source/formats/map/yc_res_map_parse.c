@@ -296,8 +296,9 @@ yc_res_map_status_t yc_res_map_parse(
 
             for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
                 yc_res_map_level_object_t *object = &level->objects.pointers[object_idx];
-                yc_res_map_status_t status = yc_res_map_parse_object(file, io, db,  object);
+                if (NULL == object) { continue; }
 
+                yc_res_map_status_t status = yc_res_map_parse_object(file, io, db, object);
                 if (YC_RES_MAP_STATUS_OK != status) {
                     yc_res_map_parse_cleanup(file, io, map);
                     return status;

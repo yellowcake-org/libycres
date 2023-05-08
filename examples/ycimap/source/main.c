@@ -10,6 +10,7 @@ arg_file_t *input, *resources;
 arg_end_t *end;
 
 yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *context);
+
 yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context);
 
 int main(int argc, char *argv[]) {
@@ -73,7 +74,7 @@ int main(int argc, char *argv[]) {
         if (yc_res_pro_is_valid_id(result.map->script_idx)) {
             printf("\n");
             printf("Script type: %d\n", yc_res_pro_script_type_from_sid(result.map->script_idx));
-            printf("Script type: %d\n", yc_res_pro_index_from_script_id(result.map->script_idx));
+            printf("Script index: %d\n", yc_res_pro_index_from_script_id(result.map->script_idx));
         }
 
         printf("\n");
@@ -121,9 +122,27 @@ int main(int argc, char *argv[]) {
             yc_res_map_level_t *level = result.map->levels[elevation_idx];
 
             if (NULL != level) {
-                printf("Level #%lu presented.\n\n", elevation_idx + 1);
+                printf("Level #%lu presented.\n", elevation_idx + 1);
+                printf("%lu objects on this level.\n", level->objects.count);
+
+                printf("\n");
+                for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
+                    yc_res_map_level_object_t *object = &level->objects.pointers[object_idx];
+
+                    printf(
+                            "Object IDx: 0x%X, type: %u, inventory: %lu/%lu\n",
+                            yc_res_pro_index_from_object_id(object->proto_id),
+                            yc_res_pro_object_type_from_pid(object->proto_id),
+                            object->occupied,
+                            object->capacity
+                    );
+                }
             }
+
+            printf("\n");
         }
+
+        yc_res_map_invalidate(result.map);
     }
 
     exit:

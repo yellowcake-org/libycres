@@ -20,7 +20,7 @@ typedef union yc_res_pro_object_scenery_data {
     yc_res_pro_object_scenery_door_t *door;
     yc_res_pro_object_scenery_stairs_t *stairs;
     yc_res_pro_object_scenery_elevator_t *elevator;
-    yc_res_pro_object_scenery_ladder_t *ladder_bottom, *ladder_top;
+    yc_res_pro_object_scenery_ladder_t *ladder;
     yc_res_pro_object_scenery_generic_t *generic;
 } yc_res_pro_object_scenery_data_t;
 

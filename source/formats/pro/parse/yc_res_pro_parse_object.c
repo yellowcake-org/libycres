@@ -5,7 +5,6 @@
 
 #include <stdlib.h>
 
-void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into);
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object);
 
 yc_res_pro_status_t yc_res_pro_parse(
@@ -70,7 +69,7 @@ yc_res_pro_status_t yc_res_pro_parse(
     }
 
     flags = yc_res_byteorder_uint32(flags);
-    yc_res_pro_parse_flags(flags, object);
+    object->flags = yc_res_pro_parse_flags(flags);
 
     yc_res_pro_object_data_parser_t *all[] = {
             &yc_res_pro_object_item_parse,
@@ -95,25 +94,29 @@ yc_res_pro_status_t yc_res_pro_parse(
     return YC_RES_PRO_STATUS_OK;
 }
 
-void yc_res_pro_parse_flags(uint32_t flags, yc_res_pro_object_t *into) {
-    into->flags.is_flat = 0x00000008 == (flags & 0x00000008);
-    into->flags.multi_hex = 0x00000800 == (flags & 0x00000800);
+yc_res_pro_object_flags_t yc_res_pro_parse_flags(uint32_t flags) {
+    yc_res_pro_object_flags_t result;
 
-    into->flags.no_block = 0x00000010 == (flags & 0x00000010);
-    into->flags.no_border = 0x00000020 == (flags & 0x00000020);
+    result.is_flat = 0x00000008 == (flags & 0x00000008);
+    result.multi_hex = 0x00000800 == (flags & 0x00000800);
 
-    into->flags.light_through = 0x20000000 == (flags & 0x20000000);
-    into->flags.shoot_through = 0x80000000 == (flags & 0x80000000);
+    result.no_block = 0x00000010 == (flags & 0x00000010);
+    result.no_border = 0x00000020 == (flags & 0x00000020);
 
-    into->flags.transparency = YC_RES_PRO_TRANS_NONE;
+    result.light_through = 0x20000000 == (flags & 0x20000000);
+    result.shoot_through = 0x80000000 == (flags & 0x80000000);
 
-    if (0x00004000 == (flags & 0x00004000)) { into->flags.transparency = YC_RES_PRO_TRANS_RED; }
-    if (0x00008000 == (flags & 0x00008000)) { into->flags.transparency = YC_RES_PRO_TRANS_NONE; }
-    if (0x00010000 == (flags & 0x00010000)) { into->flags.transparency = YC_RES_PRO_TRANS_WALL; }
-    if (0x00020000 == (flags & 0x00020000)) { into->flags.transparency = YC_RES_PRO_TRANS_GLASS; }
-    if (0x00040000 == (flags & 0x00040000)) { into->flags.transparency = YC_RES_PRO_TRANS_STEAM; }
-    if (0x00080000 == (flags & 0x00080000)) { into->flags.transparency = YC_RES_PRO_TRANS_ENERGY; }
-    if (0x10000000 == (flags & 0x10000000)) { into->flags.transparency = YC_RES_PRO_TRANS_WALL_END; }
+    result.transparency = YC_RES_PRO_TRANS_NONE;
+
+    if (0x00004000 == (flags & 0x00004000)) { result.transparency = YC_RES_PRO_TRANS_RED; }
+    if (0x00008000 == (flags & 0x00008000)) { result.transparency = YC_RES_PRO_TRANS_NONE; }
+    if (0x00010000 == (flags & 0x00010000)) { result.transparency = YC_RES_PRO_TRANS_WALL; }
+    if (0x00020000 == (flags & 0x00020000)) { result.transparency = YC_RES_PRO_TRANS_GLASS; }
+    if (0x00040000 == (flags & 0x00040000)) { result.transparency = YC_RES_PRO_TRANS_STEAM; }
+    if (0x00080000 == (flags & 0x00080000)) { result.transparency = YC_RES_PRO_TRANS_ENERGY; }
+    if (0x10000000 == (flags & 0x10000000)) { result.transparency = YC_RES_PRO_TRANS_WALL_END; }
+
+    return result;
 }
 
 void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object) {

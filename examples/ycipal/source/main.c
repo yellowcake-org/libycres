@@ -60,7 +60,9 @@ int main(int argc, char *argv[]) {
     }
 
     exit:
+
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
+    if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 
     return exit_code;
 }

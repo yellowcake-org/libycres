@@ -11,6 +11,7 @@ void yc_res_map_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_m
 yc_res_map_status_t yc_res_map_parse(
         const char *filename,
         const yc_res_io_fs_api_t *io,
+        const yc_res_map_parse_db_api_t *db,
         yc_res_map_parse_result_t *result
 ) {
     void *file = io->fopen(filename, "rb");
@@ -296,7 +297,7 @@ yc_res_map_status_t yc_res_map_parse(
 
             for (size_t object_idx = 0; object_idx < level->objects.count; ++object_idx) {
                 yc_res_map_level_object_t *object = &level->objects.pointers[object_idx];
-                yc_res_map_status_t status = yc_res_map_parse_object(file, io, object);
+                yc_res_map_status_t status = yc_res_map_parse_object(file, io, db,  object);
 
                 if (YC_RES_MAP_STATUS_OK != status) {
                     yc_res_map_parse_cleanup(file, io, map);

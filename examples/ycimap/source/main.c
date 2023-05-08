@@ -12,12 +12,12 @@ arg_end_t *end;
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<color.pal>", 1, 1, "input palette file"),
+            input = arg_filen("i", "input", "<vault13.map>", 1, 1, "input map file"),
             end = arg_end(1),
     };
 
     int exit_code = 0;
-    char program_name[] = "ycipal";
+    char program_name[] = "ycimap";
 
     int errors_count;
     errors_count = arg_parse(argc, argv, arg_table);

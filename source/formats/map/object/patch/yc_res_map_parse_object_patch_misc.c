@@ -28,11 +28,15 @@ yc_res_map_status_t yc_res_map_parse_object_patch_misc(
     if (0 == io->fread(&entrance->grid_idx, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     entrance->grid_idx = yc_res_byteorder_int32(entrance->grid_idx);
 
-    if (0 == io->fread(&entrance->elevation_idx, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    entrance->elevation_idx = yc_res_byteorder_int32(entrance->elevation_idx);
+    uint32_t elevation_idx = 0;
+    if (0 == io->fread(&elevation_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    elevation_idx = yc_res_byteorder_uint32(elevation_idx);
+    entrance->elevation_idx = elevation_idx;
 
-    if (0 == io->fread(&entrance->orientation_idx, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    entrance->orientation_idx = yc_res_byteorder_int32(entrance->orientation_idx);
+    uint32_t orientation_idx = 0;
+    if (0 == io->fread(&orientation_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    orientation_idx = yc_res_byteorder_uint32(orientation_idx);
+    entrance->orientation_idx = orientation_idx;
 
     return YC_RES_MAP_STATUS_OK;
 }

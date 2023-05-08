@@ -26,37 +26,39 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
         }
     }
 
-    map->local.count = 0;
-    if (NULL != map->local.values) {
+    if (0 < map->local.count && NULL != map->local.values) {
         free(map->local.values);
         map->local.values = NULL;
+        map->local.count = 0;
     }
 
-    map->global.count = 0;
-    if (NULL != map->global.values) {
+    if (0 < map->global.count && NULL != map->global.values) {
         free(map->global.values);
         map->global.values = NULL;
+        map->global.count = 0;
     }
 
-    if (NULL != map->scripts.pointers) {
+    if (0 < map->scripts.count && NULL != map->scripts.pointers) {
         for (size_t script_idx = 0; script_idx < map->scripts.count; ++script_idx) {
             yc_res_map_script_t *script = &map->scripts.pointers[script_idx];
 
-            if (NULL != script->data.timed) {
+            if (YC_RES_PRO_SCRIPT_TYPE_TIMED == yc_res_pro_script_type_from_sid(script->script_id) &&
+                NULL != script->data.timed) {
                 free(script->data.timed);
                 script->data.timed = NULL;
             }
 
-            if (NULL != script->data.spatial) {
+            if (YC_RES_PRO_SCRIPT_TYPE_SPATIAL == yc_res_pro_script_type_from_sid(script->script_id) &&
+                NULL != script->data.spatial) {
                 free(script->data.spatial);
                 script->data.spatial = NULL;
             }
         }
-
-        map->scripts.count = 0;
-
+        
         free(map->scripts.pointers);
         map->scripts.pointers = NULL;
+        
+        map->scripts.count = 0;
     }
 }
 
@@ -141,4 +143,5 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     }
 
     object->capacity = 0;
+    object->occupied = 0;
 }

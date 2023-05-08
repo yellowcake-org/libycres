@@ -70,7 +70,7 @@ yc_res_map_status_t yc_res_map_parse(
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    map->local.count = yc_res_byteorder_uint32(map->local.count);
+    map->local.count = yc_res_byteorder_uint32((uint32_t) map->local.count);
 
     if (0 == io->fread(&map->script_idx, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -86,10 +86,10 @@ yc_res_map_status_t yc_res_map_parse(
 
     map->is_save = (flags[3] & 0x01) != 0x00;
 
-    for (size_t elevation_idx = 0, byte = 0x02;
-         elevation_idx < YC_RES_MAP_ELEVATION_COUNT;
-         ++elevation_idx, byte <<= 1) {
-        if ((flags[3] & byte) == 0x00) {
+    for (size_t elevation_idx = 0, byte = 0x02; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx, byte <<= 1) {
+        if ((flags[3] & byte) != 0x00) {
+            map->levels[elevation_idx] = NULL;
+        } else {
             map->levels[elevation_idx] = malloc(sizeof(yc_res_map_level_t));
 
             if (NULL == map->levels[elevation_idx]) {
@@ -110,7 +110,7 @@ yc_res_map_status_t yc_res_map_parse(
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    map->global.count = yc_res_byteorder_uint32(map->global.count);
+    map->global.count = yc_res_byteorder_uint32((uint32_t) map->global.count);
 
     if (0 == io->fread(&map->map_idx, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, io, map);
@@ -210,7 +210,7 @@ yc_res_map_status_t yc_res_map_parse(
         size_t size = sizeof(yc_res_map_script_t) * map->scripts.count;
 
         yc_res_map_script_t *scripts =
-                map->scripts.pointers == NULL ? malloc(size) : realloc(map->scripts.pointers, size);
+            0 == map->scripts.count - count ? malloc(size) : realloc(map->scripts.pointers, size);
 
         if (NULL == scripts) {
             yc_res_map_parse_cleanup(file, io, map);
@@ -228,7 +228,7 @@ yc_res_map_status_t yc_res_map_parse(
                 if (batch_idx * BATCH_LENGTH + record_idx < count) {
                     yc_res_map_script_t *script = &map->scripts.pointers[consumed_idx++];
                     yc_res_map_status_t status = yc_res_map_parse_script(
-                            file, io, script, script_type
+                            file, io, script, (uint32_t) script_type
                     );
 
                     if (YC_RES_MAP_STATUS_OK != status) {
@@ -286,7 +286,7 @@ yc_res_map_status_t yc_res_map_parse(
                 yc_res_map_parse_cleanup(file, io, map);
                 return YC_RES_MAP_STATUS_IO;
             }
-            level->objects.count = yc_res_byteorder_uint32(level->objects.count);
+            level->objects.count = yc_res_byteorder_uint32((uint32_t) level->objects.count);
 
             level->objects.pointers = malloc(sizeof(yc_res_map_level_object_t) * level->objects.count);
             if (NULL == level->objects.pointers) {

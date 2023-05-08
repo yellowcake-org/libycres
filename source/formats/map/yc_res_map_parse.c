@@ -86,10 +86,10 @@ yc_res_map_status_t yc_res_map_parse(
 
     map->is_save = (flags[3] & 0x01) != 0x00;
 
-    for (size_t elevation_idx = 0, byte = 0x02;
-         elevation_idx < YC_RES_MAP_ELEVATION_COUNT;
-         ++elevation_idx, byte <<= 1) {
-        if ((flags[3] & byte) == 0x00) {
+    for (size_t elevation_idx = 0, byte = 0x02; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx, byte <<= 1) {
+        if ((flags[3] & byte) != 0x00) {
+            map->levels[elevation_idx] = NULL;
+        } else {
             map->levels[elevation_idx] = malloc(sizeof(yc_res_map_level_t));
 
             if (NULL == map->levels[elevation_idx]) {

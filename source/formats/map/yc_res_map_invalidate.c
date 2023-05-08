@@ -60,27 +60,27 @@ void yc_res_map_invalidate(yc_res_map_t *map) {
 
 void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     if (NULL != object->patch.item &&
-        yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_ITEM) {
+        YC_RES_PRO_OBJECT_TYPE_ITEM == yc_res_pro_object_type_from_pid(object->proto_id)) {
         if (NULL != object->patch.item->data.weapon
-            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON) {
+            && YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON == object->patch.item->type) {
             free(object->patch.item->data.weapon);
             object->patch.item->data.weapon = NULL;
         }
 
         if (NULL != object->patch.item->data.ammo
-            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO) {
+            && YC_RES_PRO_OBJECT_ITEM_TYPE_AMMO == object->patch.item->type) {
             free(object->patch.item->data.ammo);
             object->patch.item->data.ammo = NULL;
         }
 
         if (NULL != object->patch.item->data.misc
-            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_MISC) {
+            && YC_RES_PRO_OBJECT_ITEM_TYPE_MISC == object->patch.item->type) {
             free(object->patch.item->data.misc);
             object->patch.item->data.misc = NULL;
         }
 
         if (NULL != object->patch.item->data.key
-            && object->patch.item->type == YC_RES_PRO_OBJECT_ITEM_TYPE_KEY) {
+            && YC_RES_PRO_OBJECT_ITEM_TYPE_KEY == object->patch.item->type) {
             free(object->patch.item->data.key);
             object->patch.item->data.key = NULL;
         }
@@ -90,29 +90,34 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     }
 
     if (NULL != object->patch.critter
-        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_CRITTER) {
+        && YC_RES_PRO_OBJECT_TYPE_CRITTER == yc_res_pro_object_type_from_pid(object->proto_id)) {
         free(object->patch.critter);
         object->patch.critter = NULL;
     }
 
     if (NULL != object->patch.scenery
-        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_SCENERY) {
-        if (NULL != object->patch.scenery->data.door) {
+        && YC_RES_PRO_OBJECT_TYPE_SCENERY == yc_res_pro_object_type_from_pid(object->proto_id)) {
+        if (NULL != object->patch.scenery->data.door
+            && YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR == object->patch.scenery->type) {
             free(object->patch.scenery->data.door);
             object->patch.scenery->data.door = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.stairs) {
+        if (NULL != object->patch.scenery->data.stairs
+            && YC_RES_PRO_OBJECT_SCENERY_TYPE_STAIRS == object->patch.scenery->type) {
             free(object->patch.scenery->data.stairs);
             object->patch.scenery->data.stairs = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.elevator) {
+        if (NULL != object->patch.scenery->data.elevator
+            && YC_RES_PRO_OBJECT_SCENERY_TYPE_ELEVATOR == object->patch.scenery->type) {
             free(object->patch.scenery->data.elevator);
             object->patch.scenery->data.elevator = NULL;
         }
 
-        if (NULL != object->patch.scenery->data.ladder) {
+        if (NULL != object->patch.scenery->data.ladder
+            && (YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_BOTTOM == object->patch.scenery->type ||
+                YC_RES_PRO_OBJECT_SCENERY_TYPE_LADDER_TOP == object->patch.scenery->type)) {
             free(object->patch.scenery->data.ladder);
             object->patch.scenery->data.ladder = NULL;
         }
@@ -122,7 +127,7 @@ void yc_res_map_invalidate_object(yc_res_map_level_object_t *object) {
     }
 
     if (NULL != object->patch.misc
-        && yc_res_pro_object_type_from_pid(object->proto_id) == YC_RES_PRO_OBJECT_TYPE_MISC) {
+        && YC_RES_PRO_OBJECT_TYPE_MISC == yc_res_pro_object_type_from_pid(object->proto_id)) {
         free(object->patch.misc);
         object->patch.misc = NULL;
     }

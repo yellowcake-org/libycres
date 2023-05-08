@@ -132,7 +132,7 @@ yc_res_map_status_t yc_res_map_parse_object(
             if (NULL == grown) { return YC_RES_MAP_STATUS_MEM; }
             into->inventory = grown;
 
-            memset(&into->inventory[into->capacity - 1 - overhead], 0, overhead);
+            memset(&into->inventory[into->capacity - overhead], 0, overhead * sizeof(yc_res_map_level_object_t *));
         }
 
         into->inventory[item_idx] = malloc(sizeof(yc_res_map_level_object_t));

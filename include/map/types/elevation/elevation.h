@@ -1,0 +1,11 @@
+#ifndef LIB_YCRES_MAP_TYPES_ELEVATION_H
+#define LIB_YCRES_MAP_TYPES_ELEVATION_H
+
+typedef enum yc_res_map_elevation {
+    YC_RES_MAP_ELEVATION_ZERO = 0,
+    YC_RES_MAP_ELEVATION_ONE,
+    YC_RES_MAP_ELEVATION_TWO,
+    YC_RES_MAP_ELEVATION_COUNT,
+} yc_res_map_elevation_t;
+
+#endif //LIB_YCRES_MAP_TYPES_ELEVATION_H

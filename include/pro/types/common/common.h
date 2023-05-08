@@ -10,6 +10,5 @@
 #include "caliber/caliber.h"
 #include "material/material.h"
 #include "lighting/lighting.h"
-#include "destination/destination.h"
 
 #endif //LIB_YCRES_PRO_TYPES_COMMON_H

@@ -1,0 +1,8 @@
+#ifndef LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_LADDER_H
+#define LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_LADDER_H
+
+typedef struct yc_res_map_level_object_patch_scenery_ladder {
+    yc_res_math_location_t destination;
+} yc_res_map_level_object_patch_scenery_ladder_t;
+
+#endif //LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_LADDER_H

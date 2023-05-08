@@ -29,9 +29,7 @@ typedef struct yc_res_pro_object_item_weapon {
     yc_res_pro_object_item_weapon_fire_t fire_primary, fire_secondary;
 
     uint32_t capacity, burst;
-
-    uint32_t ammo_item_idx;
-    uint32_t projectile_pid;
+    uint32_t ammo_pid, projectile_pid;
 
     uint32_t damage_min, damage_max;
     yc_res_pro_damage_type_t damage_type;

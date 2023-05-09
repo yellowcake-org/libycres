@@ -59,7 +59,7 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
             current->value = value;
             value = NULL;
 
-            current->index = NULL == index ? 0xFFFFFFFF : strtoul(index, NULL, 10);
+            current->index = NULL == index ? 0xFFFFFFFF : (uint32_t) strtoul(index, NULL, 10);
 
             free(index);
             index = NULL;

@@ -66,7 +66,14 @@ int main(int argc, char *argv[]) {
             }
 
             printf("\n");
+            yc_res_lst_invalidate(entry);
         }
+        
+        result.entries->pointers = NULL;
+        result.entries->count = 0;
+        
+        free(result.entries);
+        result.entries = NULL;
     }
 
     exit:

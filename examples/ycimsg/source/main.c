@@ -1,6 +1,9 @@
-#include <ycilst.h>
+#include <ycimsg.h>
 
 #include <stdlib.h>
+#include <memory.h>
+
+#include <sys/stat.h>
 
 arg_lit_t *help;
 arg_file_t *input;
@@ -9,12 +12,12 @@ arg_end_t *end;
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
-            input = arg_filen("i", "input", "<index.lst>", 1, 1, "input index file"),
+            input = arg_filen("i", "input", "<texts.msg>", 1, 1, "input messages file"),
             end = arg_end(1),
     };
 
     int exit_code = 0;
-    char program_name[] = "ycilst";
+    char program_name[] = "ycimsg";
 
     int errors_count;
     errors_count = arg_parse(argc, argv, arg_table);
@@ -45,23 +48,24 @@ int main(int argc, char *argv[]) {
                 .fread = (yc_res_io_fread_t *) &fread,
         };
 
-        yc_res_lst_parse_result_t result = {NULL};
-        if (YC_RES_PAL_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
+        yc_res_msg_parse_result_t result = {NULL};
+        if (YC_RES_PAL_STATUS_OK != yc_res_msg_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }
 
         for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
-            yc_res_lst_entry_t *entry = &result.entries->pointers[entry_idx];
+            yc_res_msg_entry_t *entry = &result.entries->pointers[entry_idx];
 
-            printf("[%lu] Value: %s", entry_idx, entry->value);
+            printf(
+                    "[%lu] Index: %d, Audio: %s, Description: %s\n",
+                    entry_idx,
+                    entry->index,
+                    entry->audio,
+                    entry->description
+            );
 
-            if (yc_res_lst_is_valid_index(entry->index)) {
-                printf(", index: %d", entry->index);
-            }
-
-            printf("\n");
-            yc_res_lst_invalidate(entry);
+            yc_res_msg_invalidate(entry);
         }
         
         result.entries->pointers = NULL;

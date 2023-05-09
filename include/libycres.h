@@ -7,6 +7,7 @@
 #include <dat/dat.h>
 #include <pal/pal.h>
 #include <frm/frm.h>
+#include <lst/lst.h>
 #include <pro/pro.h>
 #include <map/map.h>
 

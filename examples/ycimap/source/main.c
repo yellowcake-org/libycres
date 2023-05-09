@@ -162,69 +162,40 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     if (NULL == lstname) { return NULL; }
     snprintf(lstname, lstname_size, "%s%s/%s/%s%s", root, path, type, type, ext);
 
-    FILE *file = fopen(lstname, "rb");
-    if (NULL == file) {
-        free(lstname);
-        return NULL;
-    }
+    yc_res_io_fs_api_t io_api = {
+            .fopen = (yc_res_io_fopen_t *) &fopen,
+            .fclose = (yc_res_io_fclose_t *) &fclose,
+            .fseek = (yc_res_io_fseek_t *) &fseek,
+            .fread = (yc_res_io_fread_t *) &fread,
+    };
 
-    size_t current = 0;
-    size_t line = yc_res_pro_index_from_object_id(pid) - 1;
+    yc_res_lst_parse_result_t result = {.entries =  NULL};
+    yc_res_lst_status_t status = yc_res_lst_parse(lstname, &io_api, &result);
 
-    while (current != line) {
-        unsigned char next = 0xF;
+    size_t index = yc_res_pro_index_from_object_id(pid) - 1;
+    if (YC_RES_LST_STATUS_OK != status || result.entries->count <= index) { goto cleanup; }
 
-        if (0 == fread(&next, 1, 1, file)) { break; }
-        if (next == '\n') { ++current; }
-    }
+    yc_res_lst_entry_t *entry = &result.entries->pointers[index];
+    if (NULL == entry->value) { goto cleanup; }
 
-    char *proto = malloc(1);
-    if (NULL == proto) { goto back; }
-    *proto = '\0';
-
-    char c = '\0';
-    while (true) {
-        if (0 == fread(&c, 1, 1, file)) {
-            if (NULL != proto) {
-                free(proto);
-                proto = NULL;
-            }
-            break;
-        }
-
-        if (c == '\r' || c == '\n') { break; }
-
-        size_t len = strlen(proto);
-        char *tmp = realloc(proto, len + 1 + 1);
-        if (NULL == tmp) {
-            free(proto);
-            proto = NULL;
-            
-            goto back;
-        }
-
-        proto = tmp;
-        
-        proto[len] = c;
-        proto[len + 1] = '\0';
-    }
-
-    back:
-    fclose(file);
-
-    if (NULL == proto) { return NULL; }
-
-    size_t protoname_size =
-            strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(proto) + 1;
-
+    size_t protoname_size = strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(entry->value) + 1;
     char *protoname = malloc(protoname_size);
-    if (NULL == protoname) {
-        free(proto);
-        proto = NULL;
-        goto back;
+    if (NULL == protoname) { goto cleanup; }
+
+    snprintf(protoname, protoname_size, "%s%s/%s/%s", root, path, type, entry->value);
+
+    cleanup:
+    for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
+        yc_res_lst_invalidate(&result.entries->pointers[entry_idx]);
     }
 
-    snprintf(protoname, protoname_size, "%s%s/%s/%s", root, path, type, proto);
+    free(result.entries->pointers);
+    result.entries->pointers = NULL;
+    result.entries->count = 0;
+
+    free(result.entries);
+    result.entries = NULL;
+
     return protoname;
 }
 

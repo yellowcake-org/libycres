@@ -17,12 +17,14 @@ add_subdirectory(examples/ycipal)
 add_subdirectory(examples/ycifrm)
 add_subdirectory(examples/ycipro)
 add_subdirectory(examples/ycimap)
+add_subdirectory(examples/ycilst)
 
 add_dependencies(ycundat argtable3)
 add_dependencies(ycipal argtable3)
 add_dependencies(ycifrm argtable3)
 add_dependencies(ycipro argtable3)
 add_dependencies(ycimap argtable3)
+add_dependencies(ycilst argtable3)
 
 target_link_libraries(ycundat argtable3)
 target_link_libraries(ycundat ycres)
@@ -38,3 +40,6 @@ target_link_libraries(ycipro ycres)
 
 target_link_libraries(ycimap argtable3)
 target_link_libraries(ycimap ycres)
+
+target_link_libraries(ycilst argtable3)
+target_link_libraries(ycilst ycres)

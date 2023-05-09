@@ -22,7 +22,6 @@ yc_res_map_status_t yc_res_map_parse(
     }
 
     yc_res_map_t *map = malloc(sizeof(yc_res_map_t));
-
     if (NULL == map) {
         yc_res_map_parse_cleanup(file, io, map);
         return YC_RES_MAP_STATUS_MEM;

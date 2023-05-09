@@ -169,16 +169,8 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
             .fread = (yc_res_io_fread_t *) &fread,
     };
 
-    FILE *file = fopen(lstname, "rb");
-    if (NULL == file) {
-        free(lstname);
-        return NULL;
-    }
-
     yc_res_lst_parse_result_t result = {.entries =  NULL};
-    yc_res_lst_status_t status = yc_res_lst_parse((void *) file, &io_api, &result);
-
-    fclose(file);
+    yc_res_lst_status_t status = yc_res_lst_parse(lstname, &io_api, &result);
 
     size_t index = yc_res_pro_index_from_object_id(pid) - 1;
     if (YC_RES_LST_STATUS_OK != status || result.entries->count <= index) { goto cleanup; }

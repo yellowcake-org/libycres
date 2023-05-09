@@ -56,7 +56,17 @@ int main(int argc, char *argv[]) {
             goto exit;
         }
 
-        ycipal_parse_cb(result.colors, result.count);
+        for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
+            yc_res_lst_entry_t *entry = &result.entries->pointers[entry_idx];
+
+            printf("[%lu] Value: %s", entry_idx, entry->value);
+
+            if (yc_res_lst_is_valid_index(entry->index)) {
+                printf(", index: %d", entry->index);
+            }
+
+            printf("\n");
+        }
     }
 
     exit:
@@ -65,20 +75,4 @@ int main(int argc, char *argv[]) {
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 
     return exit_code;
-}
-
-void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count) {
-    size_t trans_count = 0;
-
-    for (size_t idx = 0; idx < count; ++idx) {
-        printf("[%zu]  r: %d, g: %d, b: %d\n", idx, colors[idx].r, colors[idx].g, colors[idx].b);
-        if (yc_res_pal_color_is_transparent(&colors[idx])) { trans_count++; }
-    }
-
-    printf("\n");
-    printf("PRESENT: %zu", count - trans_count);
-    printf(", ");
-    printf("EMPTY: %zu", trans_count);
-    printf(", ");
-    printf("TOTAL: %zu\n", count);
 }

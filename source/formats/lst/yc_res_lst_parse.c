@@ -52,8 +52,7 @@ yc_res_lst_status_t yc_res_lst_parse(char *file, const yc_res_io_fs_api_t *io, y
             current->value = value;
             value = NULL;
 
-            // TODO: Convert string to number.
-            current->index = 0xFFFFFFFF;
+            current->index = NULL == index ? 0xFFFFFFFF : strtoul(index, NULL, 10);
 
             if (0 == consumed) { break; } else { continue; }
         }

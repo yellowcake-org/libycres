@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
 
             if (NULL == split) {
                 exit_code = 2;
-                goto exit;
+                goto exit_merge;
             }
 
             *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
@@ -114,6 +114,11 @@ int main(int argc, char *argv[]) {
             yc_res_frm_sprite_invalidate(*split);
 
             exit_merge:
+            if (NULL != *split) {
+                free(*split);
+                *split = NULL;
+            }
+            
             if (NULL != split) {
                 free(split);
                 split = NULL;

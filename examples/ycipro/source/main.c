@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
         };
 
         yc_res_pro_parse_result_t result = {NULL};
-        if (YC_RES_FRM_STATUS_OK != yc_res_pro_parse(filename, &io_api, &result)) {
+        if (YC_RES_PRO_STATUS_OK != yc_res_pro_parse(filename, &io_api, &result)) {
             exit_code = 3;
             goto exit;
         }

@@ -1,1 +1,1 @@
-{"ignore" : "-*/examples/dependencies/*" }
+{"analyze": ["--ingore=.codechecker.skipfile"]}

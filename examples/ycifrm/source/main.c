@@ -92,7 +92,6 @@ int main(int argc, char *argv[]) {
                 free(final);
 
                 if (YC_RES_FRM_STATUS_OK != status) {
-                    free(*split);
                     exit_code = 4;
                     goto exit_merge;
                 }
@@ -114,12 +113,12 @@ int main(int argc, char *argv[]) {
             yc_res_frm_sprite_invalidate(*split);
 
             exit_merge:
-            if (NULL != *split) {
-                free(*split);
-                *split = NULL;
-            }
-            
             if (NULL != split) {
+                if (NULL != *split) {
+                    free(*split);
+                    *split = NULL;
+                }
+
                 free(split);
                 split = NULL;
             }

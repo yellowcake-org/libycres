@@ -1,1 +1,5 @@
-{"analyze": ["--skip=./.codechecker.skipfile"]}
+{"analyze": [
+"--skip=./.codechecker.skipfile",
+"--enable-all",
+"-d=altera"
+]}

@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
         };
 
         yc_res_lst_parse_result_t result = {NULL};
-        if (YC_RES_PAL_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
+        if (YC_RES_LST_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }

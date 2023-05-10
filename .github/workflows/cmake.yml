@@ -21,7 +21,7 @@ jobs:
       id: codechecker
       with:
         config: .codechecker.json
-        build-command: "cd ${{ github.workspace }}/Build; cmake --build . --target ycres ycundat ycipal ycifrm ycipro ycimap ycilst ycimsg"
+        build-command: "cd ${{ github.workspace }}/Build; cmake --build ."
     - uses: actions/upload-artifact@v2
       with:
         name: "Upload reports"

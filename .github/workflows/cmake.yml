@@ -2,7 +2,7 @@ name: CMake
 
 on:
   pull_request:
-    branches: [ "develop" ]
+    branches: ["develop"]
 
 
 jobs:
@@ -12,26 +12,20 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
-      # Prepare a build
     - name: "Prepare build"
       run: |
         mkdir -pv Build
         cd Build
         cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=OFF
-      # Run the analysis
     - uses: whisperity/codechecker-analysis-action@v1
       id: codechecker
       with:
         build-command: "cd ${{ github.workspace }}/Build; cmake --build . --target ycres ycundat ycipal ycifrm ycipro ycimap ycilst ycimsg"
-
-    # Upload the results to the CI.
     - uses: actions/upload-artifact@v2
       with:
-        name: "CodeChecker Bug Reports"
+        name: "Upload reports"
         path: ${{ steps.codechecker.outputs.result-html-dir }}
-
-    # Break the build if there are *ANY* warnings emitted by the analysers.
-    - name: "Break build if CodeChecker reported any findings"
+    - name: "Break if erred"
       if: ${{ steps.codechecker.outputs.warnings == 'true' }}
       run: exit 1
       

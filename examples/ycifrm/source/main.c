@@ -71,6 +71,12 @@ int main(int argc, char *argv[]) {
             *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
             if (NULL == *split) {
                 exit_code = 2;
+
+                if (NULL != split) {
+                    free(split);
+                    split = NULL;
+                }
+
                 goto exit;
             }
 
@@ -121,7 +127,6 @@ int main(int argc, char *argv[]) {
     }
 
     exit:
-
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 

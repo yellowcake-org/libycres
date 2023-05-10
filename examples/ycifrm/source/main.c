@@ -71,13 +71,7 @@ int main(int argc, char *argv[]) {
             *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
             if (NULL == *split) {
                 exit_code = 2;
-
-                if (NULL != split) {
-                    free(split);
-                    split = NULL;
-                }
-
-                goto exit;
+                goto exit_merge;
             }
 
             size_t base = strlen(filename);
@@ -86,7 +80,7 @@ int main(int argc, char *argv[]) {
 
                 if (NULL == final) {
                     exit_code = 3;
-                    goto exit;
+                    goto exit_merge;
                 }
 
                 strcpy(final, filename);
@@ -99,10 +93,8 @@ int main(int argc, char *argv[]) {
 
                 if (YC_RES_FRM_STATUS_OK != status) {
                     free(*split);
-                    free(split);
-
                     exit_code = 4;
-                    goto exit;
+                    goto exit_merge;
                 }
 
                 yc_res_frm_sprite_t *sprites = *split;
@@ -115,14 +107,17 @@ int main(int argc, char *argv[]) {
 
             if (YC_RES_FRM_STATUS_OK != status) {
                 exit_code = 4;
-                goto exit;
+                goto exit_merge;
             }
 
             ycifrm_print_cb(*split);
             yc_res_frm_sprite_invalidate(*split);
 
-            free(split);
-            split = NULL;
+            exit_merge:
+            if (NULL != split) {
+                free(split);
+                split = NULL;
+            }
         }
     }
 

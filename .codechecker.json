@@ -1,3 +1,3 @@
 {
-	"ignore" : "-/examples/dependencies/*"
+	"ignore" : "-*/examples/dependencies/*"
 }

@@ -1,1 +1,1 @@
-{"analyze": ["--ingore=.codechecker.skipfile"]}
+{"analyze": ["--skip=./.codechecker.skipfile"]}

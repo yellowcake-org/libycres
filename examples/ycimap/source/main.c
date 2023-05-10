@@ -158,6 +158,7 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     size_t lstname_size =
             strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(type) + strlen(ext) + 1;
 
+    char *protoname = NULL;
     char *lstname = malloc(lstname_size);
     if (NULL == lstname) { return NULL; }
     snprintf(lstname, lstname_size, "%s%s/%s/%s%s", root, path, type, type, ext);
@@ -179,7 +180,7 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     if (NULL == entry->value) { goto cleanup; }
 
     size_t protoname_size = strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(entry->value) + 1;
-    char *protoname = malloc(protoname_size);
+    protoname = malloc(protoname_size);
     if (NULL == protoname) { goto cleanup; }
 
     snprintf(protoname, protoname_size, "%s%s/%s/%s", root, path, type, entry->value);

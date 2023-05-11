@@ -7,11 +7,11 @@ arg_lit_t *help, *merge;
 arg_file_t *input;
 arg_end_t *end;
 
-void *ycifrm_io_fopen(const char *, const char *);
-int ycifrm_io_fclose(void *);
+void *ycifrm_io_fopen(const char *filename, const char *mode);
+int ycifrm_io_fclose(void *stream);
 
-int ycifrm_io_fseek(void *, long, int);
-size_t ycifrm_io_fread(void *, size_t, size_t, void *);
+int ycifrm_io_fseek(void *stream, long offset, int whence);
+size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
 

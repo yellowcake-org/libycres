@@ -6,11 +6,11 @@ arg_end_t *end;
 
 void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count);
 
-void *ycipal_io_fopen(const char *, const char *);
-int ycipal_io_fclose(void *);
+void *ycipal_io_fopen(const char *filename, const char *mode);
+int ycipal_io_fclose(void *stream);
 
-int ycipal_io_fseek(void *, long, int);
-size_t ycipal_io_fread(void *, size_t, size_t, void *);
+int ycipal_io_fseek(void *stream, long offset, int whence);
+size_t ycipal_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {

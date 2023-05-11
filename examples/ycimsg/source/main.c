@@ -9,11 +9,11 @@ arg_lit_t *help;
 arg_file_t *input;
 arg_end_t *end;
 
-void *ycimsg_io_fopen(const char *, const char *);
-int ycimsg_io_fclose(void *);
+void *ycimsg_io_fopen(const char *filename, const char *mode);
+int ycimsg_io_fclose(void *stream);
 
-int ycimsg_io_fseek(void *, long, int);
-size_t ycimsg_io_fread(void *, size_t, size_t, void *);
+int ycimsg_io_fseek(void *stream, long offset, int whence);
+size_t ycimsg_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {

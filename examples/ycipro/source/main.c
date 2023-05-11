@@ -7,11 +7,11 @@ arg_end_t *end;
 
 void ycipro_print_cb(yc_res_pro_object_t *object);
 
-void *ycipro_iofopen(const char *, const char *);
-int ycipro_iofclose(void *);
+void *ycipro_iofopen(const char *filename, const char *mode);
+int ycipro_iofclose(void *stream);
 
-int ycipro_iofseek(void *, long, int);
-size_t ycipro_iofread(void *, size_t, size_t, void *);
+int ycipro_iofseek(void *stream, long offset, int whence);
+size_t ycipro_iofread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {

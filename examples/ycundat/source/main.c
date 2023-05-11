@@ -11,11 +11,11 @@ arg_end_t *end;
 
 static void mkdir_recursive(const char *dir);
 
-void *yciundat_io_fopen(const char *, const char *);
-int yciundat_io_fclose(void *);
+void *yciundat_io_fopen(const char *filename, const char *mode);
+int yciundat_io_fclose(void *stream);
 
-int yciundat_io_fseek(void *, long, int);
-size_t yciundat_io_fread(void *, size_t, size_t, void *);
+int yciundat_io_fseek(void *stream, long offset, int whence);
+size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
 

@@ -9,7 +9,7 @@ static arg_lit_t *help;
 static arg_file_t *input, *output;
 static arg_end_t *end;
 
-static void mkdir_recursive(const char *dir);
+static void mkdir_recursive(const char *dir, size_t length);
 
 void *yciundat_io_fopen(const char *filename, const char *mode);
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
                     if (destination[i] == '\\') { destination[i] = '/'; }
                 }
 
-                mkdir_recursive(destination);
+                mkdir_recursive(destination, strlen(destination));
 
                 strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
                 strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1],
@@ -151,14 +151,12 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
     free(bytes);
 }
 
-static void mkdir_recursive(const char *dir) {
-    char temp[256];
+static void mkdir_recursive(const char *dir, size_t length) {
+    char temp[length + 1];
+    snprintf(temp, length + 1, "%s", dir);
+
     char *iterator = NULL;
-
-    snprintf(temp, sizeof(temp), "%s", dir);
-    size_t length = strlen(temp);
-
-    if (temp[length - 1] == '/') { temp[length - 1] = 0; }
+    if (temp[length] == '/') { temp[length] = 0; }
 
     for (iterator = temp + 1; *iterator; iterator++) {
         if (*iterator == '/') {

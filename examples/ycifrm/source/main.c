@@ -7,6 +7,12 @@ arg_lit_t *help, *merge;
 arg_file_t *input;
 arg_end_t *end;
 
+void *ycifrm_io_fopen(const char *, const char *);
+int ycifrm_io_fclose(void *);
+
+int ycifrm_io_fseek(void *, long, int);
+size_t ycifrm_io_fread(void *, size_t, size_t, void *);
+
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
 
 void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
@@ -45,10 +51,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycifrm_io_fopen,
+                .fclose = &ycifrm_io_fclose,
+                .fseek = &ycifrm_io_fseek,
+                .fread = &ycifrm_io_fread,
         };
 
         if (merge->count == 0) {
@@ -156,4 +162,12 @@ void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {
             );
         }
     }
+}
+
+void *ycifrm_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycifrm_io_fclose(void *stream) { return fclose(stream); }
+
+int ycifrm_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

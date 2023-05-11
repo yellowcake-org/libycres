@@ -1,13 +1,17 @@
 #include <ycipro.h>
-
 #include <stdlib.h>
-#include <memory.h>
 
 arg_lit_t *help;
 arg_file_t *input;
 arg_end_t *end;
 
 void ycipro_print_cb(yc_res_pro_object_t *object);
+
+void *ycipro_iofopen(const char *, const char *);
+int ycipro_iofclose(void *);
+
+int ycipro_iofseek(void *, long, int);
+size_t ycipro_iofread(void *, size_t, size_t, void *);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -42,10 +46,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycipro_iofopen,
+                .fclose = &ycipro_iofclose,
+                .fseek = &ycipro_iofseek,
+                .fread = &ycipro_iofread,
         };
 
         yc_res_pro_parse_result_t result = {NULL};
@@ -413,4 +417,12 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
     yc_res_pro_object_invalidate(object);
     free(object);
+}
+
+void *ycipro_iofopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycipro_iofclose(void *stream) { return fclose(stream); }
+
+int ycipro_iofseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycipro_iofread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

@@ -11,6 +11,12 @@ arg_end_t *end;
 
 static void mkdir_recursive(const char *dir);
 
+void *yciundat_io_fopen(const char *, const char *);
+int yciundat_io_fclose(void *);
+
+int yciundat_io_fseek(void *, long, int);
+size_t yciundat_io_fread(void *, size_t, size_t, void *);
+
 void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
 
 void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file);
@@ -49,10 +55,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &yciundat_io_fopen,
+                .fclose = &yciundat_io_fclose,
+                .fseek = &yciundat_io_fseek,
+                .fread = &yciundat_io_fread,
         };
 
         yc_res_dat_parse_result_t result = {0, NULL};
@@ -157,4 +163,12 @@ static void mkdir_recursive(const char *dir) {
         }
 
     mkdir(temp, S_IRWXU);
+}
+
+void *yciundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int yciundat_io_fclose(void *stream) { return fclose(stream); }
+
+int yciundat_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

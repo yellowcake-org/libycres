@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 typedef void *(yc_res_io_fopen_t)(const char *, const char *);
-typedef int (yc_res_io_fclose_t)(void *file);
+typedef int (yc_res_io_fclose_t)(void *);
 
 typedef int (yc_res_io_fseek_t)(void *, long, int);
 typedef size_t (yc_res_io_fread_t)(void *, size_t, size_t, void *);

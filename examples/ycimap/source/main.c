@@ -13,6 +13,12 @@ yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *contex
 
 yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context);
 
+void *ycimap_io_fopen(const char *, const char *);
+int ycimap_io_fclose(void *);
+
+int ycimap_io_fseek(void *, long, int);
+size_t ycimap_io_fread(void *, size_t, size_t, void *);
+
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
@@ -54,10 +60,10 @@ int main(int argc, char *argv[]) {
 
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycimap_io_fopen,
+                .fclose = &ycimap_io_fclose,
+                .fseek = &ycimap_io_fseek,
+                .fread = &ycimap_io_fread,
         };
 
         yc_res_map_parse_result_t result = {NULL};
@@ -230,4 +236,12 @@ yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *contex
 
 yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context) {
     return type_byte_from_proto(pid, context, "SCENERY");
+}
+
+void *ycimap_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycimap_io_fclose(void *stream) { return fclose(stream); }
+
+int ycimap_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycimap_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

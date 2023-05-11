@@ -1,13 +1,17 @@
+#include <stdlib.h>
 #include <ycipro.h>
 
-#include <stdlib.h>
-#include <memory.h>
-
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input;
+static arg_end_t *end;
 
 void ycipro_print_cb(yc_res_pro_object_t *object);
+
+void *ycipro_io_fopen(const char *filename, const char *mode);
+int ycipro_io_fclose(void *stream);
+
+int ycipro_io_fseek(void *stream, long offset, int whence);
+size_t ycipro_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -42,14 +46,14 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycipro_io_fopen,
+                .fclose = &ycipro_io_fclose,
+                .fseek = &ycipro_io_fseek,
+                .fread = &ycipro_io_fread,
         };
 
         yc_res_pro_parse_result_t result = {NULL};
-        if (YC_RES_FRM_STATUS_OK != yc_res_pro_parse(filename, &io_api, &result)) {
+        if (YC_RES_PRO_STATUS_OK != yc_res_pro_parse(filename, &io_api, &result)) {
             exit_code = 3;
             goto exit;
         }
@@ -109,9 +113,6 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
             break;
         case YC_RES_PRO_TRANS_WALL_END:
             printf("WALL END.");
-            break;
-        default:
-            printf("UNKNOWN.");
             break;
     }
     printf("\n");
@@ -331,7 +332,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
                     yc_res_pro_object_scenery_stairs_t *stairs = scenery->data.stairs;
 
-                    if (yc_res_pro_is_valid_id(stairs->map_id)) {
+                    if (yc_res_pro_is_valid_id((uint32_t) stairs->map_id)) {
                         printf("\n");
                         printf("Map ID: 0x%X\n", stairs->map_id);
                         printf("Destination tile: %d\n", scenery->data.stairs->destination.grid_idx);
@@ -366,7 +367,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
                     printf("GENERIC");
                     printf("\n\n");
-                    printf("Unknown: 0x%X\n", scenery->data.generic->_unknown);
+                    printf("Unknown: 0x%X\n", scenery->data.generic->unknown);
                     break;
             }
 
@@ -392,7 +393,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
         case YC_RES_PRO_OBJECT_TYPE_MISC:
             printf("MISC");
             printf("\n\n");
-            printf("Unknown: 0x%X\n", object->data.misc->_unknown);
+            printf("Unknown: 0x%X\n", object->data.misc->unknown);
             break;
         case YC_RES_PRO_OBJECT_TYPE_INTERFACE:
             printf("INTERFACE");
@@ -413,4 +414,12 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
     yc_res_pro_object_invalidate(object);
     free(object);
+}
+
+void *ycipro_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycipro_io_fclose(void *stream) { return fclose(stream); }
+
+int ycipro_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycipro_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

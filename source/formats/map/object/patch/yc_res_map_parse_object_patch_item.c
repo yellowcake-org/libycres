@@ -7,15 +7,15 @@
 
 yc_res_map_status_t yc_res_map_parse_object_patch_item(
         void *file,
-        const yc_res_io_fs_api_t *io,
-        const yc_res_map_parse_db_api_t *db,
+        const yc_res_io_fs_api_t *api,
+        const yc_res_map_parse_db_api_t *fetchers,
         uint32_t pid,
         yc_res_map_level_object_patch_t *into
 ) {
     into->item = malloc(sizeof(yc_res_map_level_object_patch_item_t));
     if (NULL == into->item) { return YC_RES_MAP_STATUS_MEM; }
 
-    into->item->type = db->item_type_from_pid(pid, db->context);
+    into->item->type = fetchers->item_type_from_pid(pid, fetchers->context);
     switch (into->item->type) {
         case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
             into->item->data.weapon = malloc(sizeof(yc_res_map_level_object_patch_item_weapon_t));
@@ -23,10 +23,10 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
 
             yc_res_map_level_object_patch_item_weapon_t *weapon = into->item->data.weapon;
 
-            if (0 == io->fread(&weapon->capacity, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+            if (0 == api->fread(&weapon->capacity, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
             weapon->capacity = yc_res_byteorder_uint32(weapon->capacity);
 
-            if (0 == io->fread(&weapon->ammo_pid, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+            if (0 == api->fread(&weapon->ammo_pid, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
             weapon->ammo_pid = yc_res_byteorder_uint32(weapon->ammo_pid);
 
             break;
@@ -36,7 +36,7 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
 
             yc_res_map_level_object_patch_item_ammo_t *ammo = into->item->data.ammo;
 
-            if (0 == io->fread(&ammo->count, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+            if (0 == api->fread(&ammo->count, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
             ammo->count = yc_res_byteorder_uint32(ammo->count);
 
             break;
@@ -46,7 +46,7 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
 
             yc_res_map_level_object_patch_item_misc_t *misc = into->item->data.misc;
 
-            if (0 == io->fread(&misc->count, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+            if (0 == api->fread(&misc->count, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
             misc->count = yc_res_byteorder_uint32(misc->count);
 
             break;
@@ -56,7 +56,7 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
 
             yc_res_map_level_object_patch_item_key_t *key = into->item->data.key;
 
-            if (0 == io->fread(&key->code, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+            if (0 == api->fread(&key->code, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
             key->code = yc_res_byteorder_uint32(key->code);
 
             break;

@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_FLAGS_H
-#define LIB_YCRES_PRO_TYPES_FLAGS_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_FLAGS_H
+#define INCLUDE_PRO_TYPES_OBJECT_FLAGS_H
 
 typedef enum yc_res_pro_object_transparency {
     YC_RES_PRO_TRANS_NONE,
@@ -20,4 +20,4 @@ typedef struct yc_res_pro_object_flags {
     yc_res_pro_object_transparency_t transparency;
 } yc_res_pro_object_flags_t;
 
-#endif //LIB_YCRES_PRO_TYPES_FLAGS_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_FLAGS_H

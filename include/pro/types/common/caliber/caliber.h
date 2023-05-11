@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_COMMON_CALIBER_H
-#define LIB_YCRES_PRO_TYPES_COMMON_CALIBER_H
+#ifndef INCLUDE_PRO_TYPES_COMMON_CALIBER_H
+#define INCLUDE_PRO_TYPES_COMMON_CALIBER_H
 
 typedef enum yc_res_pro_caliber {
     YC_RES_PRO_CALIBER_TYPE_NONE,
@@ -18,4 +18,4 @@ typedef enum yc_res_pro_caliber {
     YC_RES_PRO_CALIBER_TYPE_BB
 } yc_res_pro_caliber_t;
 
-#endif //LIB_YCRES_PRO_TYPES_COMMON_CALIBER_H
+#endif //INCLUDE_PRO_TYPES_COMMON_CALIBER_H

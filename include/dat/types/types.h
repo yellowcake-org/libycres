@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_DAT_TYPES_H
-#define LIB_YCRES_DAT_TYPES_H
+#ifndef INCLUDE_DAT_TYPES_H
+#define INCLUDE_DAT_TYPES_H
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -20,4 +20,4 @@ typedef struct yc_res_dat_directory {
     yc_res_dat_file_t *files;
 } yc_res_dat_directory_t;
 
-#endif //LIB_YCRES_DAT_TYPES_H
+#endif //INCLUDE_DAT_TYPES_H

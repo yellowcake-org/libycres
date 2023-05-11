@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_H
+#define INCLUDE_PRO_TYPES_OBJECT_H
 
 #include "flags/flags.h"
 
@@ -41,4 +41,4 @@ typedef struct yc_res_pro_object {
     yc_res_pro_object_flags_t flags;
 } yc_res_pro_object_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_H

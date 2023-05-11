@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_METHODS_H
-#define LIB_YCRES_PRO_METHODS_H
+#ifndef INCLUDE_PRO_METHODS_H
+#define INCLUDE_PRO_METHODS_H
 
 bool yc_res_pro_is_valid_id(uint32_t any_id);
 
@@ -16,10 +16,10 @@ typedef struct yc_res_pro_parse_result {
 
 yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_parse_result_t *result
 );
 
 void yc_res_pro_object_invalidate(yc_res_pro_object_t *object);
 
-#endif //LIB_YCRES_PRO_METHODS_H
+#endif //INCLUDE_PRO_METHODS_H

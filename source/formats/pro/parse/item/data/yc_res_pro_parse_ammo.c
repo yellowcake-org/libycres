@@ -7,7 +7,7 @@ void yc_res_pro_ammo_parse_cleanup(yc_res_pro_object_item_ammo_t *ammo);
 
 yc_res_pro_status_t yc_res_pro_object_item_ammo_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_item_t *into
 ) {
     yc_res_pro_object_item_ammo_t *ammo = malloc(sizeof(yc_res_pro_object_item_ammo_t));
@@ -17,37 +17,37 @@ yc_res_pro_status_t yc_res_pro_object_item_ammo_parse(
         return YC_RES_PRO_STATUS_MEM;
     }
 
-    if (0 == io->fread(&ammo->caliber, sizeof(yc_res_pro_caliber_t), 1, file)) {
+    if (0 == api->fread(&ammo->caliber, sizeof(yc_res_pro_caliber_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }
     ammo->caliber = yc_res_byteorder_int32(ammo->caliber);
 
-    if (0 == io->fread(&ammo->count, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&ammo->count, sizeof(uint32_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }
     ammo->count = yc_res_byteorder_uint32(ammo->count);
 
-    if (0 == io->fread(&ammo->armor_class, sizeof(int32_t), 1, file)) {
+    if (0 == api->fread(&ammo->armor_class, sizeof(int32_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }
     ammo->armor_class = yc_res_byteorder_int32(ammo->armor_class);
 
-    if (0 == io->fread(&ammo->damage_resistance, sizeof(int32_t), 1, file)) {
+    if (0 == api->fread(&ammo->damage_resistance, sizeof(int32_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }
     ammo->damage_resistance = yc_res_byteorder_int32(ammo->damage_resistance);
 
-    if (0 == io->fread(&ammo->damage_multiplier, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&ammo->damage_multiplier, sizeof(uint32_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }
     ammo->damage_multiplier = yc_res_byteorder_uint32(ammo->damage_multiplier);
 
-    if (0 == io->fread(&ammo->damage_divider, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&ammo->damage_divider, sizeof(uint32_t), 1, file)) {
         yc_res_pro_ammo_parse_cleanup(ammo);
         return YC_RES_PRO_STATUS_IO;
     }

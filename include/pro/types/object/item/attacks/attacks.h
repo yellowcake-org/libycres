@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_ATTACKS_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_ATTACKS_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_ATTACKS_H
+#define INCLUDE_PRO_TYPES_OBJECT_ITEM_ATTACKS_H
 
 typedef enum yc_res_pro_object_item_attack {
     YC_RES_PRO_OBJECT_ITEM_ATTACK_NONE = 0,
@@ -13,4 +13,4 @@ typedef enum yc_res_pro_object_item_attack {
     YC_RES_PRO_OBJECT_ITEM_ATTACK_FLAME
 } yc_res_pro_object_item_attack_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_ATTACKS_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_ATTACKS_H

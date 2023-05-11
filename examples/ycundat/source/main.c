@@ -11,15 +11,13 @@ static arg_end_t *end;
 
 static void mkdir_recursive(const char *path, size_t length);
 
-void *yciundat_io_fopen(const char *filename, const char *mode);
+void *ycundat_io_fopen(const char *filename, const char *mode);
 
-int yciundat_io_fclose(void *stream);
+int ycundat_io_fclose(void *stream);
 
-int yciundat_io_fseek(void *stream, long offset, int whence);
+int ycundat_io_fseek(void *stream, long offset, int whence);
 
-size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str);
-
-void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
+size_t ycundat_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file);
 
@@ -57,10 +55,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = &yciundat_io_fopen,
-                .fclose = &yciundat_io_fclose,
-                .fseek = &yciundat_io_fseek,
-                .fread = &yciundat_io_fread,
+                .fopen = &ycundat_io_fopen,
+                .fclose = &ycundat_io_fclose,
+                .fseek = &ycundat_io_fseek,
+                .fread = &ycundat_io_fread,
         };
 
         yc_res_dat_parse_result_t result = {0, NULL};
@@ -194,12 +192,12 @@ static void mkdir_recursive(const char *path, size_t length) {
     free(copied_path);
 }
 
-void *yciundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+void *ycundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
 
-int yciundat_io_fclose(void *stream) { return fclose(stream); }
+int ycundat_io_fclose(void *stream) { return fclose(stream); }
 
-int yciundat_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+int ycundat_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
 
-size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+size_t ycundat_io_fread(void *dest, size_t len, size_t cnt, void *str) {
     return fread(dest, len, cnt, str);
 }

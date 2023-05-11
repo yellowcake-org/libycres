@@ -1,9 +1,5 @@
 #include <ycimsg.h>
-
 #include <stdlib.h>
-#include <memory.h>
-
-#include <sys/stat.h>
 
 static arg_lit_t *help;
 static arg_file_t *input;

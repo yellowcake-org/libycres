@@ -21,7 +21,7 @@ yc_res_pro_status_t yc_res_pro_object_scenery_generic_parse(
         yc_res_pro_generic_parse_cleanup(generic);
         return YC_RES_PRO_STATUS_IO;
     }
-    generic->_unknown = yc_res_byteorder_int32(generic->_unknown);
+    generic->_unknown = yc_res_byteorder_uint32(generic->_unknown);
 
     yc_res_pro_generic_parse_cleanup(NULL);
 

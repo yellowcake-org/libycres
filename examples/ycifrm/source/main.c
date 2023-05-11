@@ -16,8 +16,6 @@ size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
 
-void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
-
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),

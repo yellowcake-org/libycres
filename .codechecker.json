@@ -1,7 +1,0 @@
-{"analyze": [
-"--skip=./.codechecker.skipfile",
-"--enable-all",
-"-d=altera",
-"-d=cert",
-"-d=clang-diagnostic-padded"
-]}

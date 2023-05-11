@@ -34,8 +34,8 @@ yc_res_map_status_t yc_res_map_parse(
     }
     version = yc_res_byteorder_uint32(version);
 
-    unsigned char _filename[16] = "";
-    if (0 == api->fread(&_filename, sizeof(unsigned char), 16, file)) {
+    unsigned char map_filename[16] = "";
+    if (0 == api->fread(&map_filename, sizeof(unsigned char), 16, file)) {
         yc_res_map_parse_cleanup(file, api, map);
         return YC_RES_MAP_STATUS_IO;
     }
@@ -85,7 +85,8 @@ yc_res_map_status_t yc_res_map_parse(
 
     map->is_save = (flags[3] & 0x01) != 0x00;
 
-    for (size_t elevation_idx = 0, byte = 0x02; elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx, byte <<= 1) {
+    for (size_t elevation_idx = 0, byte = 0x02;
+         elevation_idx < YC_RES_MAP_ELEVATION_COUNT; ++elevation_idx, byte <<= 1) {
         if ((flags[3] & byte) != 0x00) {
             map->levels[elevation_idx] = NULL;
         } else {
@@ -98,12 +99,12 @@ yc_res_map_status_t yc_res_map_parse(
         }
     }
 
-    uint32_t _darkness = 0;
-    if (0 == api->fread(&_darkness, sizeof(uint32_t), 1, file)) {
+    uint32_t darkness = 0;
+    if (0 == api->fread(&darkness, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, api, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    _darkness = yc_res_byteorder_uint32(_darkness);
+    darkness = yc_res_byteorder_uint32(darkness);
 
     if (0 == api->fread(&map->global.count, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, api, map);
@@ -168,13 +169,13 @@ yc_res_map_status_t yc_res_map_parse(
         yc_res_map_level_t *level = map->levels[elevation_idx];
 
         if (NULL != level) {
-            size_t const GRID_SIZE_HORIZONTAL = sizeof(level->floor.idxes) / sizeof(level->floor.idxes[0]);
-            size_t const GRID_SIZE_VERTICAL = sizeof(level->floor.idxes[0]) / sizeof(level->floor.idxes[0][0]);
+            size_t const grid_size_horizontal = sizeof(level->floor.idxes) / sizeof(level->floor.idxes[0]);
+            size_t const grid_size_vertical = sizeof(level->floor.idxes[0]) / sizeof(level->floor.idxes[0][0]);
 
-            assert(GRID_SIZE_HORIZONTAL == GRID_SIZE_HORIZONTAL);
+            assert(grid_size_horizontal == grid_size_horizontal);
 
-            for (size_t y = 0; y < GRID_SIZE_VERTICAL; ++y) {
-                for (size_t x = 0; x < GRID_SIZE_HORIZONTAL; ++x) {
+            for (size_t pos_y = 0; pos_y < grid_size_vertical; ++pos_y) {
+                for (size_t pos_x = 0; pos_x < grid_size_horizontal; ++pos_x) {
                     uint16_t roof_idx = 0, floor_idx = 0;
 
                     if (0 == api->fread(&roof_idx, sizeof(uint16_t), 1, file)) {
@@ -187,8 +188,8 @@ yc_res_map_status_t yc_res_map_parse(
                         return YC_RES_MAP_STATUS_IO;
                     }
 
-                    level->roof.idxes[GRID_SIZE_HORIZONTAL - 1 - x][y] = yc_res_byteorder_uint16(roof_idx);
-                    level->floor.idxes[GRID_SIZE_HORIZONTAL - 1 - x][y] = yc_res_byteorder_uint16(floor_idx);
+                    level->roof.idxes[grid_size_horizontal - 1 - pos_x][pos_y] = yc_res_byteorder_uint16(roof_idx);
+                    level->floor.idxes[grid_size_horizontal - 1 - pos_x][pos_y] = yc_res_byteorder_uint16(floor_idx);
                 }
             }
         }
@@ -209,22 +210,22 @@ yc_res_map_status_t yc_res_map_parse(
         size_t size = sizeof(yc_res_map_script_t) * map->scripts.count;
 
         yc_res_map_script_t *scripts =
-            0 == map->scripts.count - count ? malloc(size) : realloc(map->scripts.pointers, size);
+                0 == map->scripts.count - count ? malloc(size) : realloc(map->scripts.pointers, size);
 
         if (NULL == scripts) {
             yc_res_map_parse_cleanup(file, api, map);
             return YC_RES_MAP_STATUS_MEM;
-        } else {
-            map->scripts.pointers = scripts;
         }
 
-        const size_t BATCH_LENGTH = 16;
-        size_t batches = count / BATCH_LENGTH + (count % BATCH_LENGTH != 0);
+        map->scripts.pointers = scripts;
+
+        const size_t batch_length = 16;
+        size_t batches = count / batch_length + (count % batch_length != 0);
 
         size_t processed = 0;
         for (size_t batch_idx = 0; batch_idx < batches; ++batch_idx) {
-            for (size_t record_idx = 0; record_idx < BATCH_LENGTH; ++record_idx) {
-                if (batch_idx * BATCH_LENGTH + record_idx < count) {
+            for (size_t record_idx = 0; record_idx < batch_length; ++record_idx) {
+                if (batch_idx * batch_length + record_idx < count) {
                     yc_res_map_script_t *script = &map->scripts.pointers[consumed_idx++];
                     yc_res_map_status_t status = yc_res_map_parse_script(
                             file, api, script, (uint32_t) script_type

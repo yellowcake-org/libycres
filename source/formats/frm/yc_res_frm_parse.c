@@ -54,20 +54,20 @@ yc_res_frm_status_t yc_res_frm_parse(
     fpo = yc_res_byteorder_uint16(fpo);
 
     // warning: storing temporary in big endian, still
-    int16_t animations_shifts_h[6], animations_shifts_v[6];
-    uint32_t offsets[6];
+    int16_t animations_shifts_h[YC_RES_MATH_ORIENTATION_COUNT], animations_shifts_v[YC_RES_MATH_ORIENTATION_COUNT];
+    uint32_t offsets[YC_RES_MATH_ORIENTATION_COUNT];
 
-    if (0 == api->fread(&animations_shifts_h, sizeof(int16_t) * 6, 1, file)) {
+    if (0 == api->fread(&animations_shifts_h, sizeof(int16_t) * YC_RES_MATH_ORIENTATION_COUNT, 1, file)) {
         yc_res_frm_parse_cleanup(file, api, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
 
-    if (0 == api->fread(&animations_shifts_v, sizeof(int16_t) * 6, 1, file)) {
+    if (0 == api->fread(&animations_shifts_v, sizeof(int16_t) * YC_RES_MATH_ORIENTATION_COUNT, 1, file)) {
         yc_res_frm_parse_cleanup(file, api, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
 
-    if (0 == api->fread(&offsets, sizeof(uint32_t) * 6, 1, file)) {
+    if (0 == api->fread(&offsets, sizeof(uint32_t) * YC_RES_MATH_ORIENTATION_COUNT, 1, file)) {
         yc_res_frm_parse_cleanup(file, api, sprite);
         return YC_RES_FRM_STATUS_IO;
     }
@@ -80,13 +80,13 @@ yc_res_frm_status_t yc_res_frm_parse(
     sprite->count = 0;
     sprite->animations = NULL;
 
-    char _table[6] = {-1, -1, -1, -1, -1, -1};
+    char table[YC_RES_MATH_ORIENTATION_COUNT] = {-1, -1, -1, -1, -1, -1};
 
-    for (size_t orientation = 0; orientation < 6; ++orientation) {
+    for (yc_res_math_orientation_t orientation = 0; orientation < YC_RES_MATH_ORIENTATION_COUNT; ++orientation) {
         const uint32_t offset = yc_res_byteorder_uint32(offsets[orientation]);
 
-        if (_table[orientation] >= 0) {
-            sprite->orientations[orientation] = (unsigned char) _table[orientation];
+        if (table[orientation] >= 0) {
+            sprite->orientations[orientation] = (unsigned char) table[orientation];
             continue;
         }
 
@@ -99,15 +99,15 @@ yc_res_frm_status_t yc_res_frm_parse(
         if (NULL == animations_tmp) {
             yc_res_frm_parse_cleanup(file, api, sprite);
             return YC_RES_FRM_STATUS_MEM;
-        } else {
-            sprite->animations = animations_tmp;
         }
+
+        sprite->animations = animations_tmp;
 
         size_t idx = sprite->count - 1;
         sprite->orientations[orientation] = idx;
 
-        for (size_t o = orientation; o < 6; ++o) {
-            if (offset == yc_res_byteorder_uint32(offsets[o])) { _table[o] = (char) idx; }
+        for (size_t inner = orientation; inner < YC_RES_MATH_ORIENTATION_COUNT; ++inner) {
+            if (offset == yc_res_byteorder_uint32(offsets[inner])) { table[inner] = (char) idx; }
         }
 
         yc_res_frm_animation_t *animation = &sprite->animations[idx];
@@ -156,20 +156,20 @@ yc_res_frm_status_t yc_res_frm_parse(
                 return YC_RES_FRM_STATUS_CORR;
             }
 
-            int16_t x, y;
+            int16_t pos_x, pos_y;
 
-            if (0 == api->fread(&x, sizeof(int16_t), 1, file)) {
+            if (0 == api->fread(&pos_x, sizeof(int16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, api, sprite);
                 return YC_RES_FRM_STATUS_IO;
             }
 
-            if (0 == api->fread(&y, sizeof(int16_t), 1, file)) {
+            if (0 == api->fread(&pos_y, sizeof(int16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, api, sprite);
                 return YC_RES_FRM_STATUS_IO;
             }
 
-            frame->shift.vertical = yc_res_byteorder_int16(y);
-            frame->shift.horizontal = yc_res_byteorder_int16(x);
+            frame->shift.vertical = yc_res_byteorder_int16(pos_y);
+            frame->shift.horizontal = yc_res_byteorder_int16(pos_x);
 
             frame->pixels = malloc(square);
 

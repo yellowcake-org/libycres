@@ -9,12 +9,12 @@
 yc_res_map_status_t yc_res_map_parse_object(
         void *file,
         const yc_res_io_fs_api_t *api,
-        const yc_res_map_parse_db_api_t *db,
+        const yc_res_map_parse_db_api_t *fetchers,
         yc_res_map_level_object_t *into
 ) {
-    uint32_t _entry_id = 0;
-    if (0 == api->fread(&_entry_id, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    _entry_id = yc_res_byteorder_uint32(_entry_id);
+    uint32_t entry_id = 0;
+    if (0 == api->fread(&entry_id, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    entry_id = yc_res_byteorder_uint32(entry_id);
 
     if (0 == api->fread(&into->location.grid_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     into->location.grid_idx = yc_res_byteorder_uint32(into->location.grid_idx);
@@ -87,9 +87,9 @@ yc_res_map_status_t yc_res_map_parse_object(
 
     if (0 != api->fseek(file, sizeof(uint32_t), SEEK_CUR)) { return YC_RES_MAP_STATUS_IO; }
 
-    uint32_t _flags_ext = 0;
-    if (0 == api->fread(&_flags_ext, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    _flags_ext = yc_res_byteorder_uint32(_flags_ext);
+    uint32_t flags_ext = 0;
+    if (0 == api->fread(&flags_ext, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    flags_ext = yc_res_byteorder_uint32(flags_ext);
 
     yc_res_map_parse_object_patch_parser_t *parsers[YC_RES_PRO_OBJECT_TYPE_COUNT] = {
             &yc_res_map_parse_object_patch_item,
@@ -108,7 +108,7 @@ yc_res_map_status_t yc_res_map_parse_object(
     yc_res_map_parse_object_patch_parser_t *fitting = parsers[type];
 
     if (NULL != fitting) {
-        yc_res_map_status_t status = fitting(file, api, db, into->proto_id, &into->patch);
+        yc_res_map_status_t status = fitting(file, api, fetchers, into->proto_id, &into->patch);
         if (YC_RES_MAP_STATUS_OK != status) { return status; }
     }
 
@@ -139,7 +139,7 @@ yc_res_map_status_t yc_res_map_parse_object(
         if (NULL == into->inventory[item_idx]) { return YC_RES_MAP_STATUS_MEM; }
 
         yc_res_map_level_object_t *item = into->inventory[item_idx];
-        yc_res_map_status_t status = yc_res_map_parse_object(file, api, db, item);
+        yc_res_map_status_t status = yc_res_map_parse_object(file, api, fetchers, item);
 
         if (YC_RES_MAP_STATUS_OK != status) { return status; }
         into->occupied++;

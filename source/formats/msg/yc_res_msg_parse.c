@@ -65,7 +65,8 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
                 values[0] = NULL;
             }
 
-            if (0 == consumed) { break; } else { continue; }
+            if (0 == consumed) { break; }
+            continue;
         }
 
         if (false == is_copying) {

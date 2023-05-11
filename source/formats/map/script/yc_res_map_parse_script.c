@@ -72,12 +72,12 @@ yc_res_map_status_t yc_res_map_parse_script(
             break;
     }
 
-    uint32_t _flags = 0;
-    if (0 == api->fread(&_flags, sizeof(uint32_t), 1, file)) {
+    uint32_t flags = 0;
+    if (0 == api->fread(&flags, sizeof(uint32_t), 1, file)) {
         yc_res_map_parse_script_cleanup(into);
         return YC_RES_MAP_STATUS_IO;
     }
-    _flags = yc_res_byteorder_uint16(_flags);
+    flags = yc_res_byteorder_uint16(flags);
 
     uint32_t script_idx = 0;
     if (0 == api->fread(&script_idx, sizeof(uint32_t), 1, file)) {

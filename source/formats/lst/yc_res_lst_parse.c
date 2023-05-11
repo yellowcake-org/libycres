@@ -63,7 +63,8 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
             free(index);
             index = NULL;
 
-            if (0 == consumed) { break; } else { continue; }
+            if (0 == consumed) { break; }
+             continue;
         }
 
         if ('\r' == buffer || '\t' == buffer || ' ' == buffer || ';' == buffer) {

@@ -1,5 +1,5 @@
-#ifndef YC_RES_MAP_PARSE_OBJECT_PATCH_H
-#define YC_RES_MAP_PARSE_OBJECT_PATCH_H
+#ifndef SOURCE_FORMATS_MAP_OBJECT_PATCH_H
+#define SOURCE_FORMATS_MAP_OBJECT_PATCH_H
 
 typedef yc_res_map_status_t (yc_res_map_parse_object_patch_parser_t)(
         void *file,
@@ -14,4 +14,4 @@ yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_critter;
 yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_scenery;
 yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_misc;
 
-#endif //YC_RES_MAP_PARSE_OBJECT_PATCH_H
+#endif //SOURCE_FORMATS_MAP_OBJECT_PATCH_H

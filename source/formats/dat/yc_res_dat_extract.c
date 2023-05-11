@@ -83,16 +83,16 @@ yc_res_dat_status_t yc_res_dat_extract(
                     written += chunk_size;
                 }
             } else {
-                const size_t SIZE = 4096;
+                const size_t size = 4096;
 
-                const size_t MATCH_MIN = 3;
-                const size_t MATCH_MAX = 18;
+                const size_t match_min = 3;
+                const size_t match_max = 18;
 
-                unsigned char buffer[SIZE];
-                memset(buffer, 0x20, SIZE);
+                unsigned char buffer[size];
+                memset(buffer, 0x20, size);
 
                 size_t end = processed + count;
-                uint16_t offset_r = SIZE - MATCH_MAX;
+                uint16_t offset_r = size - match_max;
 
                 while (processed < end) {
                     unsigned char flags = 0;
@@ -124,7 +124,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                             result->callback(byte, 1, result->context);
 
                             offset_r++;
-                            if (offset_r >= SIZE) { offset_r = 0; }
+                            if (offset_r >= size) { offset_r = 0; }
                         } else {
                             unsigned char tmp_byte = 0;
 
@@ -147,7 +147,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                             offset_w |= (0xF0 & length) << 4;
                             length &= 0x0F;
 
-                            for (size_t j = 0; j < (length + MATCH_MIN); j++) {
+                            for (size_t j = 0; j < (length + match_min); j++) {
                                 unsigned char *byte = malloc(sizeof(unsigned char));
 
                                 if (NULL == byte) {
@@ -164,8 +164,8 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 offset_w++;
                                 offset_r++;
 
-                                if (offset_r >= SIZE) { offset_r = 0; }
-                                if (offset_w >= SIZE) { offset_w = 0; }
+                                if (offset_r >= size) { offset_r = 0; }
+                                if (offset_w >= size) { offset_w = 0; }
                             }
                         }
 

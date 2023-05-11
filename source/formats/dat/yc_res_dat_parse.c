@@ -1,6 +1,7 @@
 #include <libycres.h>
 #include <private.h>
 
+#include <stddef.h>
 #include <stdlib.h>
 
 void yc_res_dat_parse_cleanup(
@@ -28,14 +29,14 @@ yc_res_dat_status_t yc_res_dat_parse(
     }
 
     dir_count = yc_res_byteorder_uint32(dir_count);
-    yc_res_dat_directory_t *list = malloc(sizeof(yc_res_dat_directory_t) * dir_count);
+    yc_res_dat_directory_t *list = calloc(dir_count, sizeof(yc_res_dat_directory_t));
 
     if (NULL == list) {
         yc_res_dat_parse_cleanup(archive, api, list);
         return YC_RES_DAT_STATUS_MEM;
     }
 
-    if (0 != api->fseek(archive, 4 * 3, SEEK_CUR)) {
+    if (0 != api->fseek(archive, (long)(4 * 3), SEEK_CUR)) {
         yc_res_dat_parse_cleanup(archive, api, list);
         return YC_RES_DAT_STATUS_IO;
     }
@@ -78,7 +79,7 @@ yc_res_dat_status_t yc_res_dat_parse(
         files_count = yc_res_byteorder_uint32(files_count);
         current_dir->count = files_count;
 
-        if (0 != api->fseek(archive, 4 * 3, SEEK_CUR)) {
+        if (0 != api->fseek(archive, (long)(4 * 3), SEEK_CUR)) {
             yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_IO;
         }

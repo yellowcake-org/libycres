@@ -9,7 +9,7 @@ void yc_res_pro_ladder_parse_cleanup(yc_res_pro_object_scenery_ladder_t *ladder)
 
 yc_res_pro_status_t yc_res_pro_object_scenery_ladder_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_scenery_t *into
 ) {
     into->data.ladder = malloc(sizeof(yc_res_pro_object_scenery_ladder_t));
@@ -20,7 +20,7 @@ yc_res_pro_status_t yc_res_pro_object_scenery_ladder_parse(
     }
 
     uint32_t destination_raw = 0;
-    if (0 == io->fread(&destination_raw, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&destination_raw, sizeof(uint32_t), 1, file)) {
         yc_res_pro_ladder_parse_cleanup(into->data.ladder);
         return YC_RES_PRO_STATUS_IO;
     }

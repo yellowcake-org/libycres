@@ -7,7 +7,7 @@ void yc_res_pro_tile_parse_cleanup(yc_res_pro_object_tile_t *tile);
 
 yc_res_pro_status_t yc_res_pro_object_tile_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_t *into
 ) {
     yc_res_pro_object_tile_t *tile = malloc(sizeof(yc_res_pro_object_tile_t));
@@ -17,7 +17,7 @@ yc_res_pro_status_t yc_res_pro_object_tile_parse(
         return YC_RES_PRO_STATUS_MEM;
     }
 
-    if (0 == io->fread(&tile->material, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&tile->material, sizeof(uint32_t), 1, file)) {
         yc_res_pro_tile_parse_cleanup(tile);
         return YC_RES_PRO_STATUS_IO;
     }

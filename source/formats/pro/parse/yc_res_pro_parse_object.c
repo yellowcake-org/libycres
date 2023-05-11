@@ -5,48 +5,48 @@
 
 #include <stdlib.h>
 
-void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object);
+void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *api, yc_res_pro_object_t *object);
 
 yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_parse_result_t *result
 ) {
-    void *file = io->fopen(filename, "rb");
+    void *file = api->fopen(filename, "rb");
 
     if (NULL == file) {
-        yc_res_pro_parse_cleanup(file, io, NULL);
+        yc_res_pro_parse_cleanup(file, api, NULL);
         return YC_RES_PRO_STATUS_IO;
     }
 
     yc_res_pro_object_t *object = malloc(sizeof(yc_res_pro_object_t));
 
     if (NULL == object) {
-        yc_res_pro_parse_cleanup(file, io, object);
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_MEM;
     }
 
-    if (0 == io->fread(&object->proto_id, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&object->proto_id, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
     object->proto_id = yc_res_byteorder_uint32(object->proto_id);
 
-    if (0 == io->fread(&object->text_id, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&object->text_id, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
     object->text_id = yc_res_byteorder_uint32(object->text_id);
 
-    if (0 == io->fread(&object->sprite_id, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&object->sprite_id, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
     object->sprite_id = yc_res_byteorder_uint32(object->sprite_id);
 
     uint32_t light_radius = 0;
-    if (0 == io->fread(&light_radius, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&light_radius, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
 
@@ -54,8 +54,8 @@ yc_res_pro_status_t yc_res_pro_parse(
     object->lighting.radius = (u_int8_t) light_radius;
 
     uint32_t light_level = 0;
-    if (0 == io->fread(&light_level, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&light_level, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
 
@@ -63,8 +63,8 @@ yc_res_pro_status_t yc_res_pro_parse(
     object->lighting.level = (u_int16_t) light_level;
 
     uint32_t flags = 0;
-    if (0 == io->fread(&flags, sizeof(uint32_t), 1, file)) {
-        yc_res_pro_parse_cleanup(file, io, object);
+    if (0 == api->fread(&flags, sizeof(uint32_t), 1, file)) {
+        yc_res_pro_parse_cleanup(file, api, object);
         return YC_RES_PRO_STATUS_IO;
     }
 
@@ -81,14 +81,14 @@ yc_res_pro_status_t yc_res_pro_parse(
     };
 
     yc_res_pro_object_data_parser_t *fitting = all[yc_res_pro_object_type_from_pid(object->proto_id)];
-    yc_res_pro_status_t status = fitting(file, io, object);
+    yc_res_pro_status_t status = fitting(file, api, object);
 
     if (YC_RES_PRO_STATUS_OK != status) {
-        yc_res_pro_parse_cleanup(file, io, object);
+        yc_res_pro_parse_cleanup(file, api, object);
         return status;
     }
 
-    yc_res_pro_parse_cleanup(file, io, NULL);
+    yc_res_pro_parse_cleanup(file, api, NULL);
 
     result->object = object;
     return YC_RES_PRO_STATUS_OK;
@@ -119,8 +119,8 @@ yc_res_pro_object_flags_t yc_res_pro_parse_flags(uint32_t flags) {
     return result;
 }
 
-void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *io, yc_res_pro_object_t *object) {
-    if (NULL != file) { io->fclose(file); }
+void yc_res_pro_parse_cleanup(void *file, const yc_res_io_fs_api_t *api, yc_res_pro_object_t *object) {
+    if (NULL != file) { api->fclose(file); }
 
     if (NULL != object) {
         yc_res_pro_object_invalidate(object);

@@ -8,7 +8,7 @@ typedef struct yc_res_dat_parse_result {
 
 yc_res_dat_status_t yc_res_dat_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_parse_result_t *result
 );
 
@@ -22,7 +22,7 @@ typedef struct yc_res_dat_extract_result {
 
 yc_res_dat_status_t yc_res_dat_extract(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_file_t *file,
         yc_res_dat_extract_result_t *result
 );

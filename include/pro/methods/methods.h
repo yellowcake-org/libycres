@@ -16,7 +16,7 @@ typedef struct yc_res_pro_parse_result {
 
 yc_res_pro_status_t yc_res_pro_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_parse_result_t *result
 );
 

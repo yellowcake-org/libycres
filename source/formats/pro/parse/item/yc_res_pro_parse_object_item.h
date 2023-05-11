@@ -5,7 +5,7 @@
 
 typedef yc_res_pro_status_t (yc_res_pro_object_item_data_parser_t)(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_item_t *into
 );
 

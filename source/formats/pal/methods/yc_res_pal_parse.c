@@ -4,19 +4,19 @@
 
 void yc_res_pal_parse_cleanup(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pal_color_t *colors
 );
 
 yc_res_pal_status_t yc_res_pal_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pal_parse_result_t *result
 ) {
-    void *palette = io->fopen(filename, "rb");
+    void *palette = api->fopen(filename, "rb");
 
     if (NULL == palette) {
-        yc_res_pal_parse_cleanup(NULL, io, NULL);
+        yc_res_pal_parse_cleanup(NULL, api, NULL);
         return YC_RES_PAL_STATUS_IO;
     }
 
@@ -24,12 +24,12 @@ yc_res_pal_status_t yc_res_pal_parse(
     yc_res_pal_color_t *colors = malloc(sizeof(yc_res_pal_color_t) * LENGTH);
 
     if (NULL == colors) {
-        yc_res_pal_parse_cleanup(palette, io, NULL);
+        yc_res_pal_parse_cleanup(palette, api, NULL);
         return YC_RES_PAL_STATUS_MEM;
     }
 
-    if (0 == io->fread(colors, sizeof(yc_res_pal_color_t), LENGTH, palette)) {
-        yc_res_pal_parse_cleanup(palette, io, colors);
+    if (0 == api->fread(colors, sizeof(yc_res_pal_color_t), LENGTH, palette)) {
+        yc_res_pal_parse_cleanup(palette, api, colors);
         return YC_RES_PAL_STATUS_IO;
     }
 
@@ -48,7 +48,7 @@ yc_res_pal_status_t yc_res_pal_parse(
         }
     }
 
-    yc_res_pal_parse_cleanup(palette, io, NULL);
+    yc_res_pal_parse_cleanup(palette, api, NULL);
 
     result->count = LENGTH;
     result->colors = colors;
@@ -58,11 +58,11 @@ yc_res_pal_status_t yc_res_pal_parse(
 
 void yc_res_pal_parse_cleanup(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pal_color_t *colors
 ) {
     if (NULL != file) {
-        io->fclose(file);
+        api->fclose(file);
     }
 
     if (NULL != colors) {

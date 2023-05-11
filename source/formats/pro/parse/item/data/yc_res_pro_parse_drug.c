@@ -7,7 +7,7 @@ void yc_res_pro_drug_parse_cleanup(yc_res_pro_object_item_drug_t *drug);
 
 yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_item_t *into
 ) {
     yc_res_pro_object_item_drug_t *drug = malloc(sizeof(yc_res_pro_object_item_drug_t));
@@ -30,7 +30,7 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
     } _yc_res_pro_object_item_drug_raw_t;
 
     _yc_res_pro_object_item_drug_raw_t _raw_drug;
-    if (0 == io->fread(&_raw_drug, sizeof(_yc_res_pro_object_item_drug_raw_t), 1, file)) {
+    if (0 == api->fread(&_raw_drug, sizeof(_yc_res_pro_object_item_drug_raw_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -85,20 +85,20 @@ yc_res_pro_status_t yc_res_pro_object_item_drug_parse(
     drug->effects = effects;
 
     uint32_t chance = 0;
-    if (0 == io->fread(&chance, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&chance, sizeof(uint32_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
         return YC_RES_PRO_STATUS_IO;
     }
     chance = yc_res_byteorder_uint32(chance);
     drug->addiction_chance = chance;
 
-    if (0 == io->fread(&drug->withdrawal_perk, sizeof(yc_res_pro_perk_t), 1, file)) {
+    if (0 == api->fread(&drug->withdrawal_perk, sizeof(yc_res_pro_perk_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
         return YC_RES_PRO_STATUS_IO;
     }
     drug->withdrawal_perk = yc_res_byteorder_int32(drug->withdrawal_perk);
 
-    if (0 == io->fread(&drug->withdrawal_delay, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&drug->withdrawal_delay, sizeof(uint32_t), 1, file)) {
         yc_res_pro_drug_parse_cleanup(drug);
         return YC_RES_PRO_STATUS_IO;
     }

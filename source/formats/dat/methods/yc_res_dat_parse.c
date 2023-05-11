@@ -5,25 +5,25 @@
 
 void yc_res_dat_parse_cleanup(
         void *archive,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_directory_t *list
 );
 
 yc_res_dat_status_t yc_res_dat_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_parse_result_t *result
 ) {
-    void *archive = io->fopen(filename, "rb");
+    void *archive = api->fopen(filename, "rb");
 
     if (NULL == archive) {
-        yc_res_dat_parse_cleanup(archive, io, NULL);
+        yc_res_dat_parse_cleanup(archive, api, NULL);
         return YC_RES_DAT_STATUS_IO;
     }
 
     uint32_t dir_count = 0;
-    if (0 == io->fread(&dir_count, sizeof(dir_count), 1, archive)) {
-        yc_res_dat_parse_cleanup(archive, io, NULL);
+    if (0 == api->fread(&dir_count, sizeof(dir_count), 1, archive)) {
+        yc_res_dat_parse_cleanup(archive, api, NULL);
         return YC_RES_DAT_STATUS_IO;
     }
 
@@ -31,12 +31,12 @@ yc_res_dat_status_t yc_res_dat_parse(
     yc_res_dat_directory_t *list = malloc(sizeof(yc_res_dat_directory_t) * dir_count);
 
     if (NULL == list) {
-        yc_res_dat_parse_cleanup(archive, io, list);
+        yc_res_dat_parse_cleanup(archive, api, list);
         return YC_RES_DAT_STATUS_MEM;
     }
 
-    if (0 != io->fseek(archive, 4 * 3, SEEK_CUR)) {
-        yc_res_dat_parse_cleanup(archive, io, list);
+    if (0 != api->fseek(archive, 4 * 3, SEEK_CUR)) {
+        yc_res_dat_parse_cleanup(archive, api, list);
         return YC_RES_DAT_STATUS_IO;
     }
 
@@ -44,8 +44,8 @@ yc_res_dat_status_t yc_res_dat_parse(
         yc_res_dat_directory_t *current_dir = &list[dir_num];
 
         size_t length = 0;
-        if (0 == io->fread(&length, 1, 1, archive)) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+        if (0 == api->fread(&length, 1, 1, archive)) {
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_IO;
         }
 
@@ -53,12 +53,12 @@ yc_res_dat_status_t yc_res_dat_parse(
         *path = malloc(length + 1);
 
         if (NULL == *path) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_MEM;
         }
 
-        if (0 == io->fread(*path, length, 1, archive)) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+        if (0 == api->fread(*path, length, 1, archive)) {
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_IO;
         }
 
@@ -70,23 +70,23 @@ yc_res_dat_status_t yc_res_dat_parse(
 
         uint32_t files_count = 0;
 
-        if (0 == io->fread(&files_count, sizeof(files_count), 1, archive)) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+        if (0 == api->fread(&files_count, sizeof(files_count), 1, archive)) {
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_IO;
         }
 
         files_count = yc_res_byteorder_uint32(files_count);
         current_dir->count = files_count;
 
-        if (0 != io->fseek(archive, 4 * 3, SEEK_CUR)) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+        if (0 != api->fseek(archive, 4 * 3, SEEK_CUR)) {
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_IO;
         }
 
         current_dir->files = malloc(sizeof(yc_res_dat_file_t) * current_dir->count);
 
         if (NULL == current_dir->files) {
-            yc_res_dat_parse_cleanup(archive, io, list);
+            yc_res_dat_parse_cleanup(archive, api, list);
             return YC_RES_DAT_STATUS_MEM;
         }
 
@@ -94,8 +94,8 @@ yc_res_dat_status_t yc_res_dat_parse(
             yc_res_dat_file_t *current_file = &current_dir->files[file_num];
 
             size_t length = 0;
-            if (0 == io->fread(&length, 1, 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(&length, 1, 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
@@ -103,12 +103,12 @@ yc_res_dat_status_t yc_res_dat_parse(
             *name = malloc(length + 1);
 
             if (NULL == *name) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_MEM;
             }
 
-            if (0 == io->fread(*name, length, 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(*name, length, 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
@@ -116,23 +116,23 @@ yc_res_dat_status_t yc_res_dat_parse(
 
             uint32_t attributes, offset, size, size_packed = 0;
 
-            if (0 == io->fread(&attributes, sizeof(attributes), 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(&attributes, sizeof(attributes), 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
-            if (0 == io->fread(&offset, sizeof(offset), 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(&offset, sizeof(offset), 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
-            if (0 == io->fread(&size, sizeof(size), 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(&size, sizeof(size), 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
-            if (0 == io->fread(&size_packed, sizeof(size_packed), 1, archive)) {
-                yc_res_dat_parse_cleanup(archive, io, list);
+            if (0 == api->fread(&size_packed, sizeof(size_packed), 1, archive)) {
+                yc_res_dat_parse_cleanup(archive, api, list);
                 return YC_RES_DAT_STATUS_IO;
             }
 
@@ -144,7 +144,7 @@ yc_res_dat_status_t yc_res_dat_parse(
         }
     }
 
-    yc_res_dat_parse_cleanup(archive, io, NULL);
+    yc_res_dat_parse_cleanup(archive, api, NULL);
 
     result->list = list;
     result->count = dir_count;
@@ -154,11 +154,11 @@ yc_res_dat_status_t yc_res_dat_parse(
 
 void yc_res_dat_parse_cleanup(
         void *archive,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_directory_t *list
 ) {
     if (NULL != archive) {
-        io->fclose(archive);
+        api->fclose(archive);
     }
 
     if (NULL != list) {

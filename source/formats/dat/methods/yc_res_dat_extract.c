@@ -6,25 +6,25 @@
 
 void yc_res_dat_extract_cleanup(
         void *archive,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         unsigned char *bytes
 );
 
 yc_res_dat_status_t yc_res_dat_extract(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_dat_file_t *file,
         yc_res_dat_extract_result_t *result
 ) {
-    void *archive = io->fopen(filename, "rb");
+    void *archive = api->fopen(filename, "rb");
 
     if (NULL == archive) {
-        yc_res_dat_extract_cleanup(archive, io, NULL);
+        yc_res_dat_extract_cleanup(archive, api, NULL);
         return YC_RES_DAT_STATUS_IO;
     }
 
-    if (0 != io->fseek(archive, file->offset, SEEK_SET)) {
-        yc_res_dat_extract_cleanup(archive, io, NULL);
+    if (0 != api->fseek(archive, file->offset, SEEK_SET)) {
+        yc_res_dat_extract_cleanup(archive, api, NULL);
         return YC_RES_DAT_STATUS_IO;
     }
 
@@ -33,12 +33,12 @@ yc_res_dat_status_t yc_res_dat_extract(
             unsigned char *byte = malloc(sizeof(unsigned char));
 
             if (NULL == byte) {
-                yc_res_dat_extract_cleanup(archive, io, NULL);
+                yc_res_dat_extract_cleanup(archive, api, NULL);
                 return YC_RES_DAT_STATUS_MEM;
             }
 
-            if (0 == io->fread(byte, 1, 1, archive)) {
-                yc_res_dat_extract_cleanup(archive, io, byte);
+            if (0 == api->fread(byte, 1, 1, archive)) {
+                yc_res_dat_extract_cleanup(archive, api, byte);
                 return YC_RES_DAT_STATUS_IO;
             }
 
@@ -51,8 +51,8 @@ yc_res_dat_status_t yc_res_dat_extract(
             int16_t count = 0;
 
             processed += 2;
-            if (0 == io->fread(&count, 2, 1, archive)) {
-                yc_res_dat_extract_cleanup(archive, io, NULL);
+            if (0 == api->fread(&count, 2, 1, archive)) {
+                yc_res_dat_extract_cleanup(archive, api, NULL);
                 return YC_RES_DAT_STATUS_IO;
             }
 
@@ -69,13 +69,13 @@ yc_res_dat_status_t yc_res_dat_extract(
                     unsigned char *bytes = malloc(chunk_size);
 
                     if (NULL == bytes) {
-                        yc_res_dat_extract_cleanup(archive, io, NULL);
+                        yc_res_dat_extract_cleanup(archive, api, NULL);
                         return YC_RES_DAT_STATUS_MEM;
                     }
 
                     processed += chunk_size;
-                    if (0 == io->fread(bytes, chunk_size, 1, archive)) {
-                        yc_res_dat_extract_cleanup(archive, io, bytes);
+                    if (0 == api->fread(bytes, chunk_size, 1, archive)) {
+                        yc_res_dat_extract_cleanup(archive, api, bytes);
                         return YC_RES_DAT_STATUS_IO;
                     }
 
@@ -98,8 +98,8 @@ yc_res_dat_status_t yc_res_dat_extract(
                     unsigned char flags = 0;
 
                     processed++;
-                    if (0 == io->fread(&flags, 1, 1, archive)) {
-                        yc_res_dat_extract_cleanup(archive, io, NULL);
+                    if (0 == api->fread(&flags, 1, 1, archive)) {
+                        yc_res_dat_extract_cleanup(archive, api, NULL);
                         return YC_RES_DAT_STATUS_IO;
                     }
 
@@ -108,13 +108,13 @@ yc_res_dat_status_t yc_res_dat_extract(
                             unsigned char *byte = malloc(sizeof(unsigned char));
 
                             if (NULL == byte) {
-                                yc_res_dat_extract_cleanup(archive, io, NULL);
+                                yc_res_dat_extract_cleanup(archive, api, NULL);
                                 return YC_RES_DAT_STATUS_MEM;
                             }
 
                             processed++;
-                            if (0 == io->fread(byte, 1, 1, archive)) {
-                                yc_res_dat_extract_cleanup(archive, io, byte);
+                            if (0 == api->fread(byte, 1, 1, archive)) {
+                                yc_res_dat_extract_cleanup(archive, api, byte);
                                 return YC_RES_DAT_STATUS_IO;
                             }
 
@@ -129,16 +129,16 @@ yc_res_dat_status_t yc_res_dat_extract(
                             unsigned char tmp_byte = 0;
 
                             processed++;
-                            if (0 == io->fread(&tmp_byte, 1, 1, archive)) {
-                                yc_res_dat_extract_cleanup(archive, io, NULL);
+                            if (0 == api->fread(&tmp_byte, 1, 1, archive)) {
+                                yc_res_dat_extract_cleanup(archive, api, NULL);
                                 return YC_RES_DAT_STATUS_IO;
                             }
 
                             uint16_t offset_w = tmp_byte;
 
                             processed++;
-                            if (0 == io->fread(&tmp_byte, 1, 1, archive)) {
-                                yc_res_dat_extract_cleanup(archive, io, NULL);
+                            if (0 == api->fread(&tmp_byte, 1, 1, archive)) {
+                                yc_res_dat_extract_cleanup(archive, api, NULL);
                                 return YC_RES_DAT_STATUS_IO;
                             }
 
@@ -151,7 +151,7 @@ yc_res_dat_status_t yc_res_dat_extract(
                                 unsigned char *byte = malloc(sizeof(unsigned char));
 
                                 if (NULL == byte) {
-                                    yc_res_dat_extract_cleanup(archive, io, NULL);
+                                    yc_res_dat_extract_cleanup(archive, api, NULL);
                                     return YC_RES_DAT_STATUS_MEM;
                                 }
 
@@ -176,22 +176,22 @@ yc_res_dat_status_t yc_res_dat_extract(
         }
 
         if (written != file->count_plain) {
-            yc_res_dat_extract_cleanup(archive, io, NULL);
+            yc_res_dat_extract_cleanup(archive, api, NULL);
             return YC_RES_DAT_STATUS_CORR;
         }
     }
 
-    yc_res_dat_extract_cleanup(archive, io, NULL);
+    yc_res_dat_extract_cleanup(archive, api, NULL);
     return YC_RES_DAT_STATUS_OK;
 }
 
 void yc_res_dat_extract_cleanup(
         void *archive,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         unsigned char *bytes
 ) {
     if (NULL != archive) {
-        io->fclose(archive);
+        api->fclose(archive);
     }
 
     if (NULL != bytes) {

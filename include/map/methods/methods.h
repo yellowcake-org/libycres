@@ -16,7 +16,7 @@ typedef struct yc_res_map_parse_result {
 
 yc_res_map_status_t yc_res_map_parse(
         const char *filename,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         const yc_res_map_parse_db_api_t *db,
         yc_res_map_parse_result_t *result
 );

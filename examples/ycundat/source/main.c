@@ -92,8 +92,10 @@ int main(int argc, char *argv[]) {
                 mkdir_recursive(destination);
 
                 strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
-                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1], file->name,
-                        strlen(file->name) + 1);
+                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1],
+                        file->name,
+                        strlen(file->name) + 1
+                );
 
                 printf("%s\n", destination);
 

@@ -129,7 +129,7 @@ yc_res_frm_status_t yc_res_frm_parse(
         for (uint16_t frame_idx = 0; frame_idx < fpo; ++frame_idx) {
             yc_res_frm_texture_t *frame = &animation->frames[frame_idx];
 
-            uint16_t width, height;
+            uint16_t width = 0, height = 0;
 
             if (0 == api->fread(&width, sizeof(uint16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, api, sprite);
@@ -144,7 +144,7 @@ yc_res_frm_status_t yc_res_frm_parse(
             frame->dimensions.vertical = yc_res_byteorder_uint16(height);
             frame->dimensions.horizontal = yc_res_byteorder_uint16(width);
 
-            uint32_t square;
+            uint32_t square = 0;
             if (0 == api->fread(&square, sizeof(uint32_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, api, sprite);
                 return YC_RES_FRM_STATUS_IO;
@@ -156,7 +156,7 @@ yc_res_frm_status_t yc_res_frm_parse(
                 return YC_RES_FRM_STATUS_CORR;
             }
 
-            int16_t pos_x, pos_y;
+            int16_t pos_x = 0, pos_y = 0;
 
             if (0 == api->fread(&pos_x, sizeof(int16_t), 1, file)) {
                 yc_res_frm_parse_cleanup(file, api, sprite);

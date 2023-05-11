@@ -31,7 +31,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     yc_res_pro_parse_action_flags(flags_bytes[0], &item->action_flags);
     yc_res_pro_parse_weapon_flags(flags_bytes[0], &item->weapon_flags);
 
-    unsigned char attack_modes;
+    unsigned char attack_modes = 0;
     if (0 == api->fread(&attack_modes, 1, 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;

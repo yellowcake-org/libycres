@@ -115,7 +115,7 @@ yc_res_dat_status_t yc_res_dat_parse(
 
             (*name)[length] = 0;
 
-            uint32_t attributes, offset, size, size_packed = 0;
+            uint32_t attributes = 0, offset = 0, size = 0, size_packed = 0;
 
             if (0 == api->fread(&attributes, sizeof(attributes), 1, archive)) {
                 yc_res_dat_parse_cleanup(archive, api, list);

@@ -5,9 +5,9 @@
 
 #include <sys/stat.h>
 
-static arg_lit_t *help;
-static arg_file_t *input, *output;
-static arg_end_t *end;
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input, *output; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 static void mkdir_recursive(const char *path, size_t length);
 
@@ -32,8 +32,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycundat";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -117,13 +116,11 @@ int main(int argc, char *argv[]) {
 
                 printf("%s\n", destination);
 
-                FILE *exporting;
-                exporting = fopen(destination, "wb");
-
+                FILE *exporting = fopen(destination, "wb");
                 free(destination);
 
                 if (NULL == exporting) {
-                    exit_code = 4;
+                    exit_code = 3;
                     goto exit_iteration;
                 }
 
@@ -138,14 +135,14 @@ int main(int argc, char *argv[]) {
                         file,
                         &ext_result
                 )) {
-                    fclose(exporting);
+                    fclose(exporting); // NOLINT(cert-err33-c)
                     exporting = NULL;
 
                     exit_code = 4;
                     goto exit;
                 }
 
-                fclose(exporting);
+                fclose(exporting); // NOLINT(cert-err33-c)
                 exporting = NULL;
             }
 
@@ -168,7 +165,7 @@ int main(int argc, char *argv[]) {
 }
 
 void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
-    fwrite(bytes, count, 1, file);
+    fwrite(bytes, count, 1, file);  // NOLINT(cert-err33-c)
     free(bytes);
 }
 

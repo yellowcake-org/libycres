@@ -1,8 +1,6 @@
 #include <libycres.h>
 #include <private.h>
 
-#include "yc_res_map_parse_object_patch.h"
-
 #include <stdlib.h>
 
 yc_res_map_status_t yc_res_map_parse_object_patch_item(

@@ -102,7 +102,7 @@ yc_res_map_status_t yc_res_map_parse_script(
     }
     into->object_id = yc_res_byteorder_uint32(into->object_id);
 
-    int32_t lv_count, lv_offset = 0;
+    int32_t lv_count = 0, lv_offset = 0;
     if (0 == api->fread(&lv_offset, sizeof(int32_t), 1, file)) {
         yc_res_map_parse_script_cleanup(into);
         return YC_RES_MAP_STATUS_IO;

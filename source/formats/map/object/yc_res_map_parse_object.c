@@ -91,6 +91,11 @@ yc_res_map_status_t yc_res_map_parse_object(
     if (0 == api->fread(&flags_ext, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     flags_ext = yc_res_byteorder_uint32(flags_ext);
 
+    yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_item;
+    yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_critter;
+    yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_scenery;
+    yc_res_map_parse_object_patch_parser_t yc_res_map_parse_object_patch_misc;
+
     yc_res_map_parse_object_patch_parser_t *parsers[YC_RES_PRO_OBJECT_TYPE_COUNT] = {
             &yc_res_map_parse_object_patch_item,
             &yc_res_map_parse_object_patch_critter,

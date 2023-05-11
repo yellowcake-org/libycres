@@ -71,6 +71,13 @@ yc_res_pro_status_t yc_res_pro_parse(
     flags = yc_res_byteorder_uint32(flags);
     object->flags = yc_res_pro_parse_flags(flags);
 
+    yc_res_pro_object_data_parser_t yc_res_pro_object_item_parse;
+    yc_res_pro_object_data_parser_t yc_res_pro_object_critter_parse;
+    yc_res_pro_object_data_parser_t yc_res_pro_object_scenery_parse;
+    yc_res_pro_object_data_parser_t yc_res_pro_object_wall_parse;
+    yc_res_pro_object_data_parser_t yc_res_pro_object_tile_parse;
+    yc_res_pro_object_data_parser_t yc_res_pro_object_misc_parse;
+
     yc_res_pro_object_data_parser_t *all[] = {
             &yc_res_pro_object_item_parse,
             &yc_res_pro_object_critter_parse,

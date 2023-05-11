@@ -1,0 +1,16 @@
+# Generated from CLion Inspection settings
+---
+Checks: '-*,
+cert-*,
+bugprone-*,
+clang-analyzer-*,
+concurrency-*,
+darwin-*,
+google-*,
+performance-*,
+portability-*,
+llvm-*,
+-llvm-header-guard,
+-llvm-include-order,
+readability-*,
+-readability-isolate-declaration'

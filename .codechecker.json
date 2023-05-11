@@ -2,5 +2,6 @@
 "--skip=./.codechecker.skipfile",
 "--enable-all",
 "-d=altera",
-"-d=cert"
+"-d=cert",
+"-d=clang-diagnostic-padded"
 ]}

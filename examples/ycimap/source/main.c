@@ -9,9 +9,9 @@ arg_lit_t *help;
 arg_file_t *input, *resources;
 arg_end_t *end;
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *context);
+yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
 
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context);
+yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context);
 
 void *ycimap_io_fopen(const char *filename, const char *mode);
 int ycimap_io_fclose(void *stream);
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
     if (input->count == 1 && resources->count == 1) {
         const char *rootname = resources->filename[0];
         yc_res_map_parse_db_api_t db_api = {
-                .context = (void *) rootname,
+                .context = (const void *) rootname,
                 .item_type_from_pid = &ycimap_fetch_items_type,
                 .scenery_type_from_pid = &ycimap_fetch_scenery_type,
         };
@@ -206,7 +206,7 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     return protoname;
 }
 
-uint32_t type_byte_from_proto(uint32_t pid, char *root, char *type) {
+uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
     char *protoname = proto_filename(pid, root, type);
     FILE *file = fopen(protoname, "rb");
 
@@ -230,11 +230,11 @@ uint32_t type_byte_from_proto(uint32_t pid, char *root, char *type) {
     return 0xFFFFFFFF;
 }
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *context) {
+yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context) {
     return type_byte_from_proto(pid, context, "ITEMS");
 }
 
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context) {
+yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context) {
     return type_byte_from_proto(pid, context, "SCENERY");
 }
 

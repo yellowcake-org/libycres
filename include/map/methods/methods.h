@@ -1,11 +1,11 @@
 #ifndef LIB_YCRES_MAP_METHODS_H
 #define LIB_YCRES_MAP_METHODS_H
 
-typedef yc_res_pro_object_item_type_t yc_res_map_parse_db_api_item_fetcher_t(uint32_t pid, void *context);
-typedef yc_res_pro_object_scenery_type_t yc_res_map_parse_db_api_scenery_fetcher_t(uint32_t pid, void *context);
+typedef yc_res_pro_object_item_type_t yc_res_map_parse_db_api_item_fetcher_t(uint32_t pid, const void *context);
+typedef yc_res_pro_object_scenery_type_t yc_res_map_parse_db_api_scenery_fetcher_t(uint32_t pid, const void *context);
 
 typedef struct yc_res_map_parse_db_api {
-    void *context;
+    const void *context;
     yc_res_map_parse_db_api_item_fetcher_t *item_type_from_pid;
     yc_res_map_parse_db_api_scenery_fetcher_t *scenery_type_from_pid;
 } yc_res_map_parse_db_api_t;

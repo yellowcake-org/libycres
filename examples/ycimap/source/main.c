@@ -3,11 +3,9 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#include <sys/stat.h>
-
-arg_lit_t *help;
-arg_file_t *input, *resources;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input, *resources;
+static arg_end_t *end;
 
 yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
 

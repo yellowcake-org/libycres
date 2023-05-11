@@ -1,9 +1,9 @@
 #include <ycipro.h>
 #include <stdlib.h>
 
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input;
+static arg_end_t *end;
 
 void ycipro_print_cb(yc_res_pro_object_t *object);
 

@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <memory.h>
 
-arg_lit_t *help, *merge;
-arg_file_t *input;
-arg_end_t *end;
+
+static arg_lit_t *help, *merge;
+static arg_file_t *input;
+static arg_end_t *end;
 
 void *ycifrm_io_fopen(const char *filename, const char *mode);
 int ycifrm_io_fclose(void *stream);

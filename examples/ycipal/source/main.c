@@ -1,8 +1,8 @@
 #include <ycipal.h>
 
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input;
+static arg_end_t *end;
 
 void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count);
 

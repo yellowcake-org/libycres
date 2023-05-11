@@ -2,9 +2,9 @@
 
 #include <stdlib.h>
 
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input;
+static arg_end_t *end;
 
 void *ycilst_io_fopen(const char *filename, const char *mode);
 int ycilst_io_fclose(void *stream);

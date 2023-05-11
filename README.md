@@ -1,6 +1,7 @@
 ## libycres
 
 [![Code Checker](https://github.com/yellowcake-org/libycres/actions/workflows/codechecker.yml/badge.svg)](https://github.com/yellowcake-org/libycres/actions/workflows/codechecker.yml)
+
 This repository is a part of [Yellowcake](https://github.com/yellowcake-org) project.
 
 ### What it does

@@ -81,9 +81,9 @@ int main(int argc, char *argv[]) {
                         strlen(file->name) + 1
                 );
 
-                strlcpy(destination, *output->filename, strlen(*output->filename) + 1);
-                strlcat(&destination[strlen(*output->filename)], "/", 1 + 1);
-                strlcat(&destination[strlen(*output->filename) + 1], directory->path, strlen(directory->path) + 1);
+                strncpy(destination, *output->filename, strlen(*output->filename) + 1);
+                strncat(&destination[strlen(*output->filename)], "/", 1 + 1);
+                strncat(&destination[strlen(*output->filename) + 1], directory->path, strlen(directory->path) + 1);
 
                 for (size_t i = 0; i < strlen(destination); ++i) {
                     if (destination[i] == '\\') { destination[i] = '/'; }
@@ -91,8 +91,8 @@ int main(int argc, char *argv[]) {
 
                 mkdir_recursive(destination);
 
-                strlcat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
-                strlcat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1], file->name,
+                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
+                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1], file->name,
                         strlen(file->name) + 1);
 
                 printf("%s\n", destination);
@@ -165,7 +165,7 @@ static void mkdir_recursive(const char *dir) {
             *iterator = '/';
         }
     }
-    
+
     mkdir(temp, S_IRWXU);
 }
 

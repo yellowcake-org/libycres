@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
                     goto exit_merge;
                 }
 
-                strcpy(final, filename);
+                strlcpy(final, filename, base + 1);
                 snprintf(&final[base], 5, ".FR%lu", idx);
 
                 yc_res_frm_sprite_parse_result_t result = {NULL};

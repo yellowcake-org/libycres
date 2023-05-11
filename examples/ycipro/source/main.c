@@ -114,9 +114,6 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
         case YC_RES_PRO_TRANS_WALL_END:
             printf("WALL END.");
             break;
-        default:
-            printf("UNKNOWN.");
-            break;
     }
     printf("\n");
 
@@ -335,7 +332,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
 
                     yc_res_pro_object_scenery_stairs_t *stairs = scenery->data.stairs;
 
-                    if (yc_res_pro_is_valid_id(stairs->map_id)) {
+                    if (yc_res_pro_is_valid_id((uint32_t) stairs->map_id)) {
                         printf("\n");
                         printf("Map ID: 0x%X\n", stairs->map_id);
                         printf("Destination tile: %d\n", scenery->data.stairs->destination.grid_idx);

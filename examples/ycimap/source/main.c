@@ -7,8 +7,10 @@ static arg_lit_t *help;
 static arg_file_t *input, *resources;
 static arg_end_t *end;
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
+uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type);
+char *proto_filename(uint32_t pid, const char *root, const char *type);
 
+yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
 yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context);
 
 void *ycimap_io_fopen(const char *filename, const char *mode);

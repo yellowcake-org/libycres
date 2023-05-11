@@ -12,9 +12,11 @@ static arg_end_t *end;
 static void mkdir_recursive(const char *dir);
 
 void *yciundat_io_fopen(const char *filename, const char *mode);
+
 int yciundat_io_fclose(void *stream);
 
 int yciundat_io_fseek(void *stream, long offset, int whence);
+
 size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
@@ -79,9 +81,9 @@ int main(int argc, char *argv[]) {
                         strlen(file->name) + 1
                 );
 
-                strcpy(destination, *output->filename);
-                strcat(destination, "/");
-                strcat(destination, directory->path);
+                strlcpy(destination, *output->filename, strlen(*output->filename) + 1);
+                strlcat(&destination[strlen(*output->filename)], "/", 1 + 1);
+                strlcat(&destination[strlen(*output->filename) + 1], directory->path, strlen(directory->path) + 1);
 
                 for (size_t i = 0; i < strlen(destination); ++i) {
                     if (destination[i] == '\\') { destination[i] = '/'; }
@@ -89,8 +91,9 @@ int main(int argc, char *argv[]) {
 
                 mkdir_recursive(destination);
 
-                strcat(destination, "/");
-                strcat(destination, file->name);
+                strlcat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
+                strlcat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1], file->name,
+                        strlen(file->name) + 1);
 
                 printf("%s\n", destination);
 
@@ -155,20 +158,23 @@ static void mkdir_recursive(const char *dir) {
 
     if (temp[length - 1] == '/') { temp[length - 1] = 0; }
 
-    for (iterator = temp + 1; *iterator; iterator++)
+    for (iterator = temp + 1; *iterator; iterator++) {
         if (*iterator == '/') {
             *iterator = 0;
             mkdir(temp, S_IRWXU);
             *iterator = '/';
         }
-
+    }
+    
     mkdir(temp, S_IRWXU);
 }
 
 void *yciundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+
 int yciundat_io_fclose(void *stream) { return fclose(stream); }
 
 int yciundat_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+
 size_t yciundat_io_fread(void *dest, size_t len, size_t cnt, void *str) {
     return fread(dest, len, cnt, str);
 }

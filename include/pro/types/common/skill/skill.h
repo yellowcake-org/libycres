@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_COMMON_SKILL_H
-#define LIB_YCRES_PRO_TYPES_COMMON_SKILL_H
+#ifndef INCLUDE_PRO_TYPES_COMMON_SKILL_H
+#define INCLUDE_PRO_TYPES_COMMON_SKILL_H
 
 typedef enum yc_res_pro_skill {
     YC_RES_PRO_SKILL_SMALL_GUNS,
@@ -23,4 +23,4 @@ typedef enum yc_res_pro_skill {
     YC_RES_PRO_SKILL_COUNT
 } yc_res_pro_skill_t;
 
-#endif //LIB_YCRES_PRO_TYPES_COMMON_SKILL_H
+#endif //INCLUDE_PRO_TYPES_COMMON_SKILL_H

@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_COMMON_DAMAGE_TYPE_H
-#define LIB_YCRES_PRO_TYPES_COMMON_DAMAGE_TYPE_H
+#ifndef INCLUDE_PRO_TYPES_COMMON_DAMAGE_H
+#define INCLUDE_PRO_TYPES_COMMON_DAMAGE_H
 
 typedef enum yc_res_pro_damage_type {
     YC_RES_PRO_DAMAGE_TYPE_NORMAL,
@@ -12,4 +12,4 @@ typedef enum yc_res_pro_damage_type {
     YC_RES_PRO_DAMAGE_TYPE_COUNT
 } yc_res_pro_damage_type_t;
 
-#endif //LIB_YCRES_PRO_TYPES_COMMON_DAMAGE_TYPE_H
+#endif //INCLUDE_PRO_TYPES_COMMON_DAMAGE_H

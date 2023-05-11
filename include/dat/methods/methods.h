@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_DAT_METHODS_H
-#define LIB_YCRES_DAT_METHODS_H
+#ifndef INCLUDE_DAT_METHODS_H
+#define INCLUDE_DAT_METHODS_H
 
 typedef struct yc_res_dat_parse_result {
     uint32_t count;
@@ -31,4 +31,4 @@ void yc_res_dat_file_invalidate(yc_res_dat_file_t *file);
 
 void yc_res_dat_directory_invalidate(yc_res_dat_directory_t *directory);
 
-#endif //LIB_YCRES_DAT_METHODS_H
+#endif //INCLUDE_DAT_METHODS_H

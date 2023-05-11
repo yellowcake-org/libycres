@@ -1,7 +1,7 @@
-#ifndef YCIMAP_H
-#define YCIMAP_H
+#ifndef EXAMPLES_YCIMAP_INCLUDE_H
+#define EXAMPLES_YCIMAP_INCLUDE_H
 
 #include <argtable3.h>
 #include <libycres.h>
 
-#endif //YCIMAP_H
+#endif // EXAMPLES_YCIMAP_INCLUDE_H

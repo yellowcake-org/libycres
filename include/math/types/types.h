@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_MATH_METHODS_H
-#define LIB_YCRES_MATH_METHODS_H
+#ifndef INCLUDE_MATH_TYPES_H
+#define INCLUDE_MATH_TYPES_H
 
 #include <stdint.h>
 
@@ -25,4 +25,4 @@ typedef enum yc_res_math_grid_size {
     YC_RES_MATH_GRID_SIZE_HEXES = 200
 } yc_res_math_grid_size_t;
 
-#endif //LIB_YCRES_MATH_METHODS_H
+#endif //INCLUDE_MATH_TYPES_H

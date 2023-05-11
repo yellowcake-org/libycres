@@ -17,11 +17,11 @@ yc_res_pro_status_t yc_res_pro_object_misc_parse(
         return YC_RES_PRO_STATUS_MEM;
     }
 
-    if (0 == api->fread(&misc->_unknown, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&misc->unknown, sizeof(uint32_t), 1, file)) {
         yc_res_pro_misc_parse_cleanup(misc);
         return YC_RES_PRO_STATUS_IO;
     }
-    misc->_unknown = yc_res_byteorder_uint32(misc->_unknown);
+    misc->unknown = yc_res_byteorder_uint32(misc->unknown);
 
     into->data.misc = misc;
     return YC_RES_PRO_STATUS_OK;

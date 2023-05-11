@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_COMMON_H
-#define LIB_YCRES_PRO_TYPES_COMMON_H
+#ifndef INCLUDE_PRO_TYPES_COMMON_H
+#define INCLUDE_PRO_TYPES_COMMON_H
 
 #include "stat/stat.h"
 #include "perk/perk.h"
@@ -11,4 +11,4 @@
 #include "material/material.h"
 #include "lighting/lighting.h"
 
-#endif //LIB_YCRES_PRO_TYPES_COMMON_H
+#endif //INCLUDE_PRO_TYPES_COMMON_H

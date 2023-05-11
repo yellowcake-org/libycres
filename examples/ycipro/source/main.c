@@ -1,5 +1,5 @@
-#include <ycipro.h>
 #include <stdlib.h>
+#include <ycipro.h>
 
 static arg_lit_t *help;
 static arg_file_t *input;
@@ -367,7 +367,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
                 case YC_RES_PRO_OBJECT_SCENERY_TYPE_GENERIC:
                     printf("GENERIC");
                     printf("\n\n");
-                    printf("Unknown: 0x%X\n", scenery->data.generic->_unknown);
+                    printf("Unknown: 0x%X\n", scenery->data.generic->unknown);
                     break;
             }
 
@@ -393,7 +393,7 @@ void ycipro_print_cb(yc_res_pro_object_t *object) {
         case YC_RES_PRO_OBJECT_TYPE_MISC:
             printf("MISC");
             printf("\n\n");
-            printf("Unknown: 0x%X\n", object->data.misc->_unknown);
+            printf("Unknown: 0x%X\n", object->data.misc->unknown);
             break;
         case YC_RES_PRO_OBJECT_TYPE_INTERFACE:
             printf("INTERFACE");

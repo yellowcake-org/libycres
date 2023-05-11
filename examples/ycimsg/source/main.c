@@ -1,5 +1,5 @@
-#include <ycimsg.h>
 #include <stdlib.h>
+#include <ycimsg.h>
 
 static arg_lit_t *help;
 static arg_file_t *input;

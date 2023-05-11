@@ -1,7 +1,7 @@
-#ifndef YCIPRO_H
-#define YCIPRO_H
+#ifndef EXAMPLES_YCIPRO_INCLUDE_H
+#define EXAMPLES_YCIPRO_INCLUDE_H
 
 #include <argtable3.h>
 #include <libycres.h>
 
-#endif //YCIPRO_H
+#endif // EXAMPLES_YCIPRO_INCLUDE_H

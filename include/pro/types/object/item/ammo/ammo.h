@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_AMMO_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_AMMO_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_AMMO_H
+#define INCLUDE_PRO_TYPES_OBJECT_ITEM_AMMO_H
 
 typedef struct yc_res_pro_object_item_ammo {
     uint32_t count;
@@ -9,4 +9,4 @@ typedef struct yc_res_pro_object_item_ammo {
     uint32_t damage_multiplier, damage_divider;
 } yc_res_pro_object_item_ammo_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_AMMO_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_AMMO_H

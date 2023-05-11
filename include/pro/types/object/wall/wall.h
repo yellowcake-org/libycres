@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_WALL_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_WALL_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_WALL_H
+#define INCLUDE_PRO_TYPES_OBJECT_WALL_H
 
 typedef struct yc_res_pro_object_wall {
     uint32_t script_id;
@@ -9,4 +9,4 @@ typedef struct yc_res_pro_object_wall {
     yc_res_pro_light_passage_t light;
 } yc_res_pro_object_wall_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_WALL_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_WALL_H

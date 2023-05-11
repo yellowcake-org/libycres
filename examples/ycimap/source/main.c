@@ -1,7 +1,7 @@
 #include <ycimap.h>
 
-#include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
 static arg_lit_t *help;
 static arg_file_t *input, *resources;

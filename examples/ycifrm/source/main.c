@@ -1,17 +1,18 @@
 #include <ycifrm.h>
 
-#include <stdlib.h>
 #include <memory.h>
-
+#include <stdlib.h>
 
 static arg_lit_t *help, *merge;
 static arg_file_t *input;
 static arg_end_t *end;
 
 void *ycifrm_io_fopen(const char *filename, const char *mode);
+
 int ycifrm_io_fclose(void *stream);
 
 int ycifrm_io_fseek(void *stream, long offset, int whence);
+
 size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
@@ -163,9 +164,11 @@ void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {
 }
 
 void *ycifrm_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+
 int ycifrm_io_fclose(void *stream) { return fclose(stream); }
 
 int ycifrm_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+
 size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str) {
     return fread(dest, len, cnt, str);
 }

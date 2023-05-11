@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_STATUSES_H
-#define LIB_YCRES_PRO_STATUSES_H
+#ifndef INCLUDE_PRO_STATUSES_H
+#define INCLUDE_PRO_STATUSES_H
 
 typedef enum yc_res_pro_status {
     YC_RES_PRO_STATUS_OK = 0,
@@ -8,4 +8,4 @@ typedef enum yc_res_pro_status {
     YC_RES_PRO_STATUS_CORR,
 } yc_res_pro_status_t;
 
-#endif //LIB_YCRES_PRO_STATUSES_H
+#endif //INCLUDE_PRO_STATUSES_H

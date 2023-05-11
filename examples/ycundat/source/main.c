@@ -9,7 +9,7 @@ arg_lit_t *help;
 arg_file_t *input, *output;
 arg_end_t *end;
 
-static void _mkdir(const char *dir);
+static void mkdir_recursive(const char *dir);
 
 void ycundat_cb_parse(yc_res_dat_directory_t *list, uint32_t count);
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
                     if (destination[i] == '\\') { destination[i] = '/'; }
                 }
 
-                _mkdir(destination);
+                mkdir_recursive(destination);
 
                 strcat(destination, "/");
                 strcat(destination, file->name);
@@ -140,7 +140,7 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
     free(bytes);
 }
 
-static void _mkdir(const char *dir) {
+static void mkdir_recursive(const char *dir) {
     char temp[256];
     char *iterator = NULL;
 

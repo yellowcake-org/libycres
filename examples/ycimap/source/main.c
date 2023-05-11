@@ -215,6 +215,7 @@ uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
 
     uint32_t result = 0xFFFFFFFF;
     if (0 == fread(&result, sizeof(uint32_t), 1, file)) { goto error; }
+
     free(proto_name);
     fclose(file);
 

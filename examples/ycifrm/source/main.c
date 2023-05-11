@@ -65,9 +65,7 @@ int main(int argc, char *argv[]) {
 
             ycifrm_print_cb(result.sprite);
         } else {
-            size_t count = 0;
             yc_res_frm_sprite_t **split = malloc(sizeof(yc_res_frm_sprite_t *));
-
             if (NULL == split) {
                 exit_code = 2;
                 goto exit_merge;
@@ -79,8 +77,8 @@ int main(int argc, char *argv[]) {
                 goto exit_merge;
             }
 
-            size_t base;
-            base = strlen(filename);
+            size_t count = 0;
+            size_t base = strlen(filename);
 
             for (size_t idx = 0; idx < YC_RES_MATH_ORIENTATION_COUNT; ++idx) {
                 char *final = malloc(base + 4 + 1);
@@ -110,7 +108,6 @@ int main(int argc, char *argv[]) {
             }
 
             yc_res_frm_status_t status = yc_res_frm_merge(split, count);
-
             if (YC_RES_FRM_STATUS_OK != status) {
                 exit_code = 4;
                 goto exit_merge;

@@ -173,8 +173,7 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
 }
 
 static void mkdir_recursive(const char *path, size_t length) {
-    char *copied_path;
-    copied_path = malloc(length + 1);
+    char *copied_path = malloc(length + 1);
     if (NULL == copied_path) { return; }
 
     snprintf(copied_path, length + 1, "%s", path);

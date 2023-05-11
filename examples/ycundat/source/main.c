@@ -90,8 +90,7 @@ int main(int argc, char *argv[]) {
                     goto exit_iteration;
                 }
 
-                char *destination;
-                destination = malloc(
+                char *destination = malloc(
                         strlen(*output->filename) + 1 +
                         strlen(directory->path) + 1 +
                         strlen(file->name) + 1
@@ -130,7 +129,7 @@ int main(int argc, char *argv[]) {
                     goto exit_iteration;
                 }
 
-                yc_res_dat_extract_result_t ext_result = {
+                yc_res_dat_extract_api_t ext_result = {
                         &ycundat_cb_extract,
                         exporting
                 };

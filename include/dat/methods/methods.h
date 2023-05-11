@@ -15,16 +15,16 @@ yc_res_dat_status_t yc_res_dat_parse(
 typedef void (yc_res_dat_extract_cb_t)
         (unsigned char *bytes, size_t count, void *context);
 
-typedef struct yc_res_dat_extract_result {
+typedef struct yc_res_dat_extract_api {
     yc_res_dat_extract_cb_t *callback;
     void *context;
-} yc_res_dat_extract_result_t;
+} yc_res_dat_extract_api_t;
 
 yc_res_dat_status_t yc_res_dat_extract(
         const char *filename,
         const yc_res_io_fs_api_t *api,
         yc_res_dat_file_t *file,
-        yc_res_dat_extract_result_t *result
+        yc_res_dat_extract_api_t *result
 );
 
 void yc_res_dat_file_invalidate(yc_res_dat_file_t *file);

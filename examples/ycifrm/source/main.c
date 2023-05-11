@@ -75,14 +75,16 @@ int main(int argc, char *argv[]) {
                 goto exit_merge;
             }
 
-            *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
+            *split = malloc(sizeof(yc_res_frm_sprite_t) * YC_RES_MATH_ORIENTATION_COUNT);
             if (NULL == *split) {
                 exit_code = 2;
                 goto exit_merge;
             }
 
-            size_t base = strlen(filename);
-            for (size_t idx = 0; idx < 6; ++idx) {
+            size_t base;
+            base = strlen(filename);
+
+            for (size_t idx = 0; idx < YC_RES_MATH_ORIENTATION_COUNT; ++idx) {
                 char *final = malloc(base + 4 + 1);
 
                 if (NULL == final) {

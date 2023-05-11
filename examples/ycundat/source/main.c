@@ -9,7 +9,7 @@ static arg_lit_t *help;
 static arg_file_t *input, *output;
 static arg_end_t *end;
 
-static void mkdir_recursive(const char *dir, size_t length);
+static void mkdir_recursive(const char *path, size_t length);
 
 void *yciundat_io_fopen(const char *filename, const char *mode);
 
@@ -72,14 +72,29 @@ int main(int argc, char *argv[]) {
         for (uint32_t dir_idx = 0; dir_idx < result.count; ++dir_idx) {
             yc_res_dat_directory_t *directory = &result.list[dir_idx];
 
+            if (NULL == directory) {
+                exit_code = 6;
+                goto exit;
+            }
+
             for (uint32_t file_idx = 0; file_idx < directory->count; ++file_idx) {
                 yc_res_dat_file_t *file = &directory->files[file_idx];
+
+                if (NULL == file) {
+                    exit_code = 7;
+                    goto exit_iteration;
+                }
 
                 char *destination = malloc(
                         strlen(*output->filename) + 1 +
                         strlen(directory->path) + 1 +
                         strlen(file->name) + 1
                 );
+                
+                if (NULL == destination) {
+                    exit_code = 5;
+                    goto exit_iteration;
+                }
 
                 strncpy(destination, *output->filename, strlen(*output->filename) + 1);
                 strncat(&destination[strlen(*output->filename)], "/", 1 + 1);
@@ -99,12 +114,14 @@ int main(int argc, char *argv[]) {
 
                 printf("%s\n", destination);
 
-                FILE *exporting = fopen(destination, "wb");
+                FILE *exporting;
+                exporting = fopen(destination, "wb");
+
                 free(destination);
 
                 if (NULL == exporting) {
                     exit_code = 3;
-                    goto exit;
+                    goto exit_iteration;
                 }
 
                 yc_res_dat_extract_result_t ext_result = {
@@ -129,9 +146,10 @@ int main(int argc, char *argv[]) {
                 exporting = NULL;
             }
 
-            yc_res_dat_directory_invalidate(&result.list[dir_idx]);
+            yc_res_dat_directory_invalidate(directory);
         }
 
+        exit_iteration:
         result.count = 0;
 
         free(result.list);
@@ -151,22 +169,24 @@ void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
     free(bytes);
 }
 
-static void mkdir_recursive(const char *dir, size_t length) {
-    char temp[length + 1];
-    snprintf(temp, length + 1, "%s", dir);
+static void mkdir_recursive(const char *path, size_t length) {
+    char *copied_path;
+    copied_path = malloc(length + 1);
+    if (NULL == copied_path) { return; }
 
-    char *iterator = NULL;
-    if (temp[length] == '/') { temp[length] = 0; }
+    snprintf(copied_path, length + 1, "%s", path);
 
-    for (iterator = temp + 1; *iterator; iterator++) {
-        if (*iterator == '/') {
-            *iterator = 0;
-            mkdir(temp, S_IRWXU);
-            *iterator = '/';
+    if (copied_path[length] == '/') { copied_path[length] = 0; }
+
+    for (size_t char_idx = 0; char_idx <= length; ++char_idx) {
+        if ('/' == copied_path[char_idx]) {
+            copied_path[char_idx] = '\0';
+            mkdir(copied_path, S_IRWXU);
+            copied_path[char_idx] = '/';
         }
     }
 
-    mkdir(temp, S_IRWXU);
+    mkdir(copied_path, S_IRWXU);
 }
 
 void *yciundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }

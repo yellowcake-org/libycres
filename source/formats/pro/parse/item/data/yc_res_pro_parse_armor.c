@@ -7,7 +7,7 @@ void yc_res_pro_armor_parse_cleanup(yc_res_pro_object_item_armor_t *armor);
 
 yc_res_pro_status_t yc_res_pro_object_item_armor_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_item_t *into
 ) {
     yc_res_pro_object_item_armor_t *armor = malloc(sizeof(yc_res_pro_object_item_armor_t));
@@ -17,18 +17,18 @@ yc_res_pro_status_t yc_res_pro_object_item_armor_parse(
         return YC_RES_PRO_STATUS_MEM;
     }
 
-    if (0 == io->fread(&armor->class, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&armor->class, sizeof(uint32_t), 1, file)) {
         yc_res_pro_armor_parse_cleanup(armor);
         return YC_RES_PRO_STATUS_IO;
     }
     armor->class = yc_res_byteorder_uint32(armor->class);
 
-    if (0 == io->fread(&armor->resistances, YC_RES_PRO_DAMAGE_TYPE_COUNT * sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&armor->resistances, YC_RES_PRO_DAMAGE_TYPE_COUNT * sizeof(uint32_t), 1, file)) {
         yc_res_pro_armor_parse_cleanup(armor);
         return YC_RES_PRO_STATUS_IO;
     }
 
-    if (0 == io->fread(&armor->thresholds, sizeof(uint32_t), YC_RES_PRO_DAMAGE_TYPE_COUNT, file)) {
+    if (0 == api->fread(&armor->thresholds, sizeof(uint32_t), YC_RES_PRO_DAMAGE_TYPE_COUNT, file)) {
         yc_res_pro_armor_parse_cleanup(armor);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -38,13 +38,13 @@ yc_res_pro_status_t yc_res_pro_object_item_armor_parse(
         armor->resistances[dmg_idx] = yc_res_byteorder_uint32(armor->resistances[dmg_idx]);
     }
 
-    if (0 == io->fread(&armor->perk, sizeof(yc_res_pro_perk_t), 1, file)) {
+    if (0 == api->fread(&armor->perk, sizeof(yc_res_pro_perk_t), 1, file)) {
         yc_res_pro_armor_parse_cleanup(armor);
         return YC_RES_PRO_STATUS_IO;
     }
     armor->perk = yc_res_byteorder_int32(armor->perk);
 
-    if (0 == io->fread(&armor->sprite_ids, sizeof(uint32_t), YC_RES_PRO_TYPES_GENDER_COUNT, file)) {
+    if (0 == api->fread(&armor->sprite_ids, sizeof(uint32_t), YC_RES_PRO_TYPES_GENDER_COUNT, file)) {
         yc_res_pro_armor_parse_cleanup(armor);
         return YC_RES_PRO_STATUS_IO;
     }

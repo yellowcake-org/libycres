@@ -2,9 +2,15 @@
 
 #include <stdlib.h>
 
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help;
+static arg_file_t *input;
+static arg_end_t *end;
+
+void *ycilst_io_fopen(const char *filename, const char *mode);
+int ycilst_io_fclose(void *stream);
+
+int ycilst_io_fseek(void *stream, long offset, int whence);
+size_t ycilst_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -39,14 +45,14 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycilst_io_fopen,
+                .fclose = &ycilst_io_fclose,
+                .fseek = &ycilst_io_fseek,
+                .fread = &ycilst_io_fread,
         };
 
         yc_res_lst_parse_result_t result = {NULL};
-        if (YC_RES_PAL_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
+        if (YC_RES_LST_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }
@@ -77,4 +83,12 @@ int main(int argc, char *argv[]) {
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 
     return exit_code;
+}
+
+void *ycilst_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycilst_io_fclose(void *stream) { return fclose(stream); }
+
+int ycilst_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycilst_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

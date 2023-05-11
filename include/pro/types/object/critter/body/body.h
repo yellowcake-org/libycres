@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_BODY_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_BODY_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_CRITTER_BODY_H
+#define INCLUDE_PRO_TYPES_OBJECT_CRITTER_BODY_H
 
 typedef enum yc_res_pro_object_critter_body {
     YC_RES_PRO_OBJECT_CRITTER_BODY_TYPE_BIPED,
@@ -7,4 +7,4 @@ typedef enum yc_res_pro_object_critter_body {
     YC_RES_PRO_OBJECT_CRITTER_BODY_TYPE_ROBOTIC,
 } yc_res_pro_object_critter_body_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_BODY_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_CRITTER_BODY_H

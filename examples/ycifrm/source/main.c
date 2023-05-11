@@ -1,15 +1,21 @@
 #include <ycifrm.h>
 
-#include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
-arg_lit_t *help, *merge;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help, *merge;
+static arg_file_t *input;
+static arg_end_t *end;
+
+void *ycifrm_io_fopen(const char *filename, const char *mode);
+
+int ycifrm_io_fclose(void *stream);
+
+int ycifrm_io_fseek(void *stream, long offset, int whence);
+
+size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycifrm_print_cb(yc_res_frm_sprite_t *sprite);
-
-void ycifrm_append_cb(yc_res_frm_sprite_t *sprite);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -45,10 +51,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycifrm_io_fopen,
+                .fclose = &ycifrm_io_fclose,
+                .fseek = &ycifrm_io_fseek,
+                .fread = &ycifrm_io_fread,
         };
 
         if (merge->count == 0) {
@@ -60,30 +66,30 @@ int main(int argc, char *argv[]) {
 
             ycifrm_print_cb(result.sprite);
         } else {
-            size_t count = 0;
             yc_res_frm_sprite_t **split = malloc(sizeof(yc_res_frm_sprite_t *));
-
             if (NULL == split) {
                 exit_code = 2;
-                goto exit;
+                goto exit_merge;
             }
 
-            *split = malloc(sizeof(yc_res_frm_sprite_t) * 6);
+            *split = malloc(sizeof(yc_res_frm_sprite_t) * YC_RES_MATH_ORIENTATION_COUNT);
             if (NULL == *split) {
                 exit_code = 2;
-                goto exit;
+                goto exit_merge;
             }
 
+            size_t count = 0;
             size_t base = strlen(filename);
-            for (size_t idx = 0; idx < 6; ++idx) {
+
+            for (size_t idx = 0; idx < YC_RES_MATH_ORIENTATION_COUNT; ++idx) {
                 char *final = malloc(base + 4 + 1);
 
                 if (NULL == final) {
                     exit_code = 3;
-                    goto exit;
+                    goto exit_merge;
                 }
 
-                strcpy(final, filename);
+                strncpy(final, filename, base + 1);
                 snprintf(&final[base], 5, ".FR%lu", idx);
 
                 yc_res_frm_sprite_parse_result_t result = {NULL};
@@ -92,11 +98,8 @@ int main(int argc, char *argv[]) {
                 free(final);
 
                 if (YC_RES_FRM_STATUS_OK != status) {
-                    free(*split);
-                    free(split);
-
                     exit_code = 4;
-                    goto exit;
+                    goto exit_merge;
                 }
 
                 yc_res_frm_sprite_t *sprites = *split;
@@ -106,22 +109,28 @@ int main(int argc, char *argv[]) {
             }
 
             yc_res_frm_status_t status = yc_res_frm_merge(split, count);
-
             if (YC_RES_FRM_STATUS_OK != status) {
                 exit_code = 4;
-                goto exit;
+                goto exit_merge;
             }
 
             ycifrm_print_cb(*split);
             yc_res_frm_sprite_invalidate(*split);
 
-            free(split);
-            split = NULL;
+            exit_merge:
+            if (NULL != split) {
+                if (NULL != *split) {
+                    free(*split);
+                    *split = NULL;
+                }
+
+                free(split);
+                split = NULL;
+            }
         }
     }
 
     exit:
-
     arg_freetable(arg_table, sizeof(arg_table) / sizeof(arg_table[0]));
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 
@@ -152,4 +161,14 @@ void ycifrm_print_cb(yc_res_frm_sprite_t *sprite) {
             );
         }
     }
+}
+
+void *ycifrm_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+
+int ycifrm_io_fclose(void *stream) { return fclose(stream); }
+
+int ycifrm_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+
+size_t ycifrm_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

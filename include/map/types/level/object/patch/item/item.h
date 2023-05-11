@@ -1,10 +1,10 @@
-#ifndef LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
-#define LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
 
-#include "weapon/weapon.h"
 #include "ammo/ammo.h"
-#include "misc/misc.h"
 #include "key/key.h"
+#include "misc/misc.h"
+#include "weapon/weapon.h"
 
 typedef union yc_res_map_level_object_patch_item_data {
     yc_res_map_level_object_patch_item_weapon_t *weapon;
@@ -18,4 +18,4 @@ typedef struct yc_res_map_level_object_patch_item {
     yc_res_map_level_object_patch_item_data_t data;
 } yc_res_map_level_object_patch_item_t;
 
-#endif //LIB_YCRES_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H

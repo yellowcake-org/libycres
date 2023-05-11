@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_MISC_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_MISC_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_MISC_H
+#define INCLUDE_PRO_TYPES_OBJECT_ITEM_MISC_H
 
 typedef struct yc_res_pro_object_item_misc {
     uint32_t item_idx;
@@ -8,4 +8,4 @@ typedef struct yc_res_pro_object_item_misc {
     yc_res_pro_caliber_t caliber;
 } yc_res_pro_object_item_misc_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_MISC_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_MISC_H

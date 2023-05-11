@@ -1,7 +1,7 @@
-#ifndef YCILST_H
-#define YCILST_H
+#ifndef EXAMPLES_YCILST_INCLUDE_H
+#define EXAMPLES_YCILST_INCLUDE_H
 
 #include <argtable3.h>
 #include <libycres.h>
 
-#endif //YCILST_H
+#endif // EXAMPLES_YCILST_INCLUDE_H

@@ -3,7 +3,7 @@
 
 yc_res_frm_status_t yc_res_frm_merge(yc_res_frm_sprite_t **sprites_ptr, size_t count) {
     if (2 > count) { return YC_RES_FRM_STATUS_IN; } // min 2 sprites_ptr
-    if (6 < count) { return YC_RES_FRM_STATUS_IN; } // max 6 sprites_ptr
+    if (YC_RES_MATH_ORIENTATION_COUNT < count) { return YC_RES_FRM_STATUS_IN; } // max 6 sprites_ptr
 
     yc_res_frm_sprite_t *sprites = *sprites_ptr;
 

@@ -69,30 +69,36 @@ int main(int argc, char *argv[]) {
             goto exit;
         }
 
+        if (NULL == result.list) {
+            exit_code = 3;
+            goto exit;
+        }
+
         for (uint32_t dir_idx = 0; dir_idx < result.count; ++dir_idx) {
             yc_res_dat_directory_t *directory = &result.list[dir_idx];
 
-            if (NULL == directory) {
-                exit_code = 6;
-                goto exit;
+            if (NULL == directory->files) {
+                exit_code = 3;
+                goto exit_iteration;
             }
 
             for (uint32_t file_idx = 0; file_idx < directory->count; ++file_idx) {
                 yc_res_dat_file_t *file = &directory->files[file_idx];
 
                 if (NULL == file) {
-                    exit_code = 7;
+                    exit_code = 3;
                     goto exit_iteration;
                 }
 
-                char *destination = malloc(
+                char *destination;
+                destination = malloc(
                         strlen(*output->filename) + 1 +
                         strlen(directory->path) + 1 +
                         strlen(file->name) + 1
                 );
-                
+
                 if (NULL == destination) {
-                    exit_code = 5;
+                    exit_code = 3;
                     goto exit_iteration;
                 }
 
@@ -120,7 +126,7 @@ int main(int argc, char *argv[]) {
                 free(destination);
 
                 if (NULL == exporting) {
-                    exit_code = 3;
+                    exit_code = 4;
                     goto exit_iteration;
                 }
 
@@ -175,7 +181,6 @@ static void mkdir_recursive(const char *path, size_t length) {
     if (NULL == copied_path) { return; }
 
     snprintf(copied_path, length + 1, "%s", path);
-
     if (copied_path[length] == '/') { copied_path[length] = 0; }
 
     for (size_t char_idx = 0; char_idx <= length; ++char_idx) {
@@ -187,6 +192,7 @@ static void mkdir_recursive(const char *path, size_t length) {
     }
 
     mkdir(copied_path, S_IRWXU);
+    free(copied_path);
 }
 
 void *yciundat_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }

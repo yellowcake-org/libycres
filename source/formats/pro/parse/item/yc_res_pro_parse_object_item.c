@@ -12,7 +12,7 @@ void yc_res_pro_item_parse_cleanup(yc_res_pro_object_item_t *item);
 
 yc_res_pro_status_t yc_res_pro_object_item_parse(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_pro_object_t *into
 ) {
     yc_res_pro_object_item_t *item = malloc(sizeof(yc_res_pro_object_item_t));
@@ -23,7 +23,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     }
 
     unsigned char flags_bytes[3] = {0, 0, 0};
-    if (0 == io->fread(&flags_bytes[0], 3, 1, file)) {
+    if (0 == api->fread(&flags_bytes[0], 3, 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -31,21 +31,21 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     yc_res_pro_parse_action_flags(flags_bytes[0], &item->action_flags);
     yc_res_pro_parse_weapon_flags(flags_bytes[0], &item->weapon_flags);
 
-    unsigned char attack_modes;
-    if (0 == io->fread(&attack_modes, 1, 1, file)) {
+    unsigned char attack_modes = 0;
+    if (0 == api->fread(&attack_modes, 1, 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
     yc_res_pro_parse_item_attack_modes(attack_modes, item);
 
-    if (0 == io->fread(&item->script_id, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&item->script_id, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
     item->script_id = yc_res_byteorder_uint32(item->script_id);
 
     uint32_t type = 0;
-    if (0 == io->fread(&type, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&type, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -53,7 +53,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     item->type = type;
 
     uint32_t material = 0;
-    if (0 == io->fread(&material, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&material, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -61,7 +61,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     item->material = material;
 
     uint32_t volume = 0;
-    if (0 == io->fread(&volume, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&volume, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -69,7 +69,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     item->volume = volume;
 
     uint32_t weight = 0;
-    if (0 == io->fread(&weight, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&weight, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -77,20 +77,20 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     item->weight = weight;
 
     uint32_t cost = 0;
-    if (0 == io->fread(&cost, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&cost, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
     cost = yc_res_byteorder_uint32(cost);
     item->cost = cost;
 
-    if (0 == io->fread(&item->sprite_id, sizeof(uint32_t), 1, file)) {
+    if (0 == api->fread(&item->sprite_id, sizeof(uint32_t), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
     item->sprite_id = yc_res_byteorder_uint32(item->sprite_id);
 
-    if (0 == io->fread(&item->sound_id, sizeof(char), 1, file)) {
+    if (0 == api->fread(&item->sound_id, sizeof(char), 1, file)) {
         yc_res_pro_item_parse_cleanup(item);
         return YC_RES_PRO_STATUS_IO;
     }
@@ -106,7 +106,7 @@ yc_res_pro_status_t yc_res_pro_object_item_parse(
     };
 
     yc_res_pro_object_item_data_parser_t *fitting = all[item->type];
-    yc_res_pro_status_t status = fitting(file, io, item);
+    yc_res_pro_status_t status = fitting(file, api, item);
 
     if (YC_RES_PRO_STATUS_OK != status) {
         yc_res_pro_item_parse_cleanup(item);

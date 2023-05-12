@@ -1,8 +1,8 @@
-#ifndef LIB_YCRES_PRO_H
-#define LIB_YCRES_PRO_H
+#ifndef INCLUDE_PRO_H
+#define INCLUDE_PRO_H
 
 #include "types/types.h"
 #include "statuses/statuses.h"
 #include "methods/methods.h"
 
-#endif //LIB_YCRES_PRO_H
+#endif //INCLUDE_PRO_H

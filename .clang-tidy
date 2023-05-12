@@ -1,0 +1,23 @@
+Checks: '-*,
+bugprone-*,
+cert-*,
+clang-analyzer-*,
+concurrency-*,
+darwin-*,
+cppcoreguidelines-*,
+google-*,
+linuxkernel-*,
+misc-*,
+mpi-*,
+objc-*,
+openmp-*,
+performance-*,
+portability-*,
+readability-*,
+-misc-no-recursion,
+-cppcoreguidelines-avoid-magic-numbers,
+-readability-isolate-declaration,
+-readability-magic-numbers'
+CheckOptions:
+  -key: readability-function-cognitive-complexity.Threshold
+  value: 60

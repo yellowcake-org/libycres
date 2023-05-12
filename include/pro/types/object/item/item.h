@@ -1,15 +1,15 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_H
+#define INCLUDE_PRO_TYPES_OBJECT_ITEM_H
 
 #include "attacks/attacks.h"
 
+#include "ammo/ammo.h"
 #include "armor/armor.h"
 #include "container/container.h"
 #include "drug/drug.h"
-#include "weapon/weapon.h"
-#include "ammo/ammo.h"
-#include "misc/misc.h"
 #include "key/key.h"
+#include "misc/misc.h"
+#include "weapon/weapon.h"
 
 typedef enum yc_res_pro_object_item_type {
     YC_RES_PRO_OBJECT_ITEM_TYPE_ARMOR,
@@ -46,4 +46,4 @@ typedef struct yc_res_pro_object_item {
     yc_res_pro_object_item_data_t data;
 } yc_res_pro_object_item_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_ITEM_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_H

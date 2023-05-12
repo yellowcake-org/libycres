@@ -6,22 +6,22 @@ bool yc_res_lst_is_valid_index(uint32_t fallback_idx) { return fallback_idx != 0
 
 void yc_res_lst_parse_cleanup(
         void *file,
-        const yc_res_io_fs_api_t *io,
+        const yc_res_io_fs_api_t *api,
         yc_res_lst_entries_t *entries,
         char *value, char *index
 );
 
-yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_api_t *io, yc_res_lst_parse_result_t *result) {
-    void *file = io->fopen(filename, "rb");
+yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_api_t *api, yc_res_lst_parse_result_t *result) {
+    void *file = api->fopen(filename, "rb");
 
     if (NULL == file) {
-        yc_res_lst_parse_cleanup(file, io, NULL, NULL, NULL);
+        yc_res_lst_parse_cleanup(file, api, NULL, NULL, NULL);
         return YC_RES_LST_STATUS_IO;
     }
 
     yc_res_lst_entries_t *entries = malloc(sizeof(yc_res_lst_entries_t));
     if (NULL == entries) {
-        yc_res_lst_parse_cleanup(file, io, NULL, NULL, NULL);
+        yc_res_lst_parse_cleanup(file, api, NULL, NULL, NULL);
         return YC_RES_LST_STATUS_MEM;
     }
 
@@ -35,7 +35,7 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
     char *value = NULL, *index = NULL;
 
     while (true) {
-        size_t consumed = io->fread(&buffer, 1, 1, file);
+        size_t consumed = api->fread(&buffer, 1, 1, file);
 
         if ('\n' == buffer || 0 == consumed) {
             has_read_value = false;
@@ -49,7 +49,7 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
                     malloc(entries_size) : realloc(entries->pointers, entries_size);
 
             if (NULL == pointers) {
-                yc_res_lst_parse_cleanup(file, io, entries, value, index);
+                yc_res_lst_parse_cleanup(file, api, entries, value, index);
                 return YC_RES_LST_STATUS_MEM;
             }
 
@@ -63,7 +63,8 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
             free(index);
             index = NULL;
 
-            if (0 == consumed) { break; } else { continue; }
+            if (0 == consumed) { break; }
+             continue;
         }
 
         if ('\r' == buffer || '\t' == buffer || ' ' == buffer || ';' == buffer) {
@@ -83,7 +84,7 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
             if (NULL == *string) {
                 *string = malloc(1);
                 if (NULL == *string) {
-                    yc_res_lst_parse_cleanup(file, io, entries, value, index);
+                    yc_res_lst_parse_cleanup(file, api, entries, value, index);
                     return YC_RES_LST_STATUS_MEM;
                 }
 
@@ -94,7 +95,7 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
             char *grown = realloc(*string, length + 1 + 1);
 
             if (NULL == grown) {
-                yc_res_lst_parse_cleanup(file, io, entries, value, index);
+                yc_res_lst_parse_cleanup(file, api, entries, value, index);
                 return YC_RES_LST_STATUS_MEM;
             }
 
@@ -105,17 +106,17 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
         }
     }
 
-    yc_res_lst_parse_cleanup(file, io, NULL, value, index);
+    yc_res_lst_parse_cleanup(file, api, NULL, value, index);
 
     result->entries = entries;
     return YC_RES_LST_STATUS_OK;
 }
 
 void yc_res_lst_parse_cleanup(
-        void *file, const yc_res_io_fs_api_t *io, yc_res_lst_entries_t *entries,
+        void *file, const yc_res_io_fs_api_t *api, yc_res_lst_entries_t *entries,
         char *value, char *index
 ) {
-    if (NULL != file) { io->fclose(file); }
+    if (NULL != file) { api->fclose(file); }
 
     if (NULL != value) { free(value); }
     if (NULL != index) { free(index); }

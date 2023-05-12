@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_MAP_TYPES_H
-#define LIB_YCRES_MAP_TYPES_H
+#ifndef INCLUDE_MAP_TYPES_H
+#define INCLUDE_MAP_TYPES_H
 
 #include "elevation/elevation.h"
 #include "variables/variables.h"
@@ -19,4 +19,4 @@ typedef struct yc_res_map {
     yc_res_map_level_t *levels[YC_RES_MAP_ELEVATION_COUNT];
 } yc_res_map_t;
 
-#endif //LIB_YCRES_MAP_TYPES_H
+#endif //INCLUDE_MAP_TYPES_H

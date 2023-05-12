@@ -1,15 +1,16 @@
 #include <ycipal.h>
 
-#include <stdlib.h>
-#include <memory.h>
-
-#include <sys/stat.h>
-
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count);
+
+void *ycipal_io_fopen(const char *filename, const char *mode);
+int ycipal_io_fclose(void *stream);
+
+int ycipal_io_fseek(void *stream, long offset, int whence);
+size_t ycipal_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -21,8 +22,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycipal";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -44,10 +44,10 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycipal_io_fopen,
+                .fclose = &ycipal_io_fclose,
+                .fseek = &ycipal_io_fseek,
+                .fread = &ycipal_io_fread,
         };
 
         yc_res_pal_parse_result_t result = {0, NULL};
@@ -81,4 +81,12 @@ void ycipal_parse_cb(yc_res_pal_color_t *colors, size_t count) {
     printf("EMPTY: %zu", trans_count);
     printf(", ");
     printf("TOTAL: %zu\n", count);
+}
+
+void *ycipal_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycipal_io_fclose(void *stream) { return fclose(stream); }
+
+int ycipal_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycipal_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

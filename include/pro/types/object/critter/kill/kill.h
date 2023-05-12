@@ -1,5 +1,5 @@
-#ifndef LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_KILL_H
-#define LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_KILL_H
+#ifndef INCLUDE_PRO_TYPES_OBJECT_CRITTER_KILL_H
+#define INCLUDE_PRO_TYPES_OBJECT_CRITTER_KILL_H
 
 typedef enum yc_res_pro_object_critter_kill {
     YC_RES_PRO_OBJECT_CRITTER_KILL_TYPE_MAN,
@@ -23,4 +23,4 @@ typedef enum yc_res_pro_object_critter_kill {
     YC_RES_PRO_OBJECT_CRITTER_KILL_TYPE_BIG_BAD_BOSS,
 } yc_res_pro_object_critter_kill_t;
 
-#endif //LIB_YCRES_PRO_TYPES_OBJECT_CRITTER_KILL_H
+#endif //INCLUDE_PRO_TYPES_OBJECT_CRITTER_KILL_H

@@ -1,13 +1,13 @@
-#ifndef LIB_YCRES_IO_TYPES_H
-#define LIB_YCRES_IO_TYPES_H
+#ifndef INCLUDE_IO_TYPES_H
+#define INCLUDE_IO_TYPES_H
 
 #include <stddef.h>
 
-typedef void *(yc_res_io_fopen_t)(const char *__restrict filename, const char *__restrict mode);
-typedef int (yc_res_io_fclose_t)(void *file);
+typedef void *(yc_res_io_fopen_t)(const char *, const char *);
+typedef int (yc_res_io_fclose_t)(void *);
 
 typedef int (yc_res_io_fseek_t)(void *, long, int);
-typedef size_t (yc_res_io_fread_t)(void *__restrict ptr, size_t size, size_t nitems, void *__restrict stream);
+typedef size_t (yc_res_io_fread_t)(void *, size_t, size_t, void *);
 
 typedef struct yc_res_io_fs_api {
     yc_res_io_fopen_t *fopen;
@@ -26,4 +26,4 @@ typedef struct yc_res_io_fs_api {
 #define	SEEK_END	2	/* set file offset to EOF plus offset */
 #endif
 
-#endif //LIB_YCRES_IO_TYPES_H
+#endif //INCLUDE_IO_TYPES_H

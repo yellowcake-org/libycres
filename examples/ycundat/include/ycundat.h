@@ -1,7 +1,7 @@
-#ifndef YCUNDAT_H
-#define YCUNDAT_H
+#ifndef EXAMPLES_YCUNDAT_INCLUDE_H
+#define EXAMPLES_YCUNDAT_INCLUDE_H
 
 #include <argtable3.h>
 #include <libycres.h>
 
-#endif //YCUNDAT_H
+#endif // EXAMPLES_YCUNDAT_INCLUDE_H

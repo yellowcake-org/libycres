@@ -1,17 +1,23 @@
 #include <ycimap.h>
 
-#include <stdlib.h>
 #include <memory.h>
+#include <stdlib.h>
 
-#include <sys/stat.h>
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input, *resources; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-arg_lit_t *help;
-arg_file_t *input, *resources;
-arg_end_t *end;
+uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type);
+char *proto_filename(uint32_t pid, const char *root, const char *type);
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *context);
+yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
+yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context);
 
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context);
+void *ycimap_io_fopen(const char *filename, const char *mode);
+int ycimap_io_fclose(void *stream);
+
+int ycimap_io_fseek(void *stream, long offset, int whence);
+size_t ycimap_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -24,8 +30,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycimap";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -45,19 +50,19 @@ int main(int argc, char *argv[]) {
     }
 
     if (input->count == 1 && resources->count == 1) {
-        const char *rootname = resources->filename[0];
+        const char *root_name = resources->filename[0];
         yc_res_map_parse_db_api_t db_api = {
-                .context = (void *) rootname,
+                .context = (const void *) root_name,
                 .item_type_from_pid = &ycimap_fetch_items_type,
                 .scenery_type_from_pid = &ycimap_fetch_scenery_type,
         };
 
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycimap_io_fopen,
+                .fclose = &ycimap_io_fclose,
+                .fseek = &ycimap_io_fseek,
+                .fread = &ycimap_io_fread,
         };
 
         yc_res_map_parse_result_t result = {NULL};
@@ -155,22 +160,23 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     const char path[] = "/PROTO";
     const char ext[] = ".LST";
 
-    size_t lstname_size =
+    size_t lst_name_size =
             strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(type) + strlen(ext) + 1;
 
-    char *lstname = malloc(lstname_size);
-    if (NULL == lstname) { return NULL; }
-    snprintf(lstname, lstname_size, "%s%s/%s/%s%s", root, path, type, type, ext);
+    char *proto_name = NULL;
+    char *lst_name = malloc(lst_name_size);
+    if (NULL == lst_name) { return NULL; }
+    snprintf(lst_name, lst_name_size, "%s%s/%s/%s%s", root, path, type, type, ext);
 
     yc_res_io_fs_api_t io_api = {
-            .fopen = (yc_res_io_fopen_t *) &fopen,
-            .fclose = (yc_res_io_fclose_t *) &fclose,
-            .fseek = (yc_res_io_fseek_t *) &fseek,
-            .fread = (yc_res_io_fread_t *) &fread,
+            .fopen = &ycimap_io_fopen,
+            .fclose = &ycimap_io_fclose,
+            .fseek = &ycimap_io_fseek,
+            .fread = &ycimap_io_fread,
     };
 
     yc_res_lst_parse_result_t result = {.entries =  NULL};
-    yc_res_lst_status_t status = yc_res_lst_parse(lstname, &io_api, &result);
+    yc_res_lst_status_t status = yc_res_lst_parse(lst_name, &io_api, &result);
 
     size_t index = yc_res_pro_index_from_object_id(pid) - 1;
     if (YC_RES_LST_STATUS_OK != status || result.entries->count <= index) { goto cleanup; }
@@ -178,11 +184,11 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     yc_res_lst_entry_t *entry = &result.entries->pointers[index];
     if (NULL == entry->value) { goto cleanup; }
 
-    size_t protoname_size = strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(entry->value) + 1;
-    char *protoname = malloc(protoname_size);
-    if (NULL == protoname) { goto cleanup; }
+    size_t proto_name_size = strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(entry->value) + 1;
+    proto_name = malloc(proto_name_size);
+    if (NULL == proto_name) { goto cleanup; }
 
-    snprintf(protoname, protoname_size, "%s%s/%s/%s", root, path, type, entry->value);
+    snprintf(proto_name, proto_name_size, "%s%s/%s/%s", root, path, type, entry->value);
 
     cleanup:
     for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
@@ -196,20 +202,21 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     free(result.entries);
     result.entries = NULL;
 
-    return protoname;
+    return proto_name;
 }
 
-uint32_t type_byte_from_proto(uint32_t pid, char *root, char *type) {
-    char *protoname = proto_filename(pid, root, type);
-    FILE *file = fopen(protoname, "rb");
+uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
+    char *proto_name = proto_filename(pid, root, type);
+    FILE *file = fopen(proto_name, "rb");
 
     if (NULL == file) { goto error; }
     if (0 != fseek(file, 0x20, SEEK_CUR)) { goto error; }
 
     uint32_t result = 0xFFFFFFFF;
     if (0 == fread(&result, sizeof(uint32_t), 1, file)) { goto error; }
-    free(protoname);
-    fclose(file);
+
+    free(proto_name);
+    fclose(file); // NOLINT(cert-err33-c)
 
     // from BE
     return ((result >> 24) & 0xff) |
@@ -219,14 +226,22 @@ uint32_t type_byte_from_proto(uint32_t pid, char *root, char *type) {
 
     error:
     fclose(file);
-    free(protoname);
+    free(proto_name);
     return 0xFFFFFFFF;
 }
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, void *context) {
+yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context) {
     return type_byte_from_proto(pid, context, "ITEMS");
 }
 
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, void *context) {
+yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context) {
     return type_byte_from_proto(pid, context, "SCENERY");
+}
+
+void *ycimap_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycimap_io_fclose(void *stream) { return fclose(stream); }
+
+int ycimap_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycimap_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

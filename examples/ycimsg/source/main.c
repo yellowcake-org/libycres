@@ -1,13 +1,15 @@
+#include <stdlib.h>
 #include <ycimsg.h>
 
-#include <stdlib.h>
-#include <memory.h>
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-#include <sys/stat.h>
+void *ycimsg_io_fopen(const char *filename, const char *mode);
+int ycimsg_io_fclose(void *stream);
 
-arg_lit_t *help;
-arg_file_t *input;
-arg_end_t *end;
+int ycimsg_io_fseek(void *stream, long offset, int whence);
+size_t ycimsg_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
@@ -19,8 +21,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycimsg";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -42,14 +43,14 @@ int main(int argc, char *argv[]) {
     if (input->count == 1) {
         const char *filename = input->filename[0];
         yc_res_io_fs_api_t io_api = {
-                .fopen = (yc_res_io_fopen_t *) &fopen,
-                .fclose = (yc_res_io_fclose_t *) &fclose,
-                .fseek = (yc_res_io_fseek_t *) &fseek,
-                .fread = (yc_res_io_fread_t *) &fread,
+                .fopen = &ycimsg_io_fopen,
+                .fclose = &ycimsg_io_fclose,
+                .fseek = &ycimsg_io_fseek,
+                .fread = &ycimsg_io_fread,
         };
 
         yc_res_msg_parse_result_t result = {NULL};
-        if (YC_RES_PAL_STATUS_OK != yc_res_msg_parse(filename, &io_api, &result)) {
+        if (YC_RES_MSG_STATUS_OK != yc_res_msg_parse(filename, &io_api, &result)) {
             exit_code = 2;
             goto exit;
         }
@@ -81,4 +82,12 @@ int main(int argc, char *argv[]) {
     if (0 != exit_code) { printf("Error occurred, code: %d\n", exit_code); }
 
     return exit_code;
+}
+
+void *ycimsg_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+int ycimsg_io_fclose(void *stream) { return fclose(stream); }
+
+int ycimsg_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+size_t ycimsg_io_fread(void *dest, size_t len, size_t cnt, void *str) {
+    return fread(dest, len, cnt, str);
 }

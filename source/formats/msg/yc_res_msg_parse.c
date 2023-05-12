@@ -6,20 +6,20 @@
 bool yc_res_msg_is_valid_index(uint32_t index) { return index != 0xFFFFFFFF; }
 
 void yc_res_msg_parse_cleanup(
-        void *filename, const yc_res_io_fs_api_t *io, yc_res_msg_entries_t *entries, char *values[3]
+        void *filename, const yc_res_io_fs_api_t *api, yc_res_msg_entries_t *entries, char *values[3]
 );
 
-yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_api_t *io, yc_res_msg_parse_result_t *result) {
-    void *file = io->fopen(filename, "rb");
+yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_api_t *api, yc_res_msg_parse_result_t *result) {
+    void *file = api->fopen(filename, "rb");
 
     if (NULL == file) {
-        yc_res_msg_parse_cleanup(file, io, NULL, NULL);
+        yc_res_msg_parse_cleanup(file, api, NULL, NULL);
         return YC_RES_MSG_STATUS_IO;
     }
 
     yc_res_msg_entries_t *entries = malloc(sizeof(yc_res_msg_entries_t));
     if (NULL == entries) {
-        yc_res_msg_parse_cleanup(file, io, NULL, NULL);
+        yc_res_msg_parse_cleanup(file, api, NULL, NULL);
         return YC_RES_MSG_STATUS_MEM;
     }
 
@@ -33,7 +33,7 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
     bool is_copying = false;
 
     while (true) {
-        size_t consumed = io->fread(&buffer, 1, 1, file);
+        size_t consumed = api->fread(&buffer, 1, 1, file);
 
         if ((false == is_copying && '\n' == buffer) || 0 == consumed) {
             value_idx = 0;
@@ -47,7 +47,7 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
                         malloc(entries_size) : realloc(entries->pointers, entries_size);
 
                 if (NULL == pointers) {
-                    yc_res_msg_parse_cleanup(file, io, entries, values);
+                    yc_res_msg_parse_cleanup(file, api, entries, values);
                     return YC_RES_MSG_STATUS_MEM;
                 }
 
@@ -60,12 +60,16 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
                 current->audio = values[1];
                 values[1] = NULL;
 
-                current->index = NULL == values[0] ? 0xFFFFFFFF : (uint32_t) strtoul(values[0], NULL, 10);
+                current->index =
+                        NULL == values[0] ?
+                        0xFFFFFFFF : (uint32_t) strtoul(values[0], NULL, 10);
+
                 free(values[0]);
                 values[0] = NULL;
             }
 
-            if (0 == consumed) { break; } else { continue; }
+            if (0 == consumed) { break; }
+            continue;
         }
 
         if (false == is_copying) {
@@ -88,7 +92,7 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
             if (NULL == *string) {
                 *string = malloc(1);
                 if (NULL == *string) {
-                    yc_res_msg_parse_cleanup(file, io, entries, values);
+                    yc_res_msg_parse_cleanup(file, api, entries, values);
                     return YC_RES_MSG_STATUS_MEM;
                 }
 
@@ -99,7 +103,7 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
             char *grown = realloc(*string, length + 1 + 1);
 
             if (NULL == grown) {
-                yc_res_msg_parse_cleanup(file, io, entries, values);
+                yc_res_msg_parse_cleanup(file, api, entries, values);
                 return YC_RES_MSG_STATUS_MEM;
             }
 
@@ -110,16 +114,16 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
         }
     }
 
-    yc_res_msg_parse_cleanup(file, io, NULL, values);
+    yc_res_msg_parse_cleanup(file, api, NULL, values);
 
     result->entries = entries;
     return YC_RES_MSG_STATUS_OK;
 }
 
 void yc_res_msg_parse_cleanup(
-        void *file, const yc_res_io_fs_api_t *io, yc_res_msg_entries_t *entries, char *values[3]
+        void *file, const yc_res_io_fs_api_t *api, yc_res_msg_entries_t *entries, char *values[3]
 ) {
-    if (NULL != file) { io->fclose(file); }
+    if (NULL != file) { api->fclose(file); }
 
     if (NULL != values) {
         for (size_t value_idx = 0; value_idx < 3; ++value_idx) {

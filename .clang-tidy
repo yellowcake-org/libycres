@@ -1,16 +1,23 @@
-# Generated from CLion Inspection settings
----
 Checks: '-*,
-cert-*,
 bugprone-*,
+cert-*,
 clang-analyzer-*,
 concurrency-*,
 darwin-*,
+cppcoreguidelines-*,
 google-*,
+linuxkernel-*,
+misc-*,
+mpi-*,
+objc-*,
+openmp-*,
 performance-*,
 portability-*,
-llvm-*,
--llvm-header-guard,
--llvm-include-order,
 readability-*,
--readability-isolate-declaration'
+-misc-no-recursion,
+-cppcoreguidelines-avoid-magic-numbers,
+-readability-isolate-declaration,
+-readability-magic-numbers'
+CheckOptions:
+  -key: readability-function-cognitive-complexity.Threshold
+  value: 60

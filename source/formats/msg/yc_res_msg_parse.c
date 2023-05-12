@@ -60,7 +60,10 @@ yc_res_msg_status_t yc_res_msg_parse(const char *filename, const yc_res_io_fs_ap
                 current->audio = values[1];
                 values[1] = NULL;
 
-                current->index = NULL == values[0] ? 0xFFFFFFFF : (uint32_t) strtoul(values[0], NULL, 10);
+                current->index =
+                        NULL == values[0] ?
+                        0xFFFFFFFF : (uint32_t) strtoul(values[0], NULL, 10);
+
                 free(values[0]);
                 values[0] = NULL;
             }

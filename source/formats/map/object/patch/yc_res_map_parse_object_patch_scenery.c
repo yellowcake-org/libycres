@@ -2,7 +2,6 @@
 #include <private.h>
 
 #include "../../../pro/parse/destination/yc_res_pro_parse_object_destination.h"
-#include "yc_res_map_parse_object_patch.h"
 
 #include <stdlib.h>
 

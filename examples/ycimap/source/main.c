@@ -3,9 +3,9 @@
 #include <memory.h>
 #include <stdlib.h>
 
-static arg_lit_t *help;
-static arg_file_t *input, *resources;
-static arg_end_t *end;
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input, *resources; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type);
 char *proto_filename(uint32_t pid, const char *root, const char *type);
@@ -30,8 +30,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycimap";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -217,7 +216,7 @@ uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
     if (0 == fread(&result, sizeof(uint32_t), 1, file)) { goto error; }
 
     free(proto_name);
-    fclose(file);
+    fclose(file); // NOLINT(cert-err33-c)
 
     // from BE
     return ((result >> 24) & 0xff) |

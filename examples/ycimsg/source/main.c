@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <ycimsg.h>
 
-static arg_lit_t *help;
-static arg_file_t *input;
-static arg_end_t *end;
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 void *ycimsg_io_fopen(const char *filename, const char *mode);
 int ycimsg_io_fclose(void *stream);
@@ -21,8 +21,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycimsg";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);

@@ -5,9 +5,9 @@
 
 #include <sys/stat.h>
 
-static arg_lit_t *help;
-static arg_file_t *input, *output;
-static arg_end_t *end;
+static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_file_t *input, *output; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
 static void mkdir_recursive(const char *path, size_t length);
 
@@ -21,6 +21,9 @@ size_t ycundat_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file);
 
+int ycundat_extract_file(const char *filename, yc_res_io_fs_api_t *io_api, const yc_res_dat_directory_t *directory,
+                         yc_res_dat_file_t *file);
+
 int main(int argc, char *argv[]) {
     void *arg_table[] = {
             help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
@@ -32,8 +35,7 @@ int main(int argc, char *argv[]) {
     int exit_code = 0;
     char program_name[] = "ycundat";
 
-    int errors_count;
-    errors_count = arg_parse(argc, argv, arg_table);
+    int errors_count = arg_parse(argc, argv, arg_table);
 
     if (help->count > 0) {
         printf("Usage: %s", program_name);
@@ -88,65 +90,8 @@ int main(int argc, char *argv[]) {
                     goto exit_iteration;
                 }
 
-                char *destination = malloc(
-                        strlen(*output->filename) + 1 +
-                        strlen(directory->path) + 1 +
-                        strlen(file->name) + 1
-                );
-
-                if (NULL == destination) {
-                    exit_code = 3;
-                    goto exit_iteration;
-                }
-
-                strncpy(destination, *output->filename, strlen(*output->filename) + 1);
-                strncat(&destination[strlen(*output->filename)], "/", 1 + 1);
-                strncat(&destination[strlen(*output->filename) + 1], directory->path, strlen(directory->path) + 1);
-
-                for (size_t i = 0; i < strlen(destination); ++i) {
-                    if (destination[i] == '\\') { destination[i] = '/'; }
-                }
-
-                mkdir_recursive(destination, strlen(destination));
-
-                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
-                strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1],
-                        file->name,
-                        strlen(file->name) + 1
-                );
-
-                printf("%s\n", destination);
-
-                FILE *exporting;
-                exporting = fopen(destination, "wb");
-
-                free(destination);
-
-                if (NULL == exporting) {
-                    exit_code = 4;
-                    goto exit_iteration;
-                }
-
-                yc_res_dat_extract_api_t ext_result = {
-                        &ycundat_cb_extract,
-                        exporting
-                };
-
-                if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(
-                        filename,
-                        &io_api,
-                        file,
-                        &ext_result
-                )) {
-                    fclose(exporting);
-                    exporting = NULL;
-
-                    exit_code = 4;
-                    goto exit;
-                }
-
-                fclose(exporting);
-                exporting = NULL;
+                exit_code = ycundat_extract_file(filename, &io_api, directory, file);
+                if (0 != exit_code) { goto exit_iteration; }
             }
 
             yc_res_dat_directory_invalidate(directory);
@@ -167,8 +112,64 @@ int main(int argc, char *argv[]) {
     return exit_code;
 }
 
+int ycundat_extract_file(const char *filename, yc_res_io_fs_api_t *io_api, const yc_res_dat_directory_t *directory,
+                         yc_res_dat_file_t *file) {
+    char *destination = malloc(
+            strlen(*output->filename) + 1 +
+            strlen(directory->path) + 1 +
+            strlen(file->name) + 1
+    );
+
+    if (NULL == destination) { return -1; }
+
+    strncpy(destination, *output->filename, strlen(*output->filename) + 1);
+    strncat(&destination[strlen(*output->filename)], "/", 1 + 1);
+    strncat(&destination[strlen(*output->filename) + 1], directory->path, strlen(directory->path) + 1);
+
+    for (size_t i = 0; i < strlen(destination); ++i) {
+        if (destination[i] == '\\') { destination[i] = '/'; }
+    }
+
+    mkdir_recursive(destination, strlen(destination));
+
+    strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path)], "/", 1 + 1);
+    strncat(&destination[strlen(*output->filename) + 1 + strlen(directory->path) + 1],
+            file->name,
+            strlen(file->name) + 1
+    );
+
+    printf("%s\n", destination);
+
+    FILE *exporting = fopen(destination, "wb");
+    free(destination);
+
+    if (NULL == exporting) { return -1; }
+
+    yc_res_dat_extract_api_t ext_result = {
+            &ycundat_cb_extract,
+            exporting
+    };
+
+    if (YC_RES_DAT_STATUS_OK != yc_res_dat_extract(
+            filename,
+            io_api,
+            file,
+            &ext_result
+    )) {
+        fclose(exporting); // NOLINT(cert-err33-c)
+        exporting = NULL;
+
+        return -1;
+    }
+
+    fclose(exporting); // NOLINT(cert-err33-c)
+    exporting = NULL;
+
+    return 0;
+}
+
 void ycundat_cb_extract(unsigned char *bytes, size_t count, void *file) {
-    fwrite(bytes, count, 1, file);
+    fwrite(bytes, count, 1, file);  // NOLINT(cert-err33-c)
     free(bytes);
 }
 

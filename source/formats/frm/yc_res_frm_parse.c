@@ -3,6 +3,21 @@
 
 #include <stdlib.h>
 
+yc_res_frm_status_t yc_res_frm_parse_sprite(
+        void *file,
+        const yc_res_io_fs_api_t *api,
+        uint16_t fps, uint16_t fpo, uint32_t *offsets,
+        uint16_t keyframe_idx,
+        int16_t *animations_shifts_h, int16_t *animations_shifts_v,
+        yc_res_frm_sprite_t *into
+);
+
+yc_res_frm_status_t yc_res_frm_parse_frame(
+        void *file,
+        const yc_res_io_fs_api_t *api,
+        yc_res_frm_texture_t *into
+);
+
 void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *api, yc_res_frm_sprite_t *sprite);
 
 yc_res_frm_status_t yc_res_frm_parse(
@@ -80,37 +95,57 @@ yc_res_frm_status_t yc_res_frm_parse(
     sprite->count = 0;
     sprite->animations = NULL;
 
-    char table[YC_RES_MATH_ORIENTATION_COUNT] = {-1, -1, -1, -1, -1, -1};
+    yc_res_frm_status_t status = yc_res_frm_parse_sprite(
+            file, api, fps, fpo, offsets, keyframe_idx, animations_shifts_h, animations_shifts_v, sprite
+    );
 
+    if (YC_RES_FRM_STATUS_OK != status) {
+        yc_res_frm_parse_cleanup(file, api, sprite);
+        return status;
+    }
+
+    yc_res_frm_parse_cleanup(file, api, NULL);
+
+    result->sprite = sprite;
+    return YC_RES_FRM_STATUS_OK;
+}
+
+yc_res_frm_status_t yc_res_frm_parse_sprite(
+        void *file,
+        const yc_res_io_fs_api_t *api,
+        uint16_t fps, uint16_t fpo, uint32_t *offsets,
+        uint16_t keyframe_idx,
+        int16_t *animations_shifts_h, int16_t *animations_shifts_v,
+        yc_res_frm_sprite_t *into
+) {
+    char table[YC_RES_MATH_ORIENTATION_COUNT] = {-1, -1, -1, -1, -1, -1};
     for (yc_res_math_orientation_t orientation = 0; orientation < YC_RES_MATH_ORIENTATION_COUNT; ++orientation) {
         const uint32_t offset = yc_res_byteorder_uint32(offsets[orientation]);
 
         if (table[orientation] >= 0) {
-            sprite->orientations[orientation] = (unsigned char) table[orientation];
+            into->orientations[orientation] = (unsigned char) table[orientation];
             continue;
         }
 
-        sprite->count++;
-        size_t size = sizeof(yc_res_frm_animation_t) * sprite->count;
+        into->count++;
+        size_t size = sizeof(yc_res_frm_animation_t) * into->count;
 
-        yc_res_frm_animation_t *animations_tmp =
-                NULL == sprite->animations ? malloc(size) : realloc(sprite->animations, size);
+        yc_res_frm_animation_t *grown =
+                NULL == into->animations ?
+                malloc(size) : realloc(into->animations, size);
 
-        if (NULL == animations_tmp) {
-            yc_res_frm_parse_cleanup(file, api, sprite);
-            return YC_RES_FRM_STATUS_MEM;
-        }
+        if (NULL == grown) { return YC_RES_FRM_STATUS_MEM; }
 
-        sprite->animations = animations_tmp;
+        into->animations = grown;
 
-        size_t idx = sprite->count - 1;
-        sprite->orientations[orientation] = idx;
+        size_t idx = into->count - 1;
+        into->orientations[orientation] = idx;
 
         for (size_t inner = orientation; inner < YC_RES_MATH_ORIENTATION_COUNT; ++inner) {
             if (offset == yc_res_byteorder_uint32(offsets[inner])) { table[inner] = (char) idx; }
         }
 
-        yc_res_frm_animation_t *animation = &sprite->animations[idx];
+        yc_res_frm_animation_t *animation = &into->animations[idx];
 
         animation->fps = fps;
         animation->keyframe_idx = keyframe_idx;
@@ -118,76 +153,56 @@ yc_res_frm_status_t yc_res_frm_parse(
         animation->count = fpo;
         animation->frames = malloc(sizeof(yc_res_frm_texture_t) * animation->count);
 
-        if (NULL == animation->frames) {
-            yc_res_frm_parse_cleanup(file, api, sprite);
-            return YC_RES_FRM_STATUS_MEM;
-        }
+        if (NULL == animation->frames) { return YC_RES_FRM_STATUS_MEM; }
 
         animation->shift.vertical = yc_res_byteorder_int16(animations_shifts_v[orientation]);
         animation->shift.horizontal = yc_res_byteorder_int16(animations_shifts_h[orientation]);
 
         for (uint16_t frame_idx = 0; frame_idx < fpo; ++frame_idx) {
-            yc_res_frm_texture_t *frame = &animation->frames[frame_idx];
+            yc_res_frm_status_t status = yc_res_frm_parse_frame(file, api, &animation->frames[frame_idx]);
 
-            uint16_t width = 0, height = 0;
-
-            if (0 == api->fread(&width, sizeof(uint16_t), 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
-            }
-
-            if (0 == api->fread(&height, sizeof(uint16_t), 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
-            }
-
-            frame->dimensions.vertical = yc_res_byteorder_uint16(height);
-            frame->dimensions.horizontal = yc_res_byteorder_uint16(width);
-
-            uint32_t square = 0;
-            if (0 == api->fread(&square, sizeof(uint32_t), 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
-            }
-            square = yc_res_byteorder_uint32(square);
-
-            if (square != (size_t) frame->dimensions.horizontal * (size_t) frame->dimensions.vertical) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_CORR;
-            }
-
-            int16_t pos_x = 0, pos_y = 0;
-
-            if (0 == api->fread(&pos_x, sizeof(int16_t), 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
-            }
-
-            if (0 == api->fread(&pos_y, sizeof(int16_t), 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
-            }
-
-            frame->shift.vertical = yc_res_byteorder_int16(pos_y);
-            frame->shift.horizontal = yc_res_byteorder_int16(pos_x);
-
-            frame->pixels = malloc(square);
-
-            if (NULL == frame->pixels) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_MEM;
-            }
-
-            if (0 == api->fread(frame->pixels, square, 1, file)) {
-                yc_res_frm_parse_cleanup(file, api, sprite);
-                return YC_RES_FRM_STATUS_IO;
+            if (YC_RES_FRM_STATUS_OK != status) {
+                yc_res_frm_parse_cleanup(file, api, into);
+                return status;
             }
         }
     }
 
-    yc_res_frm_parse_cleanup(file, api, NULL);
+    return YC_RES_FRM_STATUS_OK;
+}
 
-    result->sprite = sprite;
+yc_res_frm_status_t yc_res_frm_parse_frame(
+        void *file,
+        const yc_res_io_fs_api_t *api,
+        yc_res_frm_texture_t *into
+) {
+    uint16_t width = 0, height = 0;
+    if (0 == api->fread(&width, sizeof(uint16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
+    if (0 == api->fread(&height, sizeof(uint16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
+
+    into->dimensions.vertical = yc_res_byteorder_uint16(height);
+    into->dimensions.horizontal = yc_res_byteorder_uint16(width);
+
+    uint32_t square = 0;
+    if (0 == api->fread(&square, sizeof(uint32_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
+    square = yc_res_byteorder_uint32(square);
+
+    if (square != (size_t) into->dimensions.horizontal * (size_t) into->dimensions.vertical) {
+        return YC_RES_FRM_STATUS_CORR;
+    }
+
+    int16_t pos_x = 0, pos_y = 0;
+    if (0 == api->fread(&pos_x, sizeof(int16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
+    if (0 == api->fread(&pos_y, sizeof(int16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
+
+    into->shift.vertical = yc_res_byteorder_int16(pos_y);
+    into->shift.horizontal = yc_res_byteorder_int16(pos_x);
+
+    into->pixels = malloc(square);
+
+    if (NULL == into->pixels) { return YC_RES_FRM_STATUS_MEM; }
+    if (0 == api->fread(into->pixels, square, 1, file)) { return YC_RES_FRM_STATUS_IO; }
+
     return YC_RES_FRM_STATUS_OK;
 }
 

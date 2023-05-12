@@ -216,7 +216,7 @@ uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
     if (0 == fread(&result, sizeof(uint32_t), 1, file)) { goto error; }
 
     free(proto_name);
-    fclose(file);
+    fclose(file); // NOLINT(cert-err33-c)
 
     // from BE
     return ((result >> 24) & 0xff) |

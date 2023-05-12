@@ -175,9 +175,7 @@ yc_res_map_status_t yc_res_map_parse(
         }
     }
 
-    yc_res_map_status_t status = YC_RES_MAP_STATUS_CORR;
-
-    status = yc_res_map_parse_tiles(file, api, map);
+    yc_res_map_status_t status = yc_res_map_parse_tiles(file, api, map);
     if (YC_RES_MAP_STATUS_OK != status) {
         yc_res_map_parse_cleanup(file, api, map);
         return status;

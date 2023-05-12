@@ -28,7 +28,7 @@ yc_res_dat_status_t yc_res_dat_extract(
 
     yc_res_dat_status_t status =
             (false == file->is_compressed) ?
-            yc_res_dat_read_plain_chunk(archive, api, file->count_plain, result) :
+            yc_res_dat_read_plain_chunk(archive, api, file->count_plain, false, result) :
             yc_res_dat_extract_file(archive, api, file, result);
 
     if (YC_RES_DAT_STATUS_OK != status) { return status; }
@@ -40,23 +40,30 @@ yc_res_dat_status_t yc_res_dat_extract(
 yc_res_dat_status_t yc_res_dat_read_plain_chunk(
         void *archive,
         const yc_res_io_fs_api_t *api,
-        size_t chunk_size,
+        size_t chunk_size, bool whole,
         yc_res_dat_extract_api_t *result
 ) {
     if (chunk_size == 0) { return YC_RES_DAT_STATUS_OK; }
-    unsigned char *bytes = malloc(chunk_size);
 
-    if (NULL == bytes) {
-        yc_res_dat_extract_cleanup(archive, api, NULL);
-        return YC_RES_DAT_STATUS_MEM;
+    size_t read_size = whole ? chunk_size : 1;
+    size_t sections = whole ? 1 : chunk_size;
+
+    for (size_t cursor = 0; cursor < sections; cursor++) {
+        unsigned char *bytes = malloc(read_size);
+
+        if (NULL == bytes) {
+            yc_res_dat_extract_cleanup(archive, api, NULL);
+            return YC_RES_DAT_STATUS_MEM;
+        }
+
+        if (0 == api->fread(bytes, read_size, 1, archive)) {
+            yc_res_dat_extract_cleanup(archive, api, bytes);
+            return YC_RES_DAT_STATUS_IO;
+        }
+
+        result->callback(bytes, read_size, result->context);
     }
 
-    if (0 == api->fread(bytes, chunk_size, 1, archive)) {
-        yc_res_dat_extract_cleanup(archive, api, bytes);
-        return YC_RES_DAT_STATUS_IO;
-    }
-
-    result->callback(bytes, chunk_size, result->context);
     return YC_RES_DAT_STATUS_OK;
 }
 
@@ -88,7 +95,7 @@ yc_res_dat_status_t yc_res_dat_extract_file(
             processed += chunk_size;
             written += chunk_size;
 
-            yc_res_dat_status_t status = yc_res_dat_read_plain_chunk(archive, api, chunk_size, result);
+            yc_res_dat_status_t status = yc_res_dat_read_plain_chunk(archive, api, chunk_size, true, result);
             if (YC_RES_DAT_STATUS_OK != status) { return status; }
         } else {
             yc_res_dat_extract_counters_t counters = {.processed_ptr = &processed, .written_ptr = &written};
@@ -192,7 +199,7 @@ yc_res_dat_status_t yc_res_extract_block_buffered(
         return YC_RES_DAT_STATUS_IO;
     }
 
-    uint16_t offset_w = tmp_byte;
+    uint16_t offset_next = tmp_byte;
 
     (*counters.processed_ptr)++;
     if (0 == api->fread(&tmp_byte, 1, 1, archive)) {
@@ -202,7 +209,7 @@ yc_res_dat_status_t yc_res_extract_block_buffered(
 
     uint16_t length = tmp_byte;
 
-    offset_w |= (0xF0 & length) << 4;
+    offset_next |= (0xF0 & length) << 4;
     length &= 0x0F;
 
     for (size_t j = 0; j < (length + buffer.match_min); j++) {
@@ -213,14 +220,14 @@ yc_res_dat_status_t yc_res_extract_block_buffered(
             return YC_RES_DAT_STATUS_MEM;
         }
 
-        *byte = buffer.bytes[offset_w];
+        *byte = buffer.bytes[offset_next];
         result->callback(byte, 1, result->context);
         (*counters.written_ptr)++;
 
-        buffer.bytes[(*buffer.offset_ptr)++] = buffer.bytes[offset_w++];
+        buffer.bytes[(*buffer.offset_ptr)++] = buffer.bytes[offset_next++];
 
         if ((*buffer.offset_ptr) >= buffer.size) { (*buffer.offset_ptr) = 0; }
-        if (offset_w >= buffer.size) { offset_w = 0; }
+        if (offset_next >= buffer.size) { offset_next = 0; }
     }
 
     return YC_RES_DAT_STATUS_OK;

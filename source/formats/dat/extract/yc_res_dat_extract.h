@@ -16,7 +16,7 @@ typedef struct yc_res_dat_extract_buffer {
 yc_res_dat_status_t yc_res_dat_read_plain_chunk(
         void *archive,
         const yc_res_io_fs_api_t *api,
-        size_t chunk_size,
+        size_t chunk_size, bool whole,
         yc_res_dat_extract_api_t *result
 );
 

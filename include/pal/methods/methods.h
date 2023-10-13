@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PAL_METHODS_H
-#define INCLUDE_PAL_METHODS_H
+#ifndef LIBYCRES_INCLUDE_PAL_METHODS_H
+#define LIBYCRES_INCLUDE_PAL_METHODS_H
 
 bool yc_res_pal_color_is_transparent(yc_res_pal_color_t *color);
 
@@ -15,4 +15,4 @@ yc_res_pal_status_t yc_res_pal_parse(
         yc_res_pal_parse_result_t *result
 );
 
-#endif //INCLUDE_PAL_METHODS_H
+#endif //LIBYCRES_INCLUDE_PAL_METHODS_H

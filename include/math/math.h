@@ -1,7 +1,7 @@
-#ifndef INCLUDE_MATH_H
-#define INCLUDE_MATH_H
+#ifndef LIBYCRES_INCLUDE_MATH_H
+#define LIBYCRES_INCLUDE_MATH_H
 
 #include "types/types.h"
 #include "methods/methods.h"
 
-#endif //INCLUDE_MATH_H
+#endif //LIBYCRES_INCLUDE_MATH_H

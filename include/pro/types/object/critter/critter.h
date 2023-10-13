@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
-#define INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
 
 #include "body/body.h"
 #include "flags/flags.h"
@@ -23,4 +23,4 @@ typedef struct yc_res_pro_object_critter {
     int32_t modifiers[YC_RES_PRO_STAT_COUNT_SAVED];
 } yc_res_pro_object_critter_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_H

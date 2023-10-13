@@ -1,5 +1,5 @@
-#ifndef INCLUDE_LST_STATUSES_H
-#define INCLUDE_LST_STATUSES_H
+#ifndef LIBYCRES_INCLUDE_LST_STATUSES_H
+#define LIBYCRES_INCLUDE_LST_STATUSES_H
 
 typedef enum yc_res_lst_status {
     YC_RES_LST_STATUS_OK = 0,
@@ -7,4 +7,4 @@ typedef enum yc_res_lst_status {
     YC_RES_LST_STATUS_MEM,
 } yc_res_lst_status_t;
 
-#endif //INCLUDE_LST_STATUSES_H
+#endif //LIBYCRES_INCLUDE_LST_STATUSES_H

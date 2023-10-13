@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_H
-#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_H
 
 #include "patch/patch.h"
 
@@ -28,4 +28,4 @@ typedef struct yc_res_map_level_objects {
     yc_res_map_level_object_t *pointers;
 } yc_res_map_level_objects_t;
 
-#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_H

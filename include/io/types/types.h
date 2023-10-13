@@ -1,5 +1,5 @@
-#ifndef INCLUDE_IO_TYPES_H
-#define INCLUDE_IO_TYPES_H
+#ifndef LIBYCRES_INCLUDE_IO_TYPES_H
+#define LIBYCRES_INCLUDE_IO_TYPES_H
 
 #include <stddef.h>
 
@@ -26,4 +26,4 @@ typedef struct yc_res_io_fs_api {
 #define	SEEK_END	2	/* set file offset to EOF plus offset */
 #endif
 
-#endif //INCLUDE_IO_TYPES_H
+#endif //LIBYCRES_INCLUDE_IO_TYPES_H

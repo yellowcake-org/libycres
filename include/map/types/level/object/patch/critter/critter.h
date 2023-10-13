@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H
-#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H
 
 typedef struct yc_res_map_level_object_patch_critter_stat {
     uint32_t value;
@@ -15,4 +15,4 @@ typedef struct yc_res_map_level_object_patch_critter {
     ];
 } yc_res_map_level_object_patch_critter_t;
 
-#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_CRITTER_H

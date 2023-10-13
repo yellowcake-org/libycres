@@ -9,3 +9,10 @@ FILE(GLOB_RECURSE YCIFRM_SOURCES source/*)
 add_executable(ycifrm ${YCIFRM_SOURCES})
 target_include_directories(ycifrm PUBLIC include)
 target_include_directories(ycifrm PRIVATE ../dependencies/argtable/src)
+
+if (NOT TARGET argtable3)
+add_subdirectory(../dependencies/argtable ../dependencies/argtable)
+endif()
+
+target_link_libraries(ycifrm argtable3)
+target_link_libraries(ycifrm ycres)

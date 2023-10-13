@@ -1,6 +1,6 @@
-#ifndef INCLUDE_IO_H
-#define INCLUDE_IO_H
+#ifndef LIBYCRES_INCLUDE_IO_H
+#define LIBYCRES_INCLUDE_IO_H
 
 #include "types/types.h"
 
-#endif //INCLUDE_IO_H
+#endif //LIBYCRES_INCLUDE_IO_H

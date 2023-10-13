@@ -9,3 +9,10 @@ FILE(GLOB_RECURSE YCIPRO_SOURCES source/*)
 add_executable(ycipro ${YCIPRO_SOURCES})
 target_include_directories(ycipro PUBLIC include)
 target_include_directories(ycipro PRIVATE ../dependencies/argtable/src)
+
+if (NOT TARGET argtable3)
+    add_subdirectory(../dependencies/argtable ../dependencies/argtable)
+endif()
+
+target_link_libraries(ycipro argtable3)
+target_link_libraries(ycipro ycres)

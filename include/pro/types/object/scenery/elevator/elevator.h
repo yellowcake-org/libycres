@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H
-#define INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H
 
 typedef enum yc_res_pro_object_scenery_elevator_type {
     YC_RES_PRO_OBJECT_SCENERY_ELEVATOR_TYPE_BROTHERHOOD_OF_STEEL_MAIN,
@@ -21,4 +21,4 @@ typedef struct yc_res_pro_object_scenery_elevator {
     yc_res_pro_object_scenery_elevator_type_t type;
 } yc_res_pro_object_scenery_elevator_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_ELEVATOR_H

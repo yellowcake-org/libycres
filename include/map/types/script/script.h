@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_SCRIPT_H
-#define INCLUDE_MAP_TYPES_SCRIPT_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_SCRIPT_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_SCRIPT_H
 
 #include "timed/timed.h"
 #include "spatial/spatial.h"
@@ -21,4 +21,4 @@ typedef struct yc_res_map_scripts {
     yc_res_map_script_t *pointers;
 } yc_res_map_scripts_t;
 
-#endif //INCLUDE_MAP_TYPES_SCRIPT_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_SCRIPT_H

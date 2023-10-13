@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H
-#define INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H
 
 typedef struct yc_res_pro_object_critter_flags {
     bool is_barter_available;
@@ -11,4 +11,4 @@ typedef struct yc_res_pro_object_critter_flags {
     bool has_long_limbs;
 } yc_res_pro_object_critter_flags_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_FLAGS_H

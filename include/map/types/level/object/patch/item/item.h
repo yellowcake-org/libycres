@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
-#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
 
 #include "ammo/ammo.h"
 #include "key/key.h"
@@ -18,4 +18,4 @@ typedef struct yc_res_map_level_object_patch_item {
     yc_res_map_level_object_patch_item_data_t data;
 } yc_res_map_level_object_patch_item_t;
 
-#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_ITEM_H

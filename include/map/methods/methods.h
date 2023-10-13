@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_METHODS_H
-#define INCLUDE_MAP_METHODS_H
+#ifndef LIBYCRES_INCLUDE_MAP_METHODS_H
+#define LIBYCRES_INCLUDE_MAP_METHODS_H
 
 typedef yc_res_pro_object_item_type_t yc_res_map_parse_db_api_item_fetcher_t(uint32_t pid, const void *context);
 typedef yc_res_pro_object_scenery_type_t yc_res_map_parse_db_api_scenery_fetcher_t(uint32_t pid, const void *context);
@@ -23,4 +23,4 @@ yc_res_map_status_t yc_res_map_parse(
 
 void yc_res_map_invalidate(yc_res_map_t *map);
 
-#endif //INCLUDE_MAP_METHODS_H
+#endif //LIBYCRES_INCLUDE_MAP_METHODS_H

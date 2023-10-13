@@ -9,3 +9,10 @@ FILE(GLOB_RECURSE YCILST_SOURCES source/*)
 add_executable(ycilst ${YCILST_SOURCES})
 target_include_directories(ycilst PUBLIC include)
 target_include_directories(ycilst PRIVATE ../dependencies/argtable/src)
+
+if (NOT TARGET argtable3)
+    add_subdirectory(../dependencies/argtable ../dependencies/argtable)
+endif()
+
+target_link_libraries(ycilst argtable3)
+target_link_libraries(ycilst ycres)

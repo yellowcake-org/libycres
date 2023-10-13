@@ -1,5 +1,5 @@
-#ifndef INCLUDE_H
-#define INCLUDE_H
+#ifndef LIBYCRES_INCLUDE_H
+#define LIBYCRES_INCLUDE_H
 
 #include <io/io.h>
 #include <math/math.h>
@@ -12,4 +12,4 @@
 #include <lst/lst.h>
 #include <msg/msg.h>
 
-#endif //INCLUDE_H
+#endif //LIBYCRES_INCLUDE_H

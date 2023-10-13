@@ -9,3 +9,10 @@ FILE(GLOB_RECURSE YCIMAP_SOURCES source/*)
 add_executable(ycimap ${YCIMAP_SOURCES})
 target_include_directories(ycimap PUBLIC include)
 target_include_directories(ycimap PRIVATE ../dependencies/argtable/src)
+
+if (NOT TARGET argtable3)
+    add_subdirectory(../dependencies/argtable ../dependencies/argtable)
+endif()
+
+target_link_libraries(ycimap argtable3)
+target_link_libraries(ycimap ycres)

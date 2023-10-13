@@ -9,3 +9,10 @@ FILE(GLOB_RECURSE YCIPAL_SOURCES source/*)
 add_executable(ycipal ${YCIPAL_SOURCES})
 target_include_directories(ycipal PUBLIC include)
 target_include_directories(ycipal PRIVATE ../dependencies/argtable/src)
+
+if (NOT TARGET argtable3)
+    add_subdirectory(../dependencies/argtable ../dependencies/argtable)
+endif()
+
+target_link_libraries(ycipal argtable3)
+target_link_libraries(ycipal ycres)

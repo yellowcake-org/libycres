@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MSG_TYPES_H
-#define INCLUDE_MSG_TYPES_H
+#ifndef LIBYCRES_INCLUDE_MSG_TYPES_H
+#define LIBYCRES_INCLUDE_MSG_TYPES_H
 
 bool yc_res_msg_is_valid_index(uint32_t index);
 
@@ -13,4 +13,4 @@ typedef struct yc_res_msg_entries {
     yc_res_msg_entry_t *pointers;
 } yc_res_msg_entries_t;
 
-#endif //INCLUDE_MSG_TYPES_H
+#endif //LIBYCRES_INCLUDE_MSG_TYPES_H

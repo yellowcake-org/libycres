@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_SCRIPT_H
-#define INCLUDE_PRO_TYPES_SCRIPT_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_SCRIPT_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_SCRIPT_H
 
 typedef enum yc_res_pro_script_type {
     YC_RES_PRO_SCRIPT_TYPE_SYSTEM,
@@ -10,4 +10,4 @@ typedef enum yc_res_pro_script_type {
     YC_RES_PRO_SCRIPT_TYPE_COUNT,
 } yc_res_pro_script_type_t;
 
-#endif //INCLUDE_PRO_TYPES_SCRIPT_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_SCRIPT_H

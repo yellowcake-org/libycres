@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_COMMON_PERK_H
-#define INCLUDE_PRO_TYPES_COMMON_PERK_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_COMMON_PERK_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_COMMON_PERK_H
 
 typedef enum yc_res_pro_perk {
     YC_RES_PRO_PERK_INVALID = -1,
@@ -70,4 +70,4 @@ typedef enum yc_res_pro_perk {
     YC_RES_PRO_PERK_COMBAT_ARMOR
 } yc_res_pro_perk_t;
 
-#endif //INCLUDE_PRO_TYPES_COMMON_PERK_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_COMMON_PERK_H

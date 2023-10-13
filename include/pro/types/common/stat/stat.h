@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_COMMON_STAT_H
-#define INCLUDE_PRO_TYPES_COMMON_STAT_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_COMMON_STAT_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_COMMON_STAT_H
 
 typedef enum yc_res_pro_stat {
     YC_RES_PRO_STAT_INVALID = -1,
@@ -57,4 +57,4 @@ typedef enum yc_res_pro_stat {
 
 #endif
 
-#endif //INCLUDE_PRO_TYPES_COMMON_STAT_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_COMMON_STAT_H

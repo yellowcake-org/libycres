@@ -1,5 +1,5 @@
-#ifndef INCLUDE_LST_METHODS_H
-#define INCLUDE_LST_METHODS_H
+#ifndef LIBYCRES_INCLUDE_LST_METHODS_H
+#define LIBYCRES_INCLUDE_LST_METHODS_H
 
 typedef struct yc_res_lst_parse_result {
     yc_res_lst_entries_t *entries;
@@ -9,4 +9,4 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
 
 void yc_res_lst_invalidate(yc_res_lst_entry_t *entry);
 
-#endif //INCLUDE_LST_METHODS_H
+#endif //LIBYCRES_INCLUDE_LST_METHODS_H

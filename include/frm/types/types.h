@@ -1,5 +1,5 @@
-#ifndef INCLUDE_FRM_TYPES_H
-#define INCLUDE_FRM_TYPES_H
+#ifndef LIBYCRES_INCLUDE_FRM_TYPES_H
+#define LIBYCRES_INCLUDE_FRM_TYPES_H
 
 typedef struct yc_res_frm_dimensions {
     uint16_t horizontal, vertical;
@@ -31,4 +31,4 @@ typedef struct yc_res_frm_sprite {
     yc_res_math_orientation_t orientations[YC_RES_MATH_ORIENTATION_COUNT]; /// Index table: orientation -> animation number
 } yc_res_frm_sprite_t;
 
-#endif //INCLUDE_FRM_TYPES_H
+#endif //LIBYCRES_INCLUDE_FRM_TYPES_H

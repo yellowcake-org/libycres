@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H
-#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H
 
 #include "door/door.h"
 #include "stairs/stairs.h"
@@ -18,4 +18,4 @@ typedef struct yc_res_map_level_object_patch_scenery {
     yc_res_map_level_object_patch_scenery_data_t data;
 } yc_res_map_level_object_patch_scenery_t;
 
-#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_SCENERY_H

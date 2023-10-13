@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H
-#define INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H
 
 typedef struct yc_res_pro_object_item_drug_stat_modifier_impact {
     int32_t from, to;
@@ -24,4 +24,4 @@ typedef struct yc_res_pro_object_item_drug {
     unsigned char addiction_chance: 7; // 0..100 percent
 } yc_res_pro_object_item_drug_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_DRUG_H

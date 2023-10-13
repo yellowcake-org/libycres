@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H
-#define INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H
 
 typedef enum yc_res_pro_object_item_weapon_animation {
     YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_NONE = 0x00,
@@ -42,4 +42,4 @@ typedef struct yc_res_pro_object_item_weapon {
     yc_res_pro_object_item_weapon_req_t requirement;
 } yc_res_pro_object_item_weapon_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_WEAPON_H

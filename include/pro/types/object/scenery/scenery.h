@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_SCENERY_H
-#define INCLUDE_PRO_TYPES_OBJECT_SCENERY_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_H
 
 #include "door/door.h"
 #include "stairs/stairs.h"
@@ -36,4 +36,4 @@ typedef struct yc_res_pro_object_scenery {
     yc_res_pro_object_scenery_data_t data;
 } yc_res_pro_object_scenery_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_SCENERY_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_SCENERY_H

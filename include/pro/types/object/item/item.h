@@ -1,5 +1,5 @@
-#ifndef INCLUDE_PRO_TYPES_OBJECT_ITEM_H
-#define INCLUDE_PRO_TYPES_OBJECT_ITEM_H
+#ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_H
+#define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_H
 
 #include "attacks/attacks.h"
 
@@ -46,4 +46,4 @@ typedef struct yc_res_pro_object_item {
     yc_res_pro_object_item_data_t data;
 } yc_res_pro_object_item_t;
 
-#endif //INCLUDE_PRO_TYPES_OBJECT_ITEM_H
+#endif //LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_ITEM_H

@@ -1,5 +1,5 @@
-#ifndef INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H
-#define INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H
+#ifndef LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H
+#define LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H
 
 #include "item/item.h"
 #include "critter/critter.h"
@@ -13,4 +13,4 @@ typedef union yc_res_map_level_object_patch {
     yc_res_map_level_object_patch_misc_t *misc;
 } yc_res_map_level_object_patch_t;
 
-#endif //INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H
+#endif //LIBYCRES_INCLUDE_MAP_TYPES_LEVEL_OBJECT_PATCH_H

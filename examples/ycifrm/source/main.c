@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
         };
 
         if (merge->count == 0) {
-            yc_res_frm_sprite_parse_result_t result = {NULL};
+            yc_res_frm_parse_result_t result = {NULL};
             if (YC_RES_FRM_STATUS_OK != yc_res_frm_parse(filename, &io_api, &result)) {
                 exit_code = 3;
                 goto exit;
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
                 strncpy(final, filename, base + 1);
                 snprintf(&final[base], 5, ".FR%lu", idx);
 
-                yc_res_frm_sprite_parse_result_t result = {NULL};
+                yc_res_frm_parse_result_t result = {NULL};
                 yc_res_frm_status_t status = yc_res_frm_parse(final, &io_api, &result);
 
                 free(final);

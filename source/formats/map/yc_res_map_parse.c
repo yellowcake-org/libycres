@@ -204,8 +204,8 @@ yc_res_map_status_t yc_res_map_parse_tiles(void *file, const yc_res_io_fs_api_t 
         yc_res_map_level_t *level = map->levels[elevation_idx];
 
         if (NULL != level) {
-            size_t const grid_size_horizontal = sizeof(level->floor.idxes) / sizeof(level->floor.idxes[0]);
-            size_t const grid_size_vertical = sizeof(level->floor.idxes[0]) / sizeof(level->floor.idxes[0][0]);
+            size_t const grid_size_vertical = sizeof(level->floor.idxes) / sizeof(level->floor.idxes[0]);
+            size_t const grid_size_horizontal = sizeof(level->floor.idxes[0]) / sizeof(level->floor.idxes[0][0]);
 
             assert(grid_size_horizontal == grid_size_horizontal);
 
@@ -216,8 +216,11 @@ yc_res_map_status_t yc_res_map_parse_tiles(void *file, const yc_res_io_fs_api_t 
                     if (0 == api->fread(&roof_idx, sizeof(uint16_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
                     if (0 == api->fread(&floor_idx, sizeof(uint16_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
 
-                    level->roof.idxes[grid_size_horizontal - 1 - pos_x][pos_y] = yc_res_byteorder_uint16(roof_idx);
-                    level->floor.idxes[grid_size_horizontal - 1 - pos_x][pos_y] = yc_res_byteorder_uint16(floor_idx);
+                    level->roof.idxes[pos_y][grid_size_horizontal - 1 - pos_x] =
+                            yc_res_byteorder_uint16(roof_idx);
+
+                    level->floor.idxes[pos_y][grid_size_horizontal - 1 - pos_x] =
+                            yc_res_byteorder_uint16(floor_idx);
                 }
             }
         }

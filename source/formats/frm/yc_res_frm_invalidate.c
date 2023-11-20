@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 void yc_res_frm_sprite_invalidate(yc_res_frm_sprite_t *sprite) {
+    if (NULL == sprite) { return; }
+    
     if (NULL != sprite->animations) {
         for (size_t animations_idx = 0; animations_idx < sprite->count; ++animations_idx) {
             yc_res_frm_animation_t *animation = &sprite->animations[animations_idx];

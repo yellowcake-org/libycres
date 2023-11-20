@@ -23,7 +23,7 @@ void yc_res_frm_parse_cleanup(void *file, const yc_res_io_fs_api_t *api, yc_res_
 yc_res_frm_status_t yc_res_frm_parse(
         const char *filename,
         const yc_res_io_fs_api_t *api,
-        yc_res_frm_sprite_parse_result_t *result
+        yc_res_frm_parse_result_t *result
 ) {
     void *file = api->fopen(filename, "rb");
 
@@ -180,8 +180,8 @@ yc_res_frm_status_t yc_res_frm_parse_frame(
     if (0 == api->fread(&width, sizeof(uint16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
     if (0 == api->fread(&height, sizeof(uint16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
 
-    into->dimensions.vertical = yc_res_byteorder_uint16(height);
     into->dimensions.horizontal = yc_res_byteorder_uint16(width);
+    into->dimensions.vertical = yc_res_byteorder_uint16(height);
 
     uint32_t square = 0;
     if (0 == api->fread(&square, sizeof(uint32_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
@@ -195,8 +195,8 @@ yc_res_frm_status_t yc_res_frm_parse_frame(
     if (0 == api->fread(&pos_x, sizeof(int16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
     if (0 == api->fread(&pos_y, sizeof(int16_t), 1, file)) { return YC_RES_FRM_STATUS_IO; }
 
-    into->shift.vertical = yc_res_byteorder_int16(pos_y);
     into->shift.horizontal = yc_res_byteorder_int16(pos_x);
+    into->shift.vertical = yc_res_byteorder_int16(pos_y);
 
     into->pixels = malloc(square);
 

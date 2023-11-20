@@ -28,7 +28,7 @@ typedef struct yc_res_frm_sprite {
     size_t count; /// Unique animations count
     yc_res_frm_animation_t *animations; /// Unique animations list
 
-    yc_res_math_orientation_t orientations[YC_RES_MATH_ORIENTATION_COUNT]; /// Index table: orientation -> animation number
+    size_t orientations[YC_RES_MATH_ORIENTATION_COUNT]; /// Index table: orientation -> animation number
 } yc_res_frm_sprite_t;
 
 #endif //LIBYCRES_INCLUDE_FRM_TYPES_H

@@ -50,14 +50,14 @@ int main(int argc, char *argv[]) {
                 .fread = &ycilst_io_fread,
         };
 
-        yc_res_lst_parse_result_t result = {NULL};
-        if (YC_RES_LST_STATUS_OK != yc_res_lst_parse(filename, &io_api, &result)) {
+        yc_res_lst_entries_t entries = { .count = 0, .pointers = NULL };
+        if (YC_RES_LST_STATUS_OK != yc_res_lst_parse(filename, &io_api, &entries)) {
             exit_code = 2;
             goto exit;
         }
 
-        for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
-            yc_res_lst_entry_t *entry = &result.entries->pointers[entry_idx];
+        for (size_t entry_idx = 0; entry_idx < entries.count; ++entry_idx) {
+            yc_res_lst_entry_t *entry = &entries.pointers[entry_idx];
 
             printf("[%lu] Value: %s", entry_idx, entry->value);
 
@@ -68,12 +68,10 @@ int main(int argc, char *argv[]) {
             printf("\n");
             yc_res_lst_invalidate(entry);
         }
-        
-        result.entries->pointers = NULL;
-        result.entries->count = 0;
-        
-        free(result.entries);
-        result.entries = NULL;
+
+        entries.count = 0;
+        free(entries.pointers);
+        entries.pointers = NULL;
     }
 
     exit:

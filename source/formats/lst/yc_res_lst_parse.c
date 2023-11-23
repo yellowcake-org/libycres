@@ -11,18 +11,17 @@ void yc_res_lst_parse_cleanup(
         char *value, char *index
 );
 
-yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_api_t *api, yc_res_lst_parse_result_t *result) {
+yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_api_t *api, yc_res_lst_entries_t *entries) {
     void *file = api->fopen(filename, "rb");
 
     if (NULL == file) {
         yc_res_lst_parse_cleanup(file, api, NULL, NULL, NULL);
         return YC_RES_LST_STATUS_IO;
     }
-
-    yc_res_lst_entries_t *entries = malloc(sizeof(yc_res_lst_entries_t));
+    
     if (NULL == entries) {
         yc_res_lst_parse_cleanup(file, api, NULL, NULL, NULL);
-        return YC_RES_LST_STATUS_MEM;
+        return YC_RES_LST_STATUS_IO;
     }
 
     entries->count = 0;
@@ -107,8 +106,6 @@ yc_res_lst_status_t yc_res_lst_parse(const char *filename, const yc_res_io_fs_ap
     }
 
     yc_res_lst_parse_cleanup(file, api, NULL, value, index);
-
-    result->entries = entries;
     return YC_RES_LST_STATUS_OK;
 }
 

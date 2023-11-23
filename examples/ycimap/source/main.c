@@ -175,13 +175,13 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
             .fread = &ycimap_io_fread,
     };
 
-    yc_res_lst_parse_result_t result = {.entries =  NULL};
-    yc_res_lst_status_t status = yc_res_lst_parse(lst_name, &io_api, &result);
+    yc_res_lst_entries_t entries = { .count = 0, .pointers = NULL };
+    yc_res_lst_status_t status = yc_res_lst_parse(lst_name, &io_api, &entries);
 
     size_t index = yc_res_pro_index_from_object_id(pid) - 1;
-    if (YC_RES_LST_STATUS_OK != status || result.entries->count <= index) { goto cleanup; }
+    if (YC_RES_LST_STATUS_OK != status || entries.count <= index) { goto cleanup; }
 
-    yc_res_lst_entry_t *entry = &result.entries->pointers[index];
+    yc_res_lst_entry_t *entry = &entries.pointers[index];
     if (NULL == entry->value) { goto cleanup; }
 
     size_t proto_name_size = strlen(root) + strlen(path) + 1 + strlen(type) + 1 + strlen(entry->value) + 1;
@@ -191,16 +191,13 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     snprintf(proto_name, proto_name_size, "%s%s/%s/%s", root, path, type, entry->value);
 
     cleanup:
-    for (size_t entry_idx = 0; entry_idx < result.entries->count; ++entry_idx) {
-        yc_res_lst_invalidate(&result.entries->pointers[entry_idx]);
+    for (size_t entry_idx = 0; entry_idx < entries.count; ++entry_idx) {
+        yc_res_lst_invalidate(&entries.pointers[entry_idx]);
     }
 
-    free(result.entries->pointers);
-    result.entries->pointers = NULL;
-    result.entries->count = 0;
-
-    free(result.entries);
-    result.entries = NULL;
+    entries.count = 0;
+    free(entries.pointers);
+    entries.pointers = NULL;
 
     return proto_name;
 }

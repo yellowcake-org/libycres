@@ -11,3 +11,7 @@ uint16_t yc_res_pro_index_from_object_id(uint32_t any_id) {
 uint16_t yc_res_pro_index_from_script_id(uint32_t script_id) {
     return script_id & 0x00FFFFFF;
 }
+
+uint16_t yc_res_pro_index_from_sprite_id(uint32_t sprite_id) {
+    return sprite_id & 0x00FFFFFF;
+}

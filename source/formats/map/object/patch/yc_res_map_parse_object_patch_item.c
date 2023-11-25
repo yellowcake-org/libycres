@@ -13,7 +13,9 @@ yc_res_map_status_t yc_res_map_parse_object_patch_item(
     into->item = malloc(sizeof(yc_res_map_level_object_patch_item_t));
     if (NULL == into->item) { return YC_RES_MAP_STATUS_MEM; }
 
-    into->item->type = fetchers->item_type_from_pid(pid, fetchers->context);
+    yc_res_map_status_t status = fetchers->item_type_from_pid(pid, &into->item->type, fetchers->context);
+    if (YC_RES_MAP_STATUS_OK != status) { return status; }
+
     switch (into->item->type) {
         case YC_RES_PRO_OBJECT_ITEM_TYPE_WEAPON:
             into->item->data.weapon = malloc(sizeof(yc_res_map_level_object_patch_item_weapon_t));

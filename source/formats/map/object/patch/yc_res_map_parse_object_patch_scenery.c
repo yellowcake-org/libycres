@@ -15,7 +15,9 @@ yc_res_map_status_t yc_res_map_parse_object_patch_scenery(
     into->scenery = malloc(sizeof(yc_res_map_level_object_patch_scenery_t));
     if (NULL == into->scenery) { return YC_RES_MAP_STATUS_MEM; }
 
-    into->scenery->type = fetchers->scenery_type_from_pid(pid, fetchers->context);
+    yc_res_map_status_t status = fetchers->scenery_type_from_pid(pid, &into->scenery->type, fetchers->context);
+    if (YC_RES_MAP_STATUS_OK != status) { return status; }
+
     switch (into->scenery->type) {
         case YC_RES_PRO_OBJECT_SCENERY_TYPE_DOOR:
             into->scenery->data.door = malloc(sizeof(yc_res_map_level_object_patch_scenery_door_t));

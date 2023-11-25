@@ -217,10 +217,10 @@ yc_res_map_status_t yc_res_map_parse_tiles(void *file, const yc_res_io_fs_api_t 
                     if (0 == api->fread(&floor_idx, sizeof(uint16_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
 
                     level->roof.idxes[pos_y][grid_size_horizontal - 1 - pos_x] =
-                            yc_res_byteorder_uint16(roof_idx);
+                            yc_res_pro_index_from_sprite_id(yc_res_byteorder_uint16(roof_idx));
 
                     level->floor.idxes[pos_y][grid_size_horizontal - 1 - pos_x] =
-                            yc_res_byteorder_uint16(floor_idx);
+                        yc_res_pro_index_from_sprite_id(yc_res_byteorder_uint16(floor_idx));
                 }
             }
         }

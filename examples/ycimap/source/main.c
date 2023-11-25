@@ -7,16 +7,24 @@ static arg_lit_t *help; // NOLINT(cppcoreguidelines-avoid-non-const-global-varia
 static arg_file_t *input, *resources; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 static arg_end_t *end; // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
 
-uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type);
+yc_res_map_status_t type_byte_from_proto(uint32_t pid, const char *root, char *type, uint32_t *result);
+
 char *proto_filename(uint32_t pid, const char *root, const char *type);
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context);
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context);
+yc_res_map_status_t ycimap_fetch_items_type(
+        uint32_t pid, yc_res_pro_object_item_type_t *result, const void *context
+);
+
+yc_res_map_status_t ycimap_fetch_scenery_type(
+        uint32_t pid, yc_res_pro_object_scenery_type_t *result, const void *context
+);
 
 void *ycimap_io_fopen(const char *filename, const char *mode);
+
 int ycimap_io_fclose(void *stream);
 
 int ycimap_io_fseek(void *stream, long offset, int whence);
+
 size_t ycimap_io_fread(void *dest, size_t len, size_t cnt, void *str);
 
 int main(int argc, char *argv[]) {
@@ -65,7 +73,7 @@ int main(int argc, char *argv[]) {
                 .fread = &ycimap_io_fread,
         };
 
-        yc_res_map_parse_result_t result = {NULL};
+        yc_res_map_parse_result_t result = { NULL };
         yc_res_map_status_t status = yc_res_map_parse(filename, &io_api, &db_api, &result);
 
         if (YC_RES_MAP_STATUS_OK != status) {
@@ -202,43 +210,55 @@ char *proto_filename(uint32_t pid, const char *root, const char *type) {
     return proto_name;
 }
 
-uint32_t type_byte_from_proto(uint32_t pid, const char *root, char *type) {
+yc_res_map_status_t type_byte_from_proto(uint32_t pid, const char *root, char *type, uint32_t *result) {
     char *proto_name = proto_filename(pid, root, type);
     FILE *file = fopen(proto_name, "rb");
 
+    if (NULL == result) { goto error; }
     if (NULL == file) { goto error; }
+
     if (0 != fseek(file, 0x20, SEEK_CUR)) { goto error; }
 
-    uint32_t result = 0xFFFFFFFF;
-    if (0 == fread(&result, sizeof(uint32_t), 1, file)) { goto error; }
+    uint32_t read = 0xFFFFFFFF;
+    if (0 == fread(&read, sizeof(uint32_t), 1, file)) { goto error; }
 
     free(proto_name);
     fclose(file); // NOLINT(cert-err33-c)
 
     // from BE
-    return ((result >> 24) & 0xff) |
-           ((result << 8) & 0xff0000) |
-           ((result >> 8) & 0xff00) |
-           ((result << 24) & 0xff000000);
+    *result =
+            ((read >> 24) & 0xff) |
+            ((read << 8) & 0xff0000) |
+            ((read >> 8) & 0xff00) |
+            ((read << 24) & 0xff000000);
+
+    return YC_RES_MAP_STATUS_OK;
 
     error:
     fclose(file);
     free(proto_name);
-    return 0xFFFFFFFF;
+
+    return YC_RES_MAP_STATUS_CORR;
 }
 
-yc_res_pro_object_item_type_t ycimap_fetch_items_type(uint32_t pid, const void *context) {
-    return type_byte_from_proto(pid, context, "ITEMS");
+yc_res_map_status_t ycimap_fetch_items_type(
+        uint32_t pid, yc_res_pro_object_item_type_t *result, const void *context
+) {
+    return type_byte_from_proto(pid, context, "ITEMS", result);
 }
 
-yc_res_pro_object_scenery_type_t ycimap_fetch_scenery_type(uint32_t pid, const void *context) {
-    return type_byte_from_proto(pid, context, "SCENERY");
+yc_res_map_status_t ycimap_fetch_scenery_type(
+        uint32_t pid, yc_res_pro_object_scenery_type_t *result, const void *context
+) {
+    return type_byte_from_proto(pid, context, "SCENERY", result);
 }
 
 void *ycimap_io_fopen(const char *filename, const char *mode) { return fopen(filename, mode); }
+
 int ycimap_io_fclose(void *stream) { return fclose(stream); }
 
 int ycimap_io_fseek(void *stream, long offset, int whence) { return fseek(stream, offset, whence); }
+
 size_t ycimap_io_fread(void *dest, size_t len, size_t cnt, void *str) {
     return fread(dest, len, cnt, str);
 }

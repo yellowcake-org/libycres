@@ -12,7 +12,7 @@ typedef enum yc_res_pro_object_item_weapon_animation {
     YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_SHOTGUN,
     YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_LASER_RIFLE,
     YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_MINIGUN,
-    YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_LAUNCHER
+    YC_RES_PRO_OBJECT_ITEM_WEAPON_ANIMATION_ROCKET_LAUNCHER
 } yc_res_pro_object_item_weapon_animation_t;
 
 typedef struct yc_res_pro_object_item_weapon_req {

@@ -14,7 +14,7 @@ typedef enum yc_res_math_orientation {
 } yc_res_math_orientation_t;
 
 typedef struct yc_res_math_location {
-    uint16_t grid_idx;
+    int32_t grid_idx;
 
     uint8_t elevation_idx;
     uint8_t orientation_idx;

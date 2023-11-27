@@ -2,8 +2,8 @@
 
 #include "yc_res_pro_parse_object_destination.h"
 
-void yc_res_pro_parse_object_destination(uint32_t raw, yc_res_math_location_t *into) {
-    const uint32_t built_tile_tile_mask = 0x3FFFFFF;
+void yc_res_pro_parse_object_destination(int32_t raw, yc_res_math_location_t *into) {
+    const int32_t built_tile_tile_mask = 0x3FFFFFF;
     const uint32_t built_tile_elevation_mask = 0xE0000000;
     const uint32_t built_tile_elevation_shift = 29;
     const uint32_t built_tile_rotation_mask = 0x1C000000;

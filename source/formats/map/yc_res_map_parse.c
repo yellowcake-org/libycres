@@ -50,12 +50,12 @@ yc_res_map_status_t yc_res_map_parse(
         return YC_RES_MAP_STATUS_IO;
     }
 
-    uint32_t position = 0;
-    if (0 == api->fread(&position, sizeof(uint32_t), 1, file)) {
+    int32_t position = 0;
+    if (0 == api->fread(&position, sizeof(int32_t), 1, file)) {
         yc_res_map_parse_cleanup(file, api, map);
         return YC_RES_MAP_STATUS_IO;
     }
-    position = yc_res_byteorder_uint32(position);
+    position = yc_res_byteorder_int32(position);
 
     uint32_t elevation = 0;
     if (0 == api->fread(&elevation, sizeof(uint32_t), 1, file)) {

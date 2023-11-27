@@ -13,8 +13,8 @@ typedef struct yc_res_map_level_object {
     yc_res_math_location_t location;
     yc_res_pro_light_source_t light;
 
-    // screen coordinates and shifts
-    int32_t x, y, sx, sy;
+    int32_t screen_x, screen_y;
+    uint32_t correction_x, correction_y;
 
     // for in-battle .SAV files
     uint32_t critter_idx, outline_color_idx;

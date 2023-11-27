@@ -1,6 +1,7 @@
 #ifndef LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
 #define LIBYCRES_INCLUDE_PRO_TYPES_OBJECT_CRITTER_H
 
+#include "animation/animation.h"
 #include "body/body.h"
 #include "flags/flags.h"
 #include "kill/kill.h"

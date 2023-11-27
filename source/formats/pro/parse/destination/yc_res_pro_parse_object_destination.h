@@ -1,6 +1,6 @@
 #ifndef SOURCE_FORMATS_PRO_PARSE_DESTINATION_H
 #define SOURCE_FORMATS_PRO_PARSE_DESTINATION_H
 
-void yc_res_pro_parse_object_destination(uint32_t raw, yc_res_math_location_t *into);
+void yc_res_pro_parse_object_destination(int32_t raw, yc_res_math_location_t *into);
 
 #endif //SOURCE_FORMATS_PRO_PARSE_DESTINATION_H

@@ -16,20 +16,20 @@ yc_res_map_status_t yc_res_map_parse_object(
     if (0 == api->fread(&entry_id, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     entry_id = yc_res_byteorder_uint32(entry_id);
 
-    if (0 == api->fread(&into->location.grid_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    into->location.grid_idx = yc_res_byteorder_uint32(into->location.grid_idx);
+    if (0 == api->fread(&into->location.grid_idx, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    into->location.grid_idx = yc_res_byteorder_int32(into->location.grid_idx);
 
-    if (0 == api->fread(&into->x, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    into->x = yc_res_byteorder_int32(into->x);
+    if (0 == api->fread(&into->correction_x, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    into->correction_x = yc_res_byteorder_uint32(into->correction_x);
 
-    if (0 == api->fread(&into->y, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    into->y = yc_res_byteorder_int32(into->y);
+    if (0 == api->fread(&into->correction_y, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    into->correction_y = yc_res_byteorder_uint32(into->correction_y);
 
-    if (0 == api->fread(&into->sx, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    into->sx = yc_res_byteorder_int32(into->sx);
+    if (0 == api->fread(&into->screen_x, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    into->screen_x = yc_res_byteorder_int32(into->screen_x);
 
-    if (0 == api->fread(&into->sy, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
-    into->sy = yc_res_byteorder_int32(into->sy);
+    if (0 == api->fread(&into->screen_y, sizeof(int32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
+    into->screen_y = yc_res_byteorder_int32(into->screen_y);
 
     if (0 == api->fread(&into->frame_idx, sizeof(uint32_t), 1, file)) { return YC_RES_MAP_STATUS_IO; }
     into->frame_idx = yc_res_byteorder_uint32(into->frame_idx);
